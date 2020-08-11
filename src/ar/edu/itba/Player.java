@@ -1,9 +1,11 @@
-package com.zetcode;
+package ar.edu.itba;
 
 import java.awt.Image;
 import javax.swing.ImageIcon;
 
 public class Player extends Actor {
+
+
 
     public Player(int x, int y) {
         super(x, y);
@@ -20,10 +22,20 @@ public class Player extends Actor {
 
     public void move(int x, int y) {
 
-        int dx = x() + x;
-        int dy = y() + y;
+        int dx = getX() + x;
+        int dy = getY() + y;
         
         setX(dx);
         setY(dy);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
     }
 }

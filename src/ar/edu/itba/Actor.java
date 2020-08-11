@@ -1,6 +1,7 @@
-package com.zetcode;
+package ar.edu.itba;
 
 import java.awt.Image;
+import java.util.Objects;
 
 public class Actor {
 
@@ -24,12 +25,12 @@ public class Actor {
         image = img;
     }
 
-    public int x() {
+    public int getX() {
         
         return x;
     }
 
-    public int y() {
+    public int getY() {
         
         return y;
     }
@@ -46,21 +47,35 @@ public class Actor {
 
     public boolean isLeftCollision(Actor actor) {
         
-        return x() - SPACE == actor.x() && y() == actor.y();
+        return getX() - SPACE == actor.getX() && getY() == actor.getY();
     }
 
     public boolean isRightCollision(Actor actor) {
         
-        return x() + SPACE == actor.x() && y() == actor.y();
+        return getX() + SPACE == actor.getX() && getY() == actor.getY();
     }
 
     public boolean isTopCollision(Actor actor) {
         
-        return y() - SPACE == actor.y() && x() == actor.x();
+        return getY() - SPACE == actor.getY() && getX() == actor.getX();
     }
 
     public boolean isBottomCollision(Actor actor) {
         
-        return y() + SPACE == actor.y() && x() == actor.x();
+        return getY() + SPACE == actor.getY() && getX() == actor.getX();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Actor actor = (Actor) o;
+        return x == actor.x &&
+                y == actor.y;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 }

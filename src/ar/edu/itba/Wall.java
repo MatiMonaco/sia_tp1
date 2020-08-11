@@ -1,4 +1,4 @@
-package com.zetcode;
+package ar.edu.itba;
 
 import java.awt.Image;
 import javax.swing.ImageIcon;

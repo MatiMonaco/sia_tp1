@@ -208,7 +208,7 @@ public class Board extends JPanel {
          long last = System.currentTimeMillis(),now;
          int i = 0;
          while(i < solution.length()){
-             if((now = System.currentTimeMillis()) - last > 1000){
+             if((now = System.currentTimeMillis()) - last > 5000){
 
                  last = now;
                  char key = solution.charAt(i);
@@ -280,7 +280,7 @@ public class Board extends JPanel {
 
 
 
-
+                repaint();
              }
 
          }

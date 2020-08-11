@@ -2,10 +2,15 @@ package ar.edu.itba;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+
+import java.beans.PropertyChangeListener;
 import java.util.*;
-import javax.swing.JPanel;
+import java.util.Timer;
+import javax.swing.*;
 
 public class Board extends JPanel {
 
@@ -19,8 +24,8 @@ public class Board extends JPanel {
     private List<Wall> walls;
     private Set<Baggage> baggs;
     private List<Area> areas;
-    
-    private Player soko;
+    private String solution;
+    private Player player;
     private int w = 0;
     private int h = 0;
     
@@ -50,19 +55,25 @@ public class Board extends JPanel {
     public Board()  {
 
         initBoard();
-        BFSStrategy bfs = new BFSStrategy();
-        try {
-            bfs.findSolution(this);
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
+
     }
 
     private void initBoard() {
 
-       // addKeyListener(new TAdapter());
+        addKeyListener(new TAdapter());
         setFocusable(true);
         initWorld();
+        BFSStrategy bfs = new BFSStrategy();
+        try {
+            solution =  bfs.findSolution(this);
+
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+
+        while(true){
+            repaint();
+        }
     }
 
     public int getBoardWidth() {
@@ -121,7 +132,7 @@ public class Board extends JPanel {
                     break;
 
                 case '@':
-                    soko = new Player(x, y);
+                    player = new Player(x, y);
                     x += SPACE;
                     break;
 
@@ -137,7 +148,27 @@ public class Board extends JPanel {
         }
     }
 
-    private void buildWorld(Graphics g) {
+    private class TAdapter extends KeyAdapter {
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            super.keyPressed(e);
+
+            int key = e.getKeyCode();
+            switch (key){
+                case KeyEvent.VK_S:
+                    if(!solution.isEmpty()){
+                        System.out.println("S");
+                        showSolution(solution);
+                    }
+                    break;
+
+            }
+
+        }
+    }
+
+        private void buildWorld(Graphics g) {
 
         g.setColor(new Color(250, 240, 170));
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
@@ -147,7 +178,7 @@ public class Board extends JPanel {
         world.addAll(walls);
         world.addAll(areas);
         world.addAll(baggs);
-        world.add(soko);
+        world.add(player);
 
         for (int i = 0; i < world.size(); i++) {
 
@@ -161,11 +192,7 @@ public class Board extends JPanel {
                 g.drawImage(item.getImage(), item.getX(), item.getY(), this);
             }
 
-            if (isCompleted) {
-                
-                g.setColor(new Color(0, 0, 0));
-                g.drawString("Completed", 25, 20);
-            }
+
 
         }
     }
@@ -173,9 +200,312 @@ public class Board extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
+        System.out.println("PAINTING");
         buildWorld(g);
     }
+
+
+      public void showSolution(String solution) {
+
+         long last = System.currentTimeMillis(),now;
+         int i = 0;
+         while(i < solution.length()){
+             if((now = System.currentTimeMillis()) - last > 1000){
+
+                 last = now;
+                 char key = solution.charAt(i);
+                 System.out.println("key: "+key);
+                 i++;
+                 switch (key) {
+
+                     case 'L':
+
+                         if (checkWallCollision(player,
+                                 'L')) {
+                             return;
+                         }
+
+                         if (checkBagCollision('L')) {
+                             return;
+                         }
+
+                         player.move(-SPACE, 0);
+                         System.out.println(player);
+                         break;
+
+                     case 'R':
+
+                         if (checkWallCollision(player, 'R')) {
+                             return;
+                         }
+
+                         if (checkBagCollision('R')) {
+                             return;
+                         }
+
+                         player.move(SPACE, 0);
+                         System.out.println(player);
+                         break;
+
+                     case 'T':
+
+                         if (checkWallCollision(player, 'T')) {
+                             return;
+                         }
+
+                         if (checkBagCollision('T')) {
+                             return;
+                         }
+
+                         player.move(0, -SPACE);
+                         System.out.println(player);
+                         break;
+
+                     case 'B':
+
+                         if (checkWallCollision(player, 'B')) {
+                             return;
+                         }
+
+                         if (checkBagCollision('B')) {
+                             return;
+                         }
+
+                         player.move(0, SPACE);
+                         System.out.println(player);
+                         break;
+
+
+                     default:
+                         break;
+                 }
+
+
+
+
+             }
+
+         }
+
+
+
+
+      }
+    private boolean checkWallCollision(Actor actor, char direction) {
+
+        switch (direction) {
+
+            case 'L':
+
+                for (int i = 0; i < walls.size(); i++) {
+
+                    Wall wall = walls.get(i);
+
+                    if (actor.isLeftCollision(wall)) {
+
+                        return true;
+                    }
+                }
+
+                return false;
+
+            case 'R':
+
+                for (int i = 0; i < walls.size(); i++) {
+
+                    Wall wall = walls.get(i);
+
+                    if (actor.isRightCollision(wall)) {
+                        return true;
+                    }
+                }
+
+                return false;
+
+            case 'T':
+
+                for (int i = 0; i < walls.size(); i++) {
+
+                    Wall wall = walls.get(i);
+
+                    if (actor.isTopCollision(wall)) {
+
+                        return true;
+                    }
+                }
+
+                return false;
+
+            case 'B':
+
+                for (int i = 0; i < walls.size(); i++) {
+
+                    Wall wall = walls.get(i);
+
+                    if (actor.isBottomCollision(wall)) {
+
+                        return true;
+                    }
+                }
+
+                return false;
+
+            default:
+                break;
+        }
+
+        return false;
+    }
+
+    private boolean checkBagCollision(char direction) {
+
+        Iterator<Baggage> it1 = baggs.iterator();
+        List<Baggage> toAdd = new ArrayList<>();
+        switch (direction) {
+
+            case 'L':
+
+
+                while(it1.hasNext()) {
+                    Baggage bag = it1.next();
+                    if (player.isLeftCollision(bag)) {
+                        for (Baggage item : baggs) {
+                            {
+
+
+                                if (!bag.equals(item)) {
+
+                                    if (bag.isLeftCollision(item)) {
+                                        return true;
+                                    }
+                                }
+
+                                if (checkWallCollision(bag, 'L')) {
+                                    return true;
+                                }
+                            }
+
+                        }
+                        it1.remove();
+                        bag.move(-SPACE,0 );
+                        toAdd.add(bag);
+                        break;
+                    }
+                }
+                baggs.addAll(toAdd);
+
+
+                return false;
+
+            case 'R':
+
+
+                while(it1.hasNext()) {
+                    Baggage bag = it1.next();
+                    if (player.isRightCollision(bag)) {
+                        for (Baggage item : baggs) {
+                            {
+
+
+                                if (!bag.equals(item)) {
+
+                                    if (bag.isRightCollision(item)) {
+                                        return true;
+                                    }
+                                }
+
+                                if (checkWallCollision(bag, 'R')) {
+                                    return true;
+                                }
+                            }
+
+                        }
+                        it1.remove();
+                        bag.move(SPACE,0 );
+                        toAdd.add(bag);
+                        break;
+                    }
+                }
+                baggs.addAll(toAdd);
+
+
+                return false;
+
+            case 'T':
+
+                while(it1.hasNext()) {
+                    Baggage bag = it1.next();
+                    if (player.isTopCollision(bag)) {
+                        for (Baggage item : baggs) {
+                            {
+
+
+                                if (!bag.equals(item)) {
+
+                                    if (bag.isTopCollision(item)) {
+                                        return true;
+                                    }
+                                }
+
+                                if (checkWallCollision(bag, 'T')) {
+                                    return true;
+                                }
+                            }
+
+                        }
+                        it1.remove();
+                        bag.move(0,-Board.SPACE );
+                        toAdd.add(bag);
+                        break;
+                    }
+                }
+                baggs.addAll(toAdd);
+
+
+                return false;
+
+            case 'B':
+
+
+                while(it1.hasNext()) {
+                    Baggage bag = it1.next();
+                    if (player.isBottomCollision(bag)) {
+                        for (Baggage item : baggs) {
+                            {
+
+
+                                if (!bag.equals(item)) {
+
+                                    if (bag.isBottomCollision(item)) {
+                                        return true;
+                                    }
+                                }
+
+                                if (checkWallCollision(bag, 'B')) {
+                                    return true;
+                                }
+                            }
+
+                        }
+                        it1.remove();
+                        bag.move(0,Board.SPACE );
+                        toAdd.add(bag);
+                        break;
+                    }
+                }
+                baggs.addAll(toAdd);
+
+
+                return false;
+
+
+            default:
+                break;
+        }
+
+        return false;
+    }
+
 
 
     public boolean isCompleted(Set<Baggage> baggsSet) {
@@ -226,7 +556,7 @@ public class Board extends JPanel {
     }
 
     public Player getPlayer() {
-        return soko;
+        return player;
     }
 
     public List<Wall> getWalls() {

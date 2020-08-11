@@ -7,7 +7,7 @@ public class BFSStrategy extends SearchStrategy {
     private Set<StateNode> visited;
     private Queue<StateNode> vertices;
     @Override
-    public void findSolution(Board board) throws CloneNotSupportedException {
+    public String findSolution(Board board) throws CloneNotSupportedException {
         //init
         board.restartLevel();
         visited = new HashSet<>();
@@ -27,7 +27,8 @@ public class BFSStrategy extends SearchStrategy {
                 if(board.isCompleted(succesor.baggs)){
                     String solution =getSolutionPath(succesor);
                     System.out.println("Solution: " + solution);
-                    return;
+
+                    return solution;
                 }
                 System.out.println("visited: "+ visited);
                 if(!visited.contains(succesor)){
@@ -41,6 +42,8 @@ public class BFSStrategy extends SearchStrategy {
             }
         }
         System.out.println("NO SOLUTION FOUND");
+        return null;
+
 
     }
 }

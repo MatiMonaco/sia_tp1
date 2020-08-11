@@ -9,7 +9,7 @@ public abstract class SearchStrategy {
     int[] dir_x = {-1, 0, 1, 0};
     int[] dir_y = {0, 1, 0, -1};
 
-    public abstract  void findSolution(Board board) throws CloneNotSupportedException;
+    public abstract  String findSolution(Board board) throws CloneNotSupportedException;
 
     public String getSolutionPath(StateNode node){
         StringBuilder sb = new StringBuilder();

@@ -71,9 +71,7 @@ public class Board extends JPanel {
             e.printStackTrace();
         }
 
-        while(true){
-            repaint();
-        }
+
     }
 
     public int getBoardWidth() {

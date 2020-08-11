@@ -39,9 +39,15 @@ public class Board extends JPanel {
             + "    ##     #########\n"
             + "    ########\n";
 
-    public Board() {
+    public Board()  {
 
         initBoard();
+        BFSStrategy bfs = new BFSStrategy();
+        try {
+            bfs.findSolution(this);
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initBoard() {
@@ -163,342 +169,11 @@ public class Board extends JPanel {
         buildWorld(g);
     }
 
-    public boolean canMove(Player player,Set<Baggage> baggs,int direction){
-        if(isCompleted){
-            return false;
-        }
-        switch (direction) {
 
-            case LEFT_COLLISION:
+    public boolean isCompleted(Set<Baggage> baggsSet) {
 
-                if (checkWallCollision(player,LEFT_COLLISION) || checkBagCollision(player,baggs,LEFT_COLLISION)) {
-                    return false;
-                }
-                return true;
-                //soko.move(-SPACE, 0);
-
-            case RIGHT_COLLISION:
-
-                if (checkWallCollision(player, RIGHT_COLLISION) || checkBagCollision(player,baggs,RIGHT_COLLISION)) {
-                    return false;
-                }
-
-                return true;
-
-              //  soko.move(SPACE, 0);
-
-            case TOP_COLLISION:
-
-                if (checkWallCollision(player, TOP_COLLISION) || checkBagCollision(player,baggs,TOP_COLLISION)) {
-                    return false;
-                }
-
-                return true;
-
-                //soko.move(0, -SPACE);
-            case BOTTOM_COLLISION:
-
-                if (checkWallCollision(player, BOTTOM_COLLISION) || checkBagCollision(player,baggs,BOTTOM_COLLISION)) {
-                    return false;
-                }
-        return true;
-               //soko.move(0, SPACE);
-            default:
-                return false;
-
-        }
-    }
-
- /*   private class TAdapter extends KeyAdapter {
-
-        @Override
-        public void keyPressed(KeyEvent e) {
-
-            if (isCompleted) {
-                return;
-            }
-
-            int key = e.getKeyCode();
-
-            switch (key) {
-                
-                case KeyEvent.VK_LEFT:
-                    
-                    if (checkWallCollision(soko,
-                            LEFT_COLLISION)) {
-                        return;
-                    }
-                    
-                    if (checkBagCollision(LEFT_COLLISION)) {
-                        return;
-                    }
-                    
-                    soko.move(-SPACE, 0);
-                    
-                    break;
-                    
-                case KeyEvent.VK_RIGHT:
-                    
-                    if (checkWallCollision(soko, RIGHT_COLLISION)) {
-                        return;
-                    }
-                    
-                    if (checkBagCollision(RIGHT_COLLISION)) {
-                        return;
-                    }
-                    
-                    soko.move(SPACE, 0);
-                    
-                    break;
-                    
-                case KeyEvent.VK_UP:
-                    
-                    if (checkWallCollision(soko, TOP_COLLISION)) {
-                        return;
-                    }
-                    
-                    if (checkBagCollision(TOP_COLLISION)) {
-                        return;
-                    }
-                    
-                    soko.move(0, -SPACE);
-                    
-                    break;
-                    
-                case KeyEvent.VK_DOWN:
-                    
-                    if (checkWallCollision(soko, BOTTOM_COLLISION)) {
-                        return;
-                    }
-                    
-                    if (checkBagCollision(BOTTOM_COLLISION)) {
-                        return;
-                    }
-                    
-                    soko.move(0, SPACE);
-                    
-                    break;
-                    
-                case KeyEvent.VK_R:
-                    
-                    restartLevel();
-                    
-                    break;
-                    
-                default:
-                    break;
-            }
-
-            repaint();
-        }
-    }*/
-
-    public boolean checkWallCollision(Actor actor, int type) {
-
-        switch (type) {
-            
-            case LEFT_COLLISION:
-                
-                for (int i = 0; i < walls.size(); i++) {
-                    
-                    Wall wall = walls.get(i);
-                    
-                    if (actor.isLeftCollision(wall)) {
-                        
-                        return true;
-                    }
-                }
-                
-                return false;
-                
-            case RIGHT_COLLISION:
-                
-                for (int i = 0; i < walls.size(); i++) {
-                    
-                    Wall wall = walls.get(i);
-                    
-                    if (actor.isRightCollision(wall)) {
-                        return true;
-                    }
-                }
-                
-                return false;
-                
-            case TOP_COLLISION:
-                
-                for (int i = 0; i < walls.size(); i++) {
-                    
-                    Wall wall = walls.get(i);
-                    
-                    if (actor.isTopCollision(wall)) {
-                        
-                        return true;
-                    }
-                }
-                
-                return false;
-                
-            case BOTTOM_COLLISION:
-                
-                for (int i = 0; i < walls.size(); i++) {
-                    
-                    Wall wall = walls.get(i);
-                    
-                    if (actor.isBottomCollision(wall)) {
-                        
-                        return true;
-                    }
-                }
-                
-                return false;
-                
-            default:
-                break;
-        }
-        
-        return false;
-    }
-
-    public boolean checkBagCollision(Player player,Set<Baggage> baggs ,int type) {
-        Baggage[] baggsArray = baggs.toArray(new Baggage[0]);
-
-        switch (type) {
-            
-            case LEFT_COLLISION:
-                
-                for (int i = 0; i < baggsArray.length; i++) {
-
-                    Baggage bag = baggsArray[i];
-
-                    if (player.isLeftCollision(bag)) {
-
-                        for (int j = 0; j <baggsArray.length; j++) {
-                            
-                            Baggage item = baggsArray[j];
-                            
-                            if (!bag.equals(item)) {
-                                
-                                if (bag.isLeftCollision(item)) {
-                                    return true;
-                                }
-                            }
-                            
-                            if (checkWallCollision(bag, LEFT_COLLISION)) {
-                                return true;
-                            }
-                        }
-                        
-                        bag.move(-SPACE, 0);
-                        //isCompleted();
-                    }
-                }
-                
-                return false;
-                
-            case RIGHT_COLLISION:
-                
-                for (int i = 0; i < baggsArray.length; i++) {
-
-                    Baggage bag = baggsArray[i];
-                    
-                    if (player.isRightCollision(bag)) {
-                        
-                        for (int j = 0; j < baggsArray.length; j++) {
-
-                            Baggage item = baggsArray[j];
-
-                            if (!bag.equals(item)) {
-
-                                if (bag.isRightCollision(item)) {
-                                    return true;
-                                }
-                            }
-
-                            if (checkWallCollision(bag, RIGHT_COLLISION)) {
-                                return true;
-                            }
-                        }
-                        
-                        bag.move(SPACE, 0);
-                        isCompleted();
-                    }
-                }
-                return false;
-                
-            case TOP_COLLISION:
-                
-                for (int i = 0; i < baggsArray.length; i++) {
-
-                    Baggage bag = baggsArray[i];
-                    
-                    if (player.isTopCollision(bag)) {
-                        
-                        for (int j = 0; j < baggsArray.length; j++) {
-
-                            Baggage item = baggsArray[j];
-
-                            if (!bag.equals(item)) {
-                                
-                                if (bag.isTopCollision(item)) {
-                                    return true;
-                                }
-                            }
-                            
-                            if (checkWallCollision(bag, TOP_COLLISION)) {
-                                return true;
-                            }
-                        }
-                        
-                        bag.move(0, -SPACE);
-                        isCompleted();
-                    }
-                }
-
-                return false;
-                
-            case BOTTOM_COLLISION:
-                
-                for (int i = 0; i < baggsArray.length; i++) {
-
-                    Baggage bag = baggsArray[i];
-                    
-                    if (player.isBottomCollision(bag)) {
-                        
-                        for (int j = 0; j < baggsArray.length; j++) {
-
-                            Baggage item = baggsArray[j];
-                            
-                            if (!bag.equals(item)) {
-                                
-                                if (bag.isBottomCollision(item)) {
-                                    return true;
-                                }
-                            }
-                            
-                            if (checkWallCollision(bag,BOTTOM_COLLISION)) {
-                                
-                                return true;
-                            }
-                        }
-                        
-                        bag.move(0, SPACE);
-                        isCompleted();
-                    }
-                }
-                
-                break;
-                
-            default:
-                break;
-        }
-
-        return false;
-    }
-
-    public void isCompleted() {
-
-        int nOfBags = baggs.size();
-       Baggage[] baggsArray = baggs.toArray(new Baggage[0]);
+        int nOfBags = baggsSet.size();
+       Baggage[] baggsArray = baggsSet.toArray(new Baggage[0]);
         int finishedBags = 0;
 
         for (int i = 0; i < nOfBags; i++) {
@@ -517,10 +192,12 @@ public class Board extends JPanel {
         }
 
         if (finishedBags == nOfBags) {
-            
-            isCompleted = true;
-            repaint();
+
+            return true;
+           /* isCompleted = true;
+            repaint();*/
         }
+        return false;
     }
 
     public void restartLevel() {

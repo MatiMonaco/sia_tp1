@@ -1,13 +1,24 @@
 package ar.edu.itba;
 
+import javax.swing.plaf.nimbus.State;
 import java.util.*;
 
-public interface SearchStrategy {
+public abstract class SearchStrategy {
 
     int[] dir_x = {-1, 0, 1, 0};
     int[] dir_y = {0, 1, 0, -1};
 
-    void findSolution(Board board);
+    public abstract  void findSolution(Board board) throws CloneNotSupportedException;
+
+    public String getSolutionPath(StateNode node){
+        StringBuilder sb = new StringBuilder();
+        while(node.prev != null){
+            StateNode parent = node.prev;
+            sb.append(node.direction);
+            node = parent;
+        }
+        return sb.reverse().toString();
+    }
 
     class StateNode implements Cloneable{
         StateNode prev;
@@ -24,13 +35,17 @@ public interface SearchStrategy {
 
         }
 
-        private  List<StateNode> getChildren(Board board) throws CloneNotSupportedException {
+
+
+        public  List<StateNode> getChildren(Board board) throws CloneNotSupportedException {
             List<StateNode> children = new ArrayList<>();
             char[] directions = {'L','T','R','B'};
 
             for(int i = 0; i < directions.length; i++){
-                StateNode aux = (StateNode) this.clone();
+                StateNode aux = new StateNode(' ',player,baggs,this);
+                System.out.println("clone: "+aux);
                 aux = aux.checkMove(directions[i],board);
+                System.out.println("direction: "+directions[i] + " is "+ aux);
                 if(aux != null){
                     aux.prev = this;
                     children.add(aux);
@@ -42,9 +57,17 @@ public interface SearchStrategy {
 
         private StateNode checkMove(char direction,Board board) {
 
-            if (checkWallCollision(player, direction, board) || checkBagCollision(direction, board)) {
-
+            if (checkWallCollision(player, direction, board)){
+                System.out.println("checkwall in "+direction+" is true");
                 return null;
+              }else{
+                System.out.println("checkwall in "+direction+" is false");
+            }
+            if(checkBagCollision(direction, board)) {
+                System.out.println("checkBag in "+direction+" is true");
+                return null;
+            }else{
+                System.out.println("checkBag in "+direction+" is false");
             }
             switch(direction){
                 case 'L':

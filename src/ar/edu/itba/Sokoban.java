@@ -37,6 +37,8 @@ public class Sokoban extends JFrame {
         });
  // set.sort((o1, o2) -> o1.getX() > o2.getX() ? 1: o1.getX() == o2.getX() ? o1.getY() > o2.getY() ? 1 : -1 : -1);
 
+
+
     }
 
 

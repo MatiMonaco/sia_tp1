@@ -1,6 +1,7 @@
 package ar.edu.itba;
 
 import java.awt.EventQueue;
+import java.util.HashSet;
 import java.util.Set;
 import javax.swing.JFrame;
 
@@ -28,7 +29,6 @@ public class Sokoban extends JFrame {
     }
 
     public static void main(String[] args) {
-
 
         EventQueue.invokeLater(() -> {
 

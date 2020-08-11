@@ -2,6 +2,7 @@ package ar.edu.itba;
 
 import javax.swing.plaf.nimbus.State;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class SearchStrategy {
 
@@ -42,7 +43,10 @@ public abstract class SearchStrategy {
             char[] directions = {'L','T','R','B'};
 
             for(int i = 0; i < directions.length; i++){
-                StateNode aux = new StateNode(' ',player,baggs,this);
+
+                Set<Baggage> set = new HashSet<>();
+                set.addAll(baggs);
+                StateNode aux = new StateNode(' ',new Player(player.getX(),player.getY()),set,this);
                 System.out.println("clone: "+aux);
                 aux = aux.checkMove(directions[i],board);
                 System.out.println("direction: "+directions[i] + " is "+ aux);
@@ -91,24 +95,25 @@ public abstract class SearchStrategy {
         @Override
         public String toString() {
             return "StateNode{" +
-                    "prev=" + prev +
+                    " direction='" + direction + '\'' +
                     ", player=" + player +
                     ", baggs=" + baggs +
-                    ", direction='" + direction + '\'' +
+
                     '}';
         }
 
         private boolean checkBagCollision(char direction, Board board) {
 
-
+            Iterator<Baggage> it1 = baggs.iterator();
+            List<Baggage> toAdd = new ArrayList<>();
             switch (direction) {
 
                 case 'L':
 
-                    for (Baggage bag : baggs) {
 
+                    while(it1.hasNext()) {
+                        Baggage bag = it1.next();
                         if (player.isLeftCollision(bag)) {
-
                             for (Baggage item : baggs) {
                                 {
 
@@ -126,107 +131,118 @@ public abstract class SearchStrategy {
                                 }
 
                             }
-                            baggs.remove(bag);
+                            it1.remove();
                             bag.move(-board.SPACE,0 );
-                            baggs.add(bag);
+                            toAdd.add(bag);
+                            break;
                         }
                     }
+                    baggs.addAll(toAdd);
+
+
                         return false;
 
                         case 'R':
 
-                            for (Baggage bag : baggs) {
 
-
-
+                            while(it1.hasNext()) {
+                                Baggage bag = it1.next();
                                 if (player.isRightCollision(bag)) {
-
                                     for (Baggage item : baggs) {
+                                        {
 
 
+                                            if (!bag.equals(item)) {
 
-                                        if (!bag.equals(item)) {
+                                                if (bag.isRightCollision(item)) {
+                                                    return true;
+                                                }
+                                            }
 
-                                            if (bag.isRightCollision(item)) {
+                                            if (checkWallCollision(bag, 'R', board)) {
                                                 return true;
                                             }
                                         }
 
-                                        if (checkWallCollision(bag, 'R',board)) {
-                                            return true;
-                                        }
                                     }
-                                    baggs.remove(bag);
+                                    it1.remove();
                                     bag.move(board.SPACE,0 );
-                                    baggs.add(bag);
+                                    toAdd.add(bag);
+                                    break;
                                 }
                             }
+                            baggs.addAll(toAdd);
+
+
                             return false;
 
                         case 'T':
 
-                            for (Baggage bag : baggs) {
-
-
-
+                            while(it1.hasNext()) {
+                                Baggage bag = it1.next();
                                 if (player.isTopCollision(bag)) {
-
                                     for (Baggage item : baggs) {
+                                        {
 
 
+                                            if (!bag.equals(item)) {
 
-                                        if (!bag.equals(item)) {
+                                                if (bag.isTopCollision(item)) {
+                                                    return true;
+                                                }
+                                            }
 
-                                            if (bag.isTopCollision(item)) {
+                                            if (checkWallCollision(bag, 'T', board)) {
                                                 return true;
                                             }
                                         }
 
-                                        if (checkWallCollision(bag, 'T',board)) {
-                                            return true;
-                                        }
                                     }
-                                    baggs.remove(bag);
-                                    bag.move(0,-board.SPACE );
-                                    baggs.add(bag);
+                                    it1.remove();
+                                    bag.move(0,-Board.SPACE );
+                                    toAdd.add(bag);
+                                    break;
                                 }
                             }
+                            baggs.addAll(toAdd);
+
 
                             return false;
 
                         case 'B':
 
-                            for (Baggage bag : baggs) {
 
-
-
+                            while(it1.hasNext()) {
+                                Baggage bag = it1.next();
                                 if (player.isBottomCollision(bag)) {
-
                                     for (Baggage item : baggs) {
+                                        {
 
 
+                                            if (!bag.equals(item)) {
 
-                                        if (!bag.equals(item)) {
+                                                if (bag.isBottomCollision(item)) {
+                                                    return true;
+                                                }
+                                            }
 
-                                            if (bag.isBottomCollision(item)) {
+                                            if (checkWallCollision(bag, 'B', board)) {
                                                 return true;
                                             }
                                         }
 
-                                        if (checkWallCollision(bag, 'B',board)) {
-
-                                            return true;
-                                        }
                                     }
-
-                                    baggs.remove(bag);
-                                    bag.move(0, board.SPACE);
-                                    baggs.add(bag);
-
+                                    it1.remove();
+                                    bag.move(0,Board.SPACE );
+                                    toAdd.add(bag);
+                                    break;
                                 }
                             }
+                            baggs.addAll(toAdd);
 
-                            break;
+
+                            return false;
+
 
                         default:
                             break;

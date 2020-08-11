@@ -12,7 +12,7 @@ public class BFSStrategy extends SearchStrategy {
         board.restartLevel();
         visited = new HashSet<>();
         vertices = new LinkedList<>();
-        StateNode root = new StateNode(' ',board.getPlayer(),board.getBaggs(),null);
+        StateNode root = new StateNode(' ',new Player(board.getPlayer().getX(),board.getPlayer().getY()),new HashSet<>(board.getBaggs()),null);
         vertices.add(root);
         int height = 0;
         while(!vertices.isEmpty()){
@@ -24,8 +24,13 @@ public class BFSStrategy extends SearchStrategy {
                     String solution =getSolutionPath(succesor);
                     System.out.println("Solution: " + solution);
                 }
+                if(!visited.contains(succesor)){
+                    vertices.add(succesor);
+                    visited.add(succesor);
+                }
             }
         }
+        System.out.println("NO SOLUTION FOUND");
 
     }
 }

@@ -13,6 +13,8 @@ public class Player extends Actor {
         initPlayer();
     }
 
+
+
     private void initPlayer() {
 
         ImageIcon iicon = new ImageIcon("src/resources/sokoban.png");

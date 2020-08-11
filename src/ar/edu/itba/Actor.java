@@ -17,6 +17,14 @@ public class Actor {
         this.y = y;
     }
 
+    @Override
+    public String toString() {
+        return "Actor{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
+    }
+
     public Image getImage() {
         return image;
     }

@@ -10,23 +10,35 @@ public interface SearchStrategy {
     void findSolution(Board board);
 
     class StateNode implements Cloneable{
-        ArrayList<StateNode> children;
         StateNode prev;
         Player player;
         Set<Baggage> baggs;
-        String direction;
+        char direction;
 
 
-        StateNode(String direction,Player player,Set<Baggage> baggs,StateNode prev){
+        StateNode(char direction,Player player,Set<Baggage> baggs,StateNode prev){
             this.direction = direction;
             this.player  = player;
             this.baggs = baggs;
             this.prev = prev;
-            children = new ArrayList<>();
 
         }
 
+        private  List<StateNode> getChildren(Board board) throws CloneNotSupportedException {
+            List<StateNode> children = new ArrayList<>();
+            char[] directions = {'L','T','R','B'};
 
+            for(int i = 0; i < directions.length; i++){
+                StateNode aux = (StateNode) this.clone();
+                aux = aux.checkMove(directions[i],board);
+                if(aux != null){
+                    aux.prev = this;
+                    children.add(aux);
+                }
+
+            }
+            return children;
+        }
 
         private StateNode checkMove(char direction,Board board) {
 
@@ -34,11 +46,36 @@ public interface SearchStrategy {
 
                 return null;
             }
+            switch(direction){
+                case 'L':
+                    player.move(-board.SPACE,0);
+                    break;
+                case 'T':
+                    player.move(0,-board.SPACE);
+                    break;
+                case 'R':
+                    player.move(board.SPACE,0);
+                    break;
+                case 'B':
+                    player.move(0,board.SPACE);
+                    break;
+            }
+            this.direction = direction;
             return this;
 
         }
 
-        private boolean checkBagCollision(char direction,Board board) {
+        @Override
+        public String toString() {
+            return "StateNode{" +
+                    "prev=" + prev +
+                    ", player=" + player +
+                    ", baggs=" + baggs +
+                    ", direction='" + direction + '\'' +
+                    '}';
+        }
+
+        private boolean checkBagCollision(char direction, Board board) {
 
 
             switch (direction) {
@@ -258,7 +295,7 @@ public interface SearchStrategy {
             return prev;
         }
 
-        public String getDirection() {
+        public char getDirection() {
             return direction;
         }
 

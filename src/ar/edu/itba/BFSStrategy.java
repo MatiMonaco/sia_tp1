@@ -12,8 +12,12 @@ public class BFSStrategy extends SearchStrategy {
         board.restartLevel();
         visited = new HashSet<>();
         vertices = new LinkedList<>();
-        StateNode root = new StateNode(' ',new Player(board.getPlayer().getX(),board.getPlayer().getY()),new HashSet<>(board.getBaggs()),null);
+
+        Set<Baggage> set = new HashSet<>();
+        set.addAll(board.getBaggs());
+        StateNode root = new StateNode(' ',new Player(board.getPlayer().getX(),board.getPlayer().getY()),set,null);
         vertices.add(root);
+        visited.add(root);
         int height = 0;
         while(!vertices.isEmpty()){
             StateNode vertex = vertices.poll();
@@ -23,10 +27,16 @@ public class BFSStrategy extends SearchStrategy {
                 if(board.isCompleted(succesor.baggs)){
                     String solution =getSolutionPath(succesor);
                     System.out.println("Solution: " + solution);
+                    return;
                 }
+                System.out.println("visited: "+ visited);
                 if(!visited.contains(succesor)){
+
                     vertices.add(succesor);
                     visited.add(succesor);
+                    System.out.println("agrego a visited: "+ visited);
+                }else{
+                    System.out.println(succesor+ " es estado repetido");
                 }
             }
         }

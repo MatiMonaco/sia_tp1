@@ -45,7 +45,7 @@ public abstract class SearchStrategy {
             for(int i = 0; i < directions.length; i++){
 
                 Set<Baggage> set = new HashSet<>();
-                set.addAll(baggs);
+                baggs.forEach(b->{set.add(new Baggage(b.getX(),b.getY()));});
                 StateNode aux = new StateNode(' ',new Player(player.getX(),player.getY()),set,this);
                 System.out.println("clone: "+aux);
                 aux = aux.checkMove(directions[i],board);

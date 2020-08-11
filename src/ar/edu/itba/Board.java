@@ -26,7 +26,7 @@ public class Board extends JPanel {
     
     private boolean isCompleted = false;
 
-    private String level
+/*    private String level
             = "    ######\n"
             + "    ##   #\n"
             + "    ##$  #\n"
@@ -37,7 +37,15 @@ public class Board extends JPanel {
             + "## $  $          ..#\n"
             + "###### ### #@##  ..#\n"
             + "    ##     #########\n"
-            + "    ########\n";
+            + "    ########\n";*/
+
+    private String level = "####################\n"
+                        +  "## @             .#\n"
+                        +  "#### ###########$###\n"
+                        +  "####             ###\n"
+                        +  "####################\n"
+                        +  "####################\n";
+
 
     public Board()  {
 

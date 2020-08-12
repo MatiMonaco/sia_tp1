@@ -39,6 +39,29 @@ public abstract class SearchStrategy {
         public Set<Baggage> getBags() {
             return baggs;
         }
+        public boolean isDeadlocked(char direction){
+
+
+            switch(direction){
+                case 'L':
+
+                    for(Baggage bag: baggs){
+                        Actor top = new Actor(bag.getX(),bag.getY() -Board.SPACE);
+                        Actor bot = new Actor(bag.getX(),bag.getY() +Board.SPACE);
+                        Actor left = new Actor(bag.getX() -Board.SPACE,bag.getY());
+
+
+                    }
+
+                    break;
+            }
+
+            return false;
+        }
+
+
+
+
 
         public  List<StateNode> getChildren(Board board) throws CloneNotSupportedException {
 
@@ -108,7 +131,7 @@ public abstract class SearchStrategy {
         private boolean checkBagCollision(char direction, Board board) {
 
             Iterator<Baggage> it1 = baggs.iterator();
-            List<Baggage> toAdd = new ArrayList<>();
+            Baggage toAdd = null;
             switch (direction) {
 
                 case 'L':
@@ -117,6 +140,9 @@ public abstract class SearchStrategy {
                     while(it1.hasNext()) {
                         Baggage bag = it1.next();
                         if (player.isLeftCollision(bag)) {
+                            if (checkWallCollision(bag, 'L', board)) {
+                                return true;
+                            }
                             for (Baggage item : baggs) {
                                 {
 
@@ -128,19 +154,20 @@ public abstract class SearchStrategy {
                                         }
                                     }
 
-                                    if (checkWallCollision(bag, 'L', board)) {
-                                        return true;
-                                    }
+
                                 }
 
                             }
                             it1.remove();
                             bag.move(-Board.SPACE,0 );
-                            toAdd.add(bag);
+                            toAdd = bag;
                             break;
                         }
                     }
-                    baggs.addAll(toAdd);
+                    if(toAdd != null){
+                        baggs.add(toAdd);
+                    }
+
 
 
                         return false;
@@ -170,12 +197,13 @@ public abstract class SearchStrategy {
                                     }
                                     it1.remove();
                                     bag.move(Board.SPACE,0 );
-                                    toAdd.add(bag);
+                                    toAdd = bag;
                                     break;
                                 }
                             }
-                            baggs.addAll(toAdd);
-
+                            if(toAdd != null){
+                                baggs.add(toAdd);
+                            }
 
                             return false;
 
@@ -203,11 +231,13 @@ public abstract class SearchStrategy {
                                     }
                                     it1.remove();
                                     bag.move(0,-Board.SPACE );
-                                    toAdd.add(bag);
+                                    toAdd = bag;
                                     break;
                                 }
                             }
-                            baggs.addAll(toAdd);
+                            if(toAdd != null){
+                                baggs.add(toAdd);
+                            }
 
 
                             return false;
@@ -237,12 +267,13 @@ public abstract class SearchStrategy {
                                     }
                                     it1.remove();
                                     bag.move(0,Board.SPACE );
-                                    toAdd.add(bag);
+                                    toAdd = bag;
                                     break;
                                 }
                             }
-                            baggs.addAll(toAdd);
-
+                            if(toAdd != null){
+                                baggs.add(toAdd);
+                            }
 
                             return false;
 

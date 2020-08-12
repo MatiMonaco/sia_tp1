@@ -98,24 +98,22 @@ public class Board extends JPanel {
         addKeyListener(new TAdapter());
         setFocusable(true);
         initWorld();
-//        BFSStrategy bfs = new BFSStrategy();
-//        try {
-//            solution =  bfs.findSolution(this);
-//
-//        } catch (CloneNotSupportedException e) {
-//            e.printStackTrace();
-//        }
-
-        BFSStrategy alg = new BFSStrategy();
-//        DFSStrategy alg = new DFSStrategy();
-//        IDDFSStrategy alg = new IDDFSStrategy();
+        BFSStrategy bfs = new BFSStrategy();
         try {
-            solution =  alg.findSolution(this);
+            solution =  bfs.findSolution(this);
 
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
 
+   /*     DFSStrategy dfs = new DFSStrategy();
+        try {
+            solution =  dfs.findSolution(this);
+
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+*/
 
     }
 

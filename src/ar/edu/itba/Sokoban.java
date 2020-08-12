@@ -30,11 +30,13 @@ public class Sokoban extends JFrame {
 
     public static void main(String[] args) {
 
+
         EventQueue.invokeLater(() -> {
 
             Sokoban game = new Sokoban();
             game.setVisible(true);
         });
+
  // set.sort((o1, o2) -> o1.getX() > o2.getX() ? 1: o1.getX() == o2.getX() ? o1.getY() > o2.getY() ? 1 : -1 : -1);
 
 
@@ -43,8 +45,5 @@ public class Sokoban extends JFrame {
 
 
 
-    public void caca(Set<Integer>asd){
-        Integer[] array = asd.toArray(new Integer[0]);
-        array[0] = 1;
-    }
+
 }

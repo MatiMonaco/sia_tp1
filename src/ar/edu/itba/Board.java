@@ -45,18 +45,18 @@ public class Board extends JPanel {
         }
     });
 
-/*    private String level
-            = "    ######\n"
-            + "    ##   #\n"
-            + "    ##$  #\n"
-            + "  ####  $##\n"
-            + "  ##  $ $ #\n"
-            + "#### # ## #   ######\n"
-            + "##   # ## #####  ..#\n"
-            + "## $  $          ..#\n"
-            + "###### ### #@##  ..#\n"
-            + "    ##     #########\n"
-            + "    ########\n";*/
+//    private String level
+//            = "    ######\n"
+//            + "    ##   #\n"
+//            + "    ##$  #\n"
+//            + "  ####  $##\n"
+//            + "  ##  $ $ #\n"
+//            + "#### # ## #   ######\n"
+//            + "##   # ## #####  ..#\n"
+//            + "## $  $          ..#\n"
+//            + "###### ### #@##  ..#\n"
+//            + "    ##     #########\n"
+//            + "    ########\n";
 
     private String level =     "      ###\n"+
                                 "      #.#\n"+
@@ -81,22 +81,22 @@ public class Board extends JPanel {
         addKeyListener(new TAdapter());
         setFocusable(true);
         initWorld();
-//        BFSStrategy bfs = new BFSStrategy();
-//        try {
-//            solution =  bfs.findSolution(this);
-//
-//        } catch (CloneNotSupportedException e) {
-//            e.printStackTrace();
-//        }
+        BFSStrategy bfs = new BFSStrategy();
+        try {
+            solution =  bfs.findSolution(this);
 
-        DFSStrategy dfs = new DFSStrategy();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+
+   /*     DFSStrategy dfs = new DFSStrategy();
         try {
             solution =  dfs.findSolution(this);
 
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
-
+*/
 
     }
 

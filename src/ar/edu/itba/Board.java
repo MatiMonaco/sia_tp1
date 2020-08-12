@@ -16,11 +16,6 @@ public class Board extends JPanel {
 
     public static final int OFFSET = 30;
     public static final int SPACE = 20;
-    public static final int LEFT_COLLISION = 1;
-    public static final int RIGHT_COLLISION = 2;
-    public static final int TOP_COLLISION = 3;
-    public static final int BOTTOM_COLLISION = 4;
-
     private List<Wall> walls;
     private Set<Baggage> baggs;
     private List<Area> areas;
@@ -41,8 +36,6 @@ public class Board extends JPanel {
 
                 movePlayer(key);
                 repaint();
-
-
 
             }else{
                 ((Timer)e.getSource()).stop();
@@ -88,9 +81,17 @@ public class Board extends JPanel {
         addKeyListener(new TAdapter());
         setFocusable(true);
         initWorld();
-        BFSStrategy bfs = new BFSStrategy();
+//        BFSStrategy bfs = new BFSStrategy();
+//        try {
+//            solution =  bfs.findSolution(this);
+//
+//        } catch (CloneNotSupportedException e) {
+//            e.printStackTrace();
+//        }
+
+        DFSStrategy dfs = new DFSStrategy();
         try {
-            solution =  bfs.findSolution(this);
+            solution =  dfs.findSolution(this);
 
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();

@@ -1,8 +1,8 @@
 package ar.edu.itba;
 
-import javax.swing.plaf.nimbus.State;
+
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 public abstract class SearchStrategy {
 
@@ -47,9 +47,9 @@ public abstract class SearchStrategy {
                 Set<Baggage> set = new HashSet<>();
                 baggs.forEach(b->{set.add(new Baggage(b.getX(),b.getY()));});
                 StateNode aux = new StateNode(' ',new Player(player.getX(),player.getY()),set,this);
-                System.out.println("clone: "+aux);
+
                 aux = aux.checkMove(directions[i],board);
-                System.out.println("direction: "+directions[i] + " is "+ aux);
+
                 if(aux != null){
                     aux.prev = this;
                     children.add(aux);
@@ -61,17 +61,13 @@ public abstract class SearchStrategy {
 
         private StateNode checkMove(char direction,Board board) {
 
-            if (checkWallCollision(player, direction, board)){
-                System.out.println("checkwall in "+direction+" is true");
+            if (checkWallCollision(player, direction, board)) {
+
                 return null;
-              }else{
-                System.out.println("checkwall in "+direction+" is false");
             }
             if(checkBagCollision(direction, board)) {
-                System.out.println("checkBag in "+direction+" is true");
+
                 return null;
-            }else{
-                System.out.println("checkBag in "+direction+" is false");
             }
             switch(direction){
                 case 'L':

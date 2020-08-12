@@ -9,8 +9,8 @@ import java.awt.event.KeyEvent;
 
 import java.beans.PropertyChangeListener;
 import java.util.*;
-import java.util.Timer;
 import javax.swing.*;
+import javax.swing.Timer;
 
 public class Board extends JPanel {
 
@@ -30,6 +30,27 @@ public class Board extends JPanel {
     private int h = 0;
     
     private boolean isCompleted = false;
+    private int i = 0;
+    private  Timer timer = new Timer(250, new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            if(i< solution.length()){
+                char key = solution.charAt(i++);
+
+                movePlayer(key);
+                repaint();
+
+
+
+            }else{
+                ((Timer)e.getSource()).stop();
+            }
+
+
+        }
+    });
 
 /*    private String level
             = "    ######\n"
@@ -44,12 +65,16 @@ public class Board extends JPanel {
             + "    ##     #########\n"
             + "    ########\n";*/
 
-    private String level = "####################\n"
-                        +  "## @             .#\n"
-                        +  "#### ###########$###\n"
-                        +  "####             ###\n"
-                        +  "####################\n"
-                        +  "####################\n";
+    private String level =     "      ###\n"+
+                                "      #.#\n"+
+                                "  #####.#####\n"+
+                                " ##         ##\n"+
+                                "##  # # # #  ##\n"+
+                                "#  ##     ##  #\n"+
+                                "# ##  # #  ## #\n"+
+                                "#     $@$     #\n"+
+                                "####  ###  ####\n"+
+                                "   #### ####\n";
 
 
     public Board()  {
@@ -156,8 +181,8 @@ public class Board extends JPanel {
             switch (key){
                 case KeyEvent.VK_S:
                     if(!solution.isEmpty()){
-                        System.out.println("S");
-                        showSolution(solution);
+
+                        showSolution();
                     }
                     break;
 
@@ -203,87 +228,78 @@ public class Board extends JPanel {
     }
 
 
-      public void showSolution(String solution) {
+      public void showSolution() {
 
-         long last = System.currentTimeMillis(),now;
-         int i = 0;
-         while(i < solution.length()){
-             if((now = System.currentTimeMillis()) - last > 1000){
-
-                 last = now;
-                 char key = solution.charAt(i);
-                 System.out.println("key: "+key);
-                 i++;
-                 switch (key) {
-
-                     case 'L':
-
-                         if (checkWallCollision(player,
-                                 'L')) {
-                             return;
-                         }
-
-                         if (checkBagCollision('L')) {
-                             return;
-                         }
-
-                         player.move(-SPACE, 0);
-                         System.out.println(player);
-                         break;
-
-                     case 'R':
-
-                         if (checkWallCollision(player, 'R')) {
-                             return;
-                         }
-
-                         if (checkBagCollision('R')) {
-                             return;
-                         }
-
-                         player.move(SPACE, 0);
-                         System.out.println(player);
-                         break;
-
-                     case 'T':
-
-                         if (checkWallCollision(player, 'T')) {
-                             return;
-                         }
-
-                         if (checkBagCollision('T')) {
-                             return;
-                         }
-
-                         player.move(0, -SPACE);
-                         System.out.println(player);
-                         break;
-
-                     case 'B':
-
-                         if (checkWallCollision(player, 'B')) {
-                             return;
-                         }
-
-                         if (checkBagCollision('B')) {
-                             return;
-                         }
-
-                         player.move(0, SPACE);
-                         System.out.println(player);
-                         break;
+          timer.start();
 
 
-                     default:
-                         break;
-                 }
+      }
+
+      private void movePlayer(char direction){
+          switch (direction) {
+
+              case 'L':
+
+                  if (checkWallCollision(player,
+                          'L')) {
+                      return;
+                  }
+
+                  if (checkBagCollision('L')) {
+                      return;
+                  }
+
+                  player.move(-SPACE, 0);
+
+                  break;
+
+              case 'R':
+
+                  if (checkWallCollision(player, 'R')) {
+                      return;
+                  }
+
+                  if (checkBagCollision('R')) {
+                      return;
+                  }
+
+                  player.move(SPACE, 0);
+
+                  break;
+
+              case 'T':
+
+                  if (checkWallCollision(player, 'T')) {
+                      return;
+                  }
+
+                  if (checkBagCollision('T')) {
+                      return;
+                  }
+
+                  player.move(0, -SPACE);
+
+                  break;
+
+              case 'B':
+
+                  if (checkWallCollision(player, 'B')) {
+                      return;
+                  }
+
+                  if (checkBagCollision('B')) {
+                      return;
+                  }
+
+                  player.move(0, SPACE);
+
+                  break;
 
 
+              default:
+                  break;
+          }
 
-                repaint();
-             }
-
-         }
 
 
 

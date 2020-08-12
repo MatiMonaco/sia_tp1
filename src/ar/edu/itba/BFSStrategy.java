@@ -22,22 +22,20 @@ public class BFSStrategy extends SearchStrategy {
         while(!vertices.isEmpty()){
             StateNode vertex = vertices.poll();
             List<StateNode> successors = vertex.getChildren(board);
-            System.out.println("succesors("+height+"): "+successors);
-            for(StateNode succesor : successors){
-                if(board.isCompleted(succesor.baggs)){
-                    String solution =getSolutionPath(succesor);
+
+            for(StateNode successor : successors){
+                if(board.isCompleted(successor.baggs)){
+                    String solution =getSolutionPath(successor);
                     System.out.println("Solution: " + solution);
 
                     return solution;
                 }
-                System.out.println("visited: "+ visited);
-                if(!visited.contains(succesor)){
 
-                    vertices.add(succesor);
-                    visited.add(succesor);
-                    System.out.println("agrego a visited: "+ visited);
-                }else{
-                    System.out.println(succesor+ " es estado repetido");
+                if(!visited.contains(successor)){
+
+                    vertices.add(successor);
+                    visited.add(successor);
+
                 }
             }
         }

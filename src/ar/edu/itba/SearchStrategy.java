@@ -26,16 +26,19 @@ public abstract class SearchStrategy {
         Player player;
         Set<Baggage> baggs;
         char direction;
-
+        private List<StateNode> children;
 
         StateNode(char direction,Player player,Set<Baggage> baggs,StateNode prev){
             this.direction = direction;
             this.player  = player;
             this.baggs = baggs;
             this.prev = prev;
-
+            children = new ArrayList<>();
         }
 
+        public Set<Baggage> getBags() {
+            return baggs;
+        }
         public boolean isDeadlocked(char direction){
 
 
@@ -61,23 +64,28 @@ public abstract class SearchStrategy {
 
 
         public  List<StateNode> getChildren(Board board) throws CloneNotSupportedException {
-            List<StateNode> children = new ArrayList<>();
+
             char[] directions = {'L','T','R','B'};
 
-            for(int i = 0; i < directions.length; i++){
+            if (children.isEmpty()){
+                for (char c : directions) {
 
-                Set<Baggage> set = new HashSet<>();
-                baggs.forEach(b->{set.add(new Baggage(b.getX(),b.getY()));});
-                StateNode aux = new StateNode(' ',new Player(player.getX(),player.getY()),set,this);
+                    Set<Baggage> set = new HashSet<>();
+                    baggs.forEach(b -> {
+                        set.add(new Baggage(b.getX(), b.getY()));
+                    });
+                    StateNode aux = new StateNode(' ', new Player(player.getX(), player.getY()), set, this);
 
-                aux = aux.checkMove(directions[i],board);
+                    aux = aux.checkMove(c, board);
 
-                if(aux != null){
-                    aux.prev = this;
-                    children.add(aux);
+                    if (aux != null) {
+                        aux.prev = this;
+                        children.add(aux);
+                    }
+
                 }
-
             }
+
             return children;
         }
 
@@ -93,16 +101,16 @@ public abstract class SearchStrategy {
             }
             switch(direction){
                 case 'L':
-                    player.move(-board.SPACE,0);
+                    player.move(-Board.SPACE,0);
                     break;
                 case 'T':
-                    player.move(0,-board.SPACE);
+                    player.move(0,-Board.SPACE);
                     break;
                 case 'R':
-                    player.move(board.SPACE,0);
+                    player.move(Board.SPACE,0);
                     break;
                 case 'B':
-                    player.move(0,board.SPACE);
+                    player.move(0,Board.SPACE);
                     break;
             }
             this.direction = direction;
@@ -188,7 +196,7 @@ public abstract class SearchStrategy {
 
                                     }
                                     it1.remove();
-                                    bag.move(board.SPACE,0 );
+                                    bag.move(Board.SPACE,0 );
                                     toAdd = bag;
                                     break;
                                 }
@@ -284,9 +292,7 @@ public abstract class SearchStrategy {
 
                 case 'L':
 
-                    for (int i = 0; i < walls.size(); i++) {
-
-                        Wall wall = walls.get(i);
+                    for (Wall wall : walls) {
 
                         if (actor.isLeftCollision(wall)) {
 
@@ -298,9 +304,7 @@ public abstract class SearchStrategy {
 
                 case 'R':
 
-                    for (int i = 0; i < walls.size(); i++) {
-
-                        Wall wall = walls.get(i);
+                    for (Wall wall : walls) {
 
                         if (actor.isRightCollision(wall)) {
                             return true;
@@ -311,9 +315,7 @@ public abstract class SearchStrategy {
 
                 case 'T':
 
-                    for (int i = 0; i < walls.size(); i++) {
-
-                        Wall wall = walls.get(i);
+                    for (Wall wall : walls) {
 
                         if (actor.isTopCollision(wall)) {
 
@@ -325,9 +327,7 @@ public abstract class SearchStrategy {
 
                 case 'B':
 
-                    for (int i = 0; i < walls.size(); i++) {
-
-                        Wall wall = walls.get(i);
+                    for (Wall wall : walls) {
 
                         if (actor.isBottomCollision(wall)) {
 
@@ -377,6 +377,19 @@ public abstract class SearchStrategy {
         @Override
         public int hashCode() {
             return Objects.hash(player, baggs);
+        }
+
+        public boolean checkRepeats() {
+            StateNode grandparent = prev.prev;
+            while (grandparent!=null){
+
+                if (grandparent.equals(this)){
+                    return true;
+                }
+                grandparent = grandparent.prev;
+            }
+
+            return false;
         }
     }
 }

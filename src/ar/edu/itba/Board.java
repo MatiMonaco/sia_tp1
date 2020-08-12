@@ -45,29 +45,46 @@ public class Board extends JPanel {
         }
     });
 
-//    private String level
-//            = "    ######\n"
-//            + "    ##   #\n"
-//            + "    ##$  #\n"
-//            + "  ####  $##\n"
-//            + "  ##  $ $ #\n"
-//            + "#### # ## #   ######\n"
-//            + "##   # ## #####  ..#\n"
-//            + "## $  $          ..#\n"
-//            + "###### ### #@##  ..#\n"
-//            + "    ##     #########\n"
-//            + "    ########\n";
+/*    private String level
+            = "    ######\n"
+            + "    ##   #\n"
+            + "    ##$  #\n"
+            + "  ####  $##\n"
+            + "  ##  $ $ #\n"
+            + "#### # ## #   ######\n"
+            + "##   # ## #####  ..#\n"
+            + "## $  $          ..#\n"
+            + "###### ### #@##  ..#\n"
+            + "    ##     #########\n"
+            + "    ########\n";*/
 
-    private String level =     "      ###\n"+
-                                "      #.#\n"+
-                                "  #####.#####\n"+
-                                " ##         ##\n"+
-                                "##  # # # #  ##\n"+
-                                "#  ##     ##  #\n"+
-                                "# ##  # #  ## #\n"+
-                                "#     $@$     #\n"+
-                                "####  ###  ####\n"+
-                                "   #### ####\n";
+//    private String level =      "      ###\n"+
+//                                "      #.#\n"+
+//                                "  #####.#####\n"+
+//                                " ##         ##\n"+
+//                                "##  # # # #  ##\n"+
+//                                "#  ##     ##  #\n"+
+//                                "# ##  # #  ## #\n"+
+//                                "#     $@$     #\n"+
+//                                "####  ###  ####\n"+
+//                                "   #### ####\n";
+
+ private String level =         "  ####    \n" +
+                                " ##  ##   \n" +
+                                "## $  ####\n" +
+                                "#  ..$  @#\n" +
+                                "# $..#   #\n" +
+                                "#   $#####\n" +
+                                "##   #    \n" +
+                                " ##  #    \n" +
+                                "  #### ";
+
+// private String level =         "#########\n" +
+//                                "#.$ @ $.#\n" +
+//                                "#       #\n" +
+//                                "#    ####\n" +
+//                                "#.$   $.#\n" +
+//                                "#########\n";
 
 
     public Board()  {
@@ -179,14 +196,11 @@ public class Board extends JPanel {
             super.keyPressed(e);
 
             int key = e.getKeyCode();
-            switch (key){
-                case KeyEvent.VK_S:
-                    if(!solution.isEmpty()){
+            if (key == KeyEvent.VK_S) {
+                if (!solution.isEmpty()) {
 
-                        showSolution();
-                    }
-                    break;
-
+                    showSolution();
+                }
             }
 
         }
@@ -204,21 +218,18 @@ public class Board extends JPanel {
         world.addAll(baggs);
         world.add(player);
 
-        for (int i = 0; i < world.size(); i++) {
+            for (Actor item : world) {
 
-            Actor item = world.get(i);
+                if (item instanceof Player || item instanceof Baggage) {
 
-            if (item instanceof Player || item instanceof Baggage) {
-                
-                g.drawImage(item.getImage(), item.getX() + 2, item.getY() + 2, this);
-            } else {
-                
-                g.drawImage(item.getImage(), item.getX(), item.getY(), this);
+                    g.drawImage(item.getImage(), item.getX() + 2, item.getY() + 2, this);
+                } else {
+
+                    g.drawImage(item.getImage(), item.getX(), item.getY(), this);
+                }
+
+
             }
-
-
-
-        }
     }
 
     @Override
@@ -311,9 +322,7 @@ public class Board extends JPanel {
 
             case 'L':
 
-                for (int i = 0; i < walls.size(); i++) {
-
-                    Wall wall = walls.get(i);
+                for (Wall wall : walls) {
 
                     if (actor.isLeftCollision(wall)) {
 
@@ -325,9 +334,7 @@ public class Board extends JPanel {
 
             case 'R':
 
-                for (int i = 0; i < walls.size(); i++) {
-
-                    Wall wall = walls.get(i);
+                for (Wall wall : walls) {
 
                     if (actor.isRightCollision(wall)) {
                         return true;
@@ -338,9 +345,7 @@ public class Board extends JPanel {
 
             case 'T':
 
-                for (int i = 0; i < walls.size(); i++) {
-
-                    Wall wall = walls.get(i);
+                for (Wall wall : walls) {
 
                     if (actor.isTopCollision(wall)) {
 
@@ -352,9 +357,7 @@ public class Board extends JPanel {
 
             case 'B':
 
-                for (int i = 0; i < walls.size(); i++) {
-
-                    Wall wall = walls.get(i);
+                for (Wall wall : walls) {
 
                     if (actor.isBottomCollision(wall)) {
 
@@ -543,13 +546,9 @@ public class Board extends JPanel {
             }
         }
 
-        if (finishedBags == nOfBags) {
-
-            return true;
-           /* isCompleted = true;
+        /* isCompleted = true;
             repaint();*/
-        }
-        return false;
+        return finishedBags == nOfBags;
     }
 
     public void restartLevel() {

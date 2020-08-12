@@ -69,11 +69,23 @@ public class Board extends JPanel {
 //                                "####  ###  ####\n"+
 //                                "   #### ####\n";
 
- private String level =         "########\n" +
-                                "#  ..$ #\n" +
-                                "# $@ $ #\n" +
-                                "# $..  #\n" +
-                                "########\n";
+ private String level =         "  ####    \n" +
+                                " ##  ##   \n" +
+                                "## $  ####\n" +
+                                "#  ..$  @#\n" +
+                                "# $..#   #\n" +
+                                "#   $#####\n" +
+                                "##   #    \n" +
+                                " ##  #    \n" +
+                                "  #### ";
+
+// private String level =         "#########\n" +
+//                                "#.$ @ $.#\n" +
+//                                "#       #\n" +
+//                                "#    ####\n" +
+//                                "#.$   $.#\n" +
+//                                "#########\n";
+
 
     public Board()  {
 
@@ -94,9 +106,9 @@ public class Board extends JPanel {
 //            e.printStackTrace();
 //        }
 
-//        BFSStrategy alg = new BFSStrategy();
+        BFSStrategy alg = new BFSStrategy();
 //        DFSStrategy alg = new DFSStrategy();
-        IDDFSStrategy alg = new IDDFSStrategy();
+//        IDDFSStrategy alg = new IDDFSStrategy();
         try {
             solution =  alg.findSolution(this);
 

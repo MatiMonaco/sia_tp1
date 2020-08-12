@@ -26,14 +26,14 @@ public abstract class SearchStrategy {
         Player player;
         Set<Baggage> baggs;
         char direction;
-
+        private List<StateNode> children;
 
         StateNode(char direction,Player player,Set<Baggage> baggs,StateNode prev){
             this.direction = direction;
             this.player  = player;
             this.baggs = baggs;
             this.prev = prev;
-
+            children = new ArrayList<>();
         }
 
         public Set<Baggage> getBags() {
@@ -41,25 +41,28 @@ public abstract class SearchStrategy {
         }
 
         public  List<StateNode> getChildren(Board board) throws CloneNotSupportedException {
-            List<StateNode> children = new ArrayList<>();
+
             char[] directions = {'L','T','R','B'};
 
-            for (char c : directions) {
+            if (children.isEmpty()){
+                for (char c : directions) {
 
-                Set<Baggage> set = new HashSet<>();
-                baggs.forEach(b -> {
-                    set.add(new Baggage(b.getX(), b.getY()));
-                });
-                StateNode aux = new StateNode(' ', new Player(player.getX(), player.getY()), set, this);
+                    Set<Baggage> set = new HashSet<>();
+                    baggs.forEach(b -> {
+                        set.add(new Baggage(b.getX(), b.getY()));
+                    });
+                    StateNode aux = new StateNode(' ', new Player(player.getX(), player.getY()), set, this);
 
-                aux = aux.checkMove(c, board);
+                    aux = aux.checkMove(c, board);
 
-                if (aux != null) {
-                    aux.prev = this;
-                    children.add(aux);
+                    if (aux != null) {
+                        aux.prev = this;
+                        children.add(aux);
+                    }
+
                 }
-
             }
+
             return children;
         }
 

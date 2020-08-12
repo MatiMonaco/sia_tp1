@@ -8,14 +8,14 @@ public class IDDFSStrategy extends SearchStrategy {
     private boolean remaining = true;
     private int depth = 0;
     private StateNode root;
-    private Set<StateNode> visited;
+//    private Set<StateNode> visited;
 
     @Override
     public String findSolution(Board board) throws CloneNotSupportedException {
 
         board.restartLevel();
         root = new StateNode(' ', board.getPlayer(), board.getBaggs(), null);
-        visited = new HashSet<>();
+//        visited = new HashSet<>();
 
         while(!found || !remaining){
 
@@ -28,7 +28,8 @@ public class IDDFSStrategy extends SearchStrategy {
                 return solution;
             }
             depth++;
-            visited.clear();
+            System.out.println(depth);
+//            visited.clear();
         }
         System.out.println("NO SOLUTION FOUND");
         return null;
@@ -49,7 +50,7 @@ public class IDDFSStrategy extends SearchStrategy {
             List<StateNode> successors = current.getChildren(board);
 
             for(StateNode successor : successors){
-                if (!visited.contains(successor)){
+                if (!successor.checkRepeats()){
                     found = dls(successor, depth-1, board);
 
                     if (found!=null)

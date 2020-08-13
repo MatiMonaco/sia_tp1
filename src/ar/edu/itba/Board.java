@@ -79,19 +79,36 @@ public class Board extends JPanel {
 //                                " ##  #    \n" +
 //                                "  #### ";
 
- private String level =         "########\n" +
-                                "#  ..$ #\n" +
-                                "# $@ $ #\n" +
-                                "# $..  #\n" +
-                                "########";
+// private String level =         "########\n" +
+//                                "#  ..$ #\n" +
+//                                "# $@ $ #\n" +
+//                                "# $..  #\n" +
+//                                "########";
 
 
-// private String level =         "#########\n" +
-//                                "#.$ @ $.#\n" +
-//                                "#       #\n" +
-//                                "#    ####\n" +
-//                                "#.$   $.#\n" +
-//                                "#########\n";
+ private String level =         "#########\n" +
+                                "#.$ @ $.#\n" +
+                                "#       #\n" +
+                                "#    ####\n" +
+                                "#.$   $.#\n" +
+                                "#########\n";
+
+// private String level =         "      ###\n" +
+//         "\n" +
+//         "     #####\n" +
+//         "    ##   #\n" +
+//         "    #    #\n" +
+//         "  ###    ######\n" +
+//         "  #.#.# ##.   #\n" +
+//         "### ###  ##   #\n" +
+//         "#   #  $  ## ##\n" +
+//         "#     $@$     #\n" +
+//         "#   #  $  #   #\n" +
+//         "######   ### ##\n" +
+//         " #  .## #### #\n" +
+//         " #           #\n" +
+//         " ##  #########\n" +
+//         "  ####";
 
 
     public Board()  {
@@ -105,13 +122,13 @@ public class Board extends JPanel {
         addKeyListener(new TAdapter());
         setFocusable(true);
         initWorld();
-        BFSStrategy bfs = new BFSStrategy();
-        try {
-            solution =  bfs.findSolution(this);
-
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
+//        BFSStrategy bfs = new BFSStrategy();
+//        try {
+//            solution =  bfs.findSolution(this);
+//
+//        } catch (CloneNotSupportedException e) {
+//            e.printStackTrace();
+//        }
 
    /*     DFSStrategy dfs = new DFSStrategy();
         try {
@@ -121,6 +138,13 @@ public class Board extends JPanel {
             e.printStackTrace();
         }
 */
+        IDDFSStrategy iddfs = new IDDFSStrategy();
+        try {
+            solution =  iddfs.findSolution(this);
+
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
 
     }
 

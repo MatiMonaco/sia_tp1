@@ -1,0 +1,29 @@
+<changelist name="Uncommitted_changes_before_Update_at_8_11_2020_8_21_PM_[Default_Changelist]" date="1597188101918" recycled="true" deleted="true">
+  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_8_11_2020_8_21_PM_[Default_Changelist]/shelved.patch" />
+  <option name="DESCRIPTION" value="Uncommitted changes before Update at 8/11/2020 8:21 PM [Default Changelist]" />
+  <binary>
+    <option name="BEFORE_PATH" value="out/production/sia_tp1/ar/edu/itba/Board.class" />
+    <option name="AFTER_PATH" value="out/production/sia_tp1/ar/edu/itba/Board.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_8_11_2020_8_21_PM_[Default_Changelist]/Board.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="out/production/sia_tp1/ar/edu/itba/Actor.class" />
+    <option name="AFTER_PATH" value="out/production/sia_tp1/ar/edu/itba/Actor.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_8_11_2020_8_21_PM_[Default_Changelist]/Actor.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="out/production/sia_tp1/ar/edu/itba/SearchStrategy$StateNode.class" />
+    <option name="AFTER_PATH" value="out/production/sia_tp1/ar/edu/itba/SearchStrategy$StateNode.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_8_11_2020_8_21_PM_[Default_Changelist]/SearchStrategy$StateNode.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="out/production/sia_tp1/ar/edu/itba/BFSStrategy.class" />
+    <option name="AFTER_PATH" />
+    <option name="SHELVED_PATH" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="out/production/sia_tp1/ar/edu/itba/SearchStrategy.class" />
+    <option name="AFTER_PATH" value="out/production/sia_tp1/ar/edu/itba/SearchStrategy.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_8_11_2020_8_21_PM_[Default_Changelist]/SearchStrategy.class" />
+  </binary>
+</changelist>

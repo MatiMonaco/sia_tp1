@@ -6,8 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-
-import java.beans.PropertyChangeListener;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.Timer;
@@ -58,26 +56,26 @@ public class Board extends JPanel {
             + "    ##     #########\n"
             + "    ########\n";*/
 
-//    private String level =      "      ###\n"+
-//                                "      #.#\n"+
-//                                "  #####.#####\n"+
-//                                " ##         ##\n"+
-//                                "##  # # # #  ##\n"+
-//                                "#  ##     ##  #\n"+
-//                                "# ##  # #  ## #\n"+
-//                                "#     $@$     #\n"+
-//                                "####  ###  ####\n"+
-//                                "   #### ####\n";
-
- private String level =         "  ####    \n" +
-                                " ##  ##   \n" +
-                                "## $  ####\n" +
-                                "#  ..$  @#\n" +
-                                "# $..#   #\n" +
-                                "#   $#####\n" +
-                                "##   #    \n" +
-                                " ##  #    \n" +
-                                "  #### ";
+    private String level =      "      ###\n"+
+                                "      #.#\n"+
+                                "  #####.#####\n"+
+                                " ##         ##\n"+
+                                "##  # # # #  ##\n"+
+                                "#  ##     ##  #\n"+
+                                "# ##  # #  ## #\n"+
+                                "#     $@$     #\n"+
+                                "####  ###  ####\n"+
+                                "   #### ####\n";
+//
+// private String level =         "  ####    \n" +
+//                                " ##  ##   \n" +
+//                                "## $  ####\n" +
+//                                "#  ..$  @#\n" +
+//                                "# $..#   #\n" +
+//                                "#   $#####\n" +
+//                                "##   #    \n" +
+//                                " ##  #    \n" +
+//                                "  #### ";
 
 // private String level =         "#########\n" +
 //                                "#.$ @ $.#\n" +
@@ -99,21 +97,18 @@ public class Board extends JPanel {
         setFocusable(true);
         initWorld();
         BFSStrategy bfs = new BFSStrategy();
-        try {
+
             solution =  bfs.findSolution(this);
 
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
 
-   /*     DFSStrategy dfs = new DFSStrategy();
-        try {
-            solution =  dfs.findSolution(this);
 
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
-*/
+//        DFSStrategy dfs = new DFSStrategy();
+//        try {
+//            solution =  dfs.findSolution(this);
+//
+//        } catch (CloneNotSupportedException e) {
+//            e.printStackTrace();
+//        }
 
     }
 

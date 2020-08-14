@@ -7,7 +7,7 @@ public class DFSStrategy extends SearchStrategy {
     private Set<StateNode> visited;
     private Stack<StateNode> vertices;
     @Override
-    public String findSolution(Board board) throws CloneNotSupportedException {
+    public String findSolution(Board board)  {
         //init
         board.restartLevel();
         visited = new HashSet<>();
@@ -15,7 +15,7 @@ public class DFSStrategy extends SearchStrategy {
 
         Set<Baggage> set = new HashSet<>();
         set.addAll(board.getBaggs());
-        StateNode root = new StateNode(' ',new Player(board.getPlayer().getX(),board.getPlayer().getY()),set,null);
+        StateNode root = new StateNode(' ',new Player(board.getPlayer().getX(),board.getPlayer().getY()),set,null,0);
         vertices.push(root);
         visited.add(root);
         int height = 0;

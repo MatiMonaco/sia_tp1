@@ -6,10 +6,8 @@ import java.util.*;
 
 public abstract class SearchStrategy {
 
-    int[] dir_x = {-1, 0, 1, 0};
-    int[] dir_y = {0, 1, 0, -1};
 
-    public abstract  String findSolution(Board board) throws CloneNotSupportedException;
+    public abstract  String findSolution(Board board) ;
 
     public String getSolutionPath(StateNode node){
         StringBuilder sb = new StringBuilder();
@@ -21,49 +19,34 @@ public abstract class SearchStrategy {
         return sb.reverse().toString();
     }
 
-    class StateNode implements Cloneable{
+
+    class StateNode {
         StateNode prev;
         Player player;
         Set<Baggage> baggs;
         char direction;
+        int pathCost;
         private List<StateNode> children;
 
-        StateNode(char direction,Player player,Set<Baggage> baggs,StateNode prev){
+        StateNode(char direction,Player player,Set<Baggage> baggs,StateNode prev,int pathCost){
             this.direction = direction;
             this.player  = player;
             this.baggs = baggs;
             this.prev = prev;
+            this.pathCost = pathCost;
             children = new ArrayList<>();
         }
 
         public Set<Baggage> getBags() {
             return baggs;
         }
-        public boolean isDeadlocked(char direction){
 
 
-            switch(direction){
-                case 'L':
-
-                    for(Baggage bag: baggs){
-                        Actor top = new Actor(bag.getX(),bag.getY() -Board.SPACE);
-                        Actor bot = new Actor(bag.getX(),bag.getY() +Board.SPACE);
-                        Actor left = new Actor(bag.getX() -Board.SPACE,bag.getY());
-
-
-                    }
-
-                    break;
-            }
-
-            return false;
+        public int getPathCost() {
+            return pathCost;
         }
 
-
-
-
-
-        public  List<StateNode> getChildren(Board board) throws CloneNotSupportedException {
+        public  List<StateNode> getChildren(Board board) {
 
             char[] directions = {'L','T','R','B'};
 
@@ -74,7 +57,7 @@ public abstract class SearchStrategy {
                     baggs.forEach(b -> {
                         set.add(new Baggage(b.getX(), b.getY()));
                     });
-                    StateNode aux = new StateNode(' ', new Player(player.getX(), player.getY()), set, this);
+                    StateNode aux = new StateNode(' ', new Player(player.getX(), player.getY()), set, this,prev.pathCost+1);
 
                     aux = aux.checkMove(c, board);
 

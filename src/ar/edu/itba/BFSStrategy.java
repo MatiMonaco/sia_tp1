@@ -4,18 +4,20 @@ import java.util.*;
 
 public class BFSStrategy extends SearchStrategy {
 
-    private Set<StateNode> visited;
-    private Queue<StateNode> vertices;
+
     @Override
-    public String findSolution(Board board) throws CloneNotSupportedException {
+    public String findSolution(Board board)  {
+
         //init
+        Set<StateNode> visited;
+        Queue<StateNode> vertices;
         board.restartLevel();
         visited = new HashSet<>();
         vertices = new LinkedList<>();
 
         Set<Baggage> set = new HashSet<>();
         set.addAll(board.getBaggs());
-        StateNode root = new StateNode(' ',new Player(board.getPlayer().getX(),board.getPlayer().getY()),set,null);
+        StateNode root = new StateNode(' ',new Player(board.getPlayer().getX(),board.getPlayer().getY()),set,null,0);
         vertices.add(root);
         visited.add(root);
         int height = 0;

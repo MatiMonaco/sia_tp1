@@ -11,10 +11,10 @@ public class IDDFSStrategy extends SearchStrategy {
 //    private Set<StateNode> visited;
 
     @Override
-    public String findSolution(Board board) throws CloneNotSupportedException {
+    public String findSolution(Board board) {
 
         board.restartLevel();
-        root = new StateNode(' ', board.getPlayer(), board.getBaggs(), null);
+        root = new StateNode(' ', board.getPlayer(), board.getBaggs(), null,0);
 //        visited = new HashSet<>();
 
         while(!found || !remaining){
@@ -35,7 +35,7 @@ public class IDDFSStrategy extends SearchStrategy {
         return null;
     }
 
-    StateNode dls(StateNode current, int depth, Board board) throws CloneNotSupportedException {
+    StateNode dls(StateNode current, int depth, Board board)  {
         StateNode found = null;
 
         if (depth == 0){

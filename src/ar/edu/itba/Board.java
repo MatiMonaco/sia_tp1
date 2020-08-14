@@ -21,6 +21,7 @@ public class Board extends JPanel {
     private List<Area> areas;
     private String solution;
     private Player player;
+    private Set<Baggage> deadlockedBags;
     private int w = 0;
     private int h = 0;
     
@@ -58,16 +59,16 @@ public class Board extends JPanel {
             + "    ##     #########\n"
             + "    ########\n";*/
 
-//    private String level =      "      ###\n"+
-//                                "      #.#\n"+
-//                                "  #####.#####\n"+
-//                                " ##         ##\n"+
-//                                "##  # # # #  ##\n"+
-//                                "#  ##     ##  #\n"+
-//                                "# ##  # #  ## #\n"+
-//                                "#     $@$     #\n"+
-//                                "####  ###  ####\n"+
-//                                "   #### ####\n";
+    private String level =      "      ###\n"+
+                                "      #.#\n"+
+                                "  #####.#####\n"+
+                                " ##         ##\n"+
+                                "##  # # # #  ##\n"+
+                                "#  ##     ##  #\n"+
+                                "# ##  # #  ## #\n"+
+                                "#     $@$     #\n"+
+                                "####  ###  ####\n"+
+                                "   #### ####\n";
 
 // private String level =         "  ####    \n" +
 //                                " ##  ##   \n" +
@@ -79,11 +80,11 @@ public class Board extends JPanel {
 //                                " ##  #    \n" +
 //                                "  #### ";
 
- private String level =         "########\n" +
-                                "#  ..$ #\n" +
-                                "# $@ $ #\n" +
-                                "# $..  #\n" +
-                                "########";
+// private String level =         "########\n" +
+//                                "#  ..$ #\n" +
+//                                "# $@ $ #\n" +
+//                                "# $..  #\n" +
+//                                "########";
 
 
 // private String level =         "#########\n" +
@@ -105,6 +106,8 @@ public class Board extends JPanel {
         addKeyListener(new TAdapter());
         setFocusable(true);
         initWorld();
+        deadlockedBags = new HashSet<>();
+
         BFSStrategy bfs = new BFSStrategy();
         try {
             solution =  bfs.findSolution(this);

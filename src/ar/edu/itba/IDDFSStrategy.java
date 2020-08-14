@@ -6,9 +6,8 @@ public class IDDFSStrategy extends SearchStrategy {
 
     private boolean found = false;
     private boolean remaining = true;
-    private int depth = 0;
     private StateNode root;
-//    private Set<StateNode> visited;
+    private Set<StateNode> visited;
 
     @Override
     public String findSolution(Board board) {
@@ -28,8 +27,8 @@ public class IDDFSStrategy extends SearchStrategy {
                 return solution;
             }
             depth++;
+            visited.clear();
             System.out.println(depth);
-//            visited.clear();
         }
         System.out.println("NO SOLUTION FOUND");
         return null;
@@ -38,27 +37,28 @@ public class IDDFSStrategy extends SearchStrategy {
     StateNode dls(StateNode current, int depth, Board board)  {
         StateNode found = null;
 
-        if (depth == 0){
 
-            if (board.isCompleted(current.getBags()))
-                return current;
-            else
-                return null;
-        }else if (depth > 0){
+        if (board.isCompleted(current.getBags()))
+            return current;
 
-            boolean anyRemaining = false;
-            List<StateNode> successors = current.getChildren(board);
+        if (depth == 0)
+            return null;
 
-            for(StateNode successor : successors){
-                if (!successor.checkRepeats()){
-                    found = dls(successor, depth-1, board);
+        visited.add(current);
+        StateNode found = null;
+        for(StateNode successor : current.getChildren(board)) {
 
-                    if (found!=null)
-                        return found;
-                }
+            if(!visited.contains(successor)){
+                visited.add(successor);
+                found = dls(successor, depth - 1, board);
+                visited.remove(successor);
             }
-        }
 
-        return found;
+
+            if (found != null)
+                return found;
+        }
+        return null;
     }
 }
+

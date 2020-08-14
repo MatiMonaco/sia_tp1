@@ -57,7 +57,7 @@ public abstract class SearchStrategy {
                     baggs.forEach(b -> {
                         set.add(new Baggage(b.getX(), b.getY()));
                     });
-                    StateNode aux = new StateNode(' ', new Player(player.getX(), player.getY()), set, this,prev.pathCost+1);
+                    StateNode aux = new StateNode(' ', new Player(player.getX(), player.getY()), set, this,pathCost+1);
 
                     aux = aux.checkMove(c, board);
 

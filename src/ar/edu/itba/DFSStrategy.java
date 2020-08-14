@@ -8,33 +8,43 @@ public class DFSStrategy extends SearchStrategy {
     private Stack<StateNode> vertices;
     @Override
     public String findSolution(Board board)  {
+
         //init
+        Set<StateNode> visited;
+        Stack<StateNode> frontier;
         board.restartLevel();
         visited = new HashSet<>();
-        vertices = new Stack<>();
+        frontier = new Stack<>();
 
         Set<Baggage> set = new HashSet<>();
         set.addAll(board.getBaggs());
+
         StateNode root = new StateNode(' ',new Player(board.getPlayer().getX(),board.getPlayer().getY()),set,null,0);
-        vertices.push(root);
-        visited.add(root);
-        int height = 0;
-        while(!vertices.isEmpty()){
-            StateNode vertex = vertices.pop();
+        if(board.isCompleted(root.baggs)){
+            String solution =getSolutionPath(root);
+            System.out.println("Solution: " + solution);
+
+            return solution;
+        }
+        frontier.push(root);
+
+        while(!frontier.isEmpty()){
+
+            StateNode vertex = frontier.pop();
+            visited.add(vertex);
             List<StateNode> successors = vertex.getChildren(board);
 
             for(StateNode successor : successors){
-                if(board.isCompleted(successor.baggs)){
-                    String solution =getSolutionPath(successor);
-                    System.out.println("Solution: " + solution);
 
-                    return solution;
-                }
+                if(!visited.contains(successor) && !frontier.contains(successor)){
+                    if(board.isCompleted(successor.baggs)){
+                        String solution =getSolutionPath(successor);
+                        System.out.println("Solution: " + solution);
 
-                if(!visited.contains(successor)){
+                        return solution;
+                    }
 
-                    vertices.add(successor);
-                    visited.add(successor);
+                    frontier.push(successor);
 
                 }
             }

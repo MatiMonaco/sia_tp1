@@ -10,33 +10,40 @@ public class BFSStrategy extends SearchStrategy {
 
         //init
         Set<StateNode> visited;
-        Queue<StateNode> vertices;
+        Queue<StateNode> frontier;
         board.restartLevel();
         visited = new HashSet<>();
-        vertices = new LinkedList<>();
+        frontier = new LinkedList<>();
 
         Set<Baggage> set = new HashSet<>();
         set.addAll(board.getBaggs());
+
         StateNode root = new StateNode(' ',new Player(board.getPlayer().getX(),board.getPlayer().getY()),set,null,0);
-        vertices.add(root);
-        visited.add(root);
-        int height = 0;
-        while(!vertices.isEmpty()){
-            StateNode vertex = vertices.poll();
+        if(board.isCompleted(root.baggs)){
+            String solution =getSolutionPath(root);
+            System.out.println("Solution: " + solution);
+
+            return solution;
+        }
+        frontier.add(root);
+
+        while(!frontier.isEmpty()){
+
+            StateNode vertex = frontier.poll();
+            visited.add(vertex);
             List<StateNode> successors = vertex.getChildren(board);
 
             for(StateNode successor : successors){
-                if(board.isCompleted(successor.baggs)){
-                    String solution =getSolutionPath(successor);
-                    System.out.println("Solution: " + solution);
 
-                    return solution;
-                }
+                if(!visited.contains(successor) && !frontier.contains(successor)){
+                    if(board.isCompleted(successor.baggs)){
+                        String solution =getSolutionPath(successor);
+                        System.out.println("Solution: " + solution);
 
-                if(!visited.contains(successor)){
+                        return solution;
+                    }
 
-                    vertices.add(successor);
-                    visited.add(successor);
+                    frontier.add(successor);
 
                 }
             }

@@ -3,10 +3,8 @@ package ar.edu.itba;
 import java.util.*;
 import java.util.function.Function;
 
-public class AStarStrategy extends InformedSearchStrategy {
-
-
-    public AStarStrategy(Function<StateNode, Integer> heuristic) {
+public class GGSStrategy extends InformedSearchStrategy {
+    public GGSStrategy(Function<StateNode, Integer> heuristic) {
         super(heuristic);
     }
 
@@ -17,7 +15,7 @@ public class AStarStrategy extends InformedSearchStrategy {
         Queue<StateNode> frontier;
         board.restartLevel();
         visited = new HashSet<>();
-        frontier = new PriorityQueue<>(5,Comparator.comparingInt(informedStateNode -> getTotalCost(informedStateNode)));
+        frontier = new PriorityQueue<>(5, Comparator.comparingInt(informedStateNode -> heuristic.apply(informedStateNode)));
 
         Set<Baggage> set = new HashSet<>();
         set.addAll(board.getBaggs());
@@ -30,7 +28,7 @@ public class AStarStrategy extends InformedSearchStrategy {
 
             if(board.isCompleted(vertex.baggs)){
                 String solution =getSolutionPath(vertex);
-                System.out.println("A* Solution: " + solution);
+                System.out.println("GGS Solution: " + solution);
 
                 return solution;
             }
@@ -53,8 +51,4 @@ public class AStarStrategy extends InformedSearchStrategy {
 
 
     }
-
-
-
 }
-

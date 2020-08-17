@@ -13,13 +13,14 @@ public class BFSStrategy extends SearchStrategy {
         visited = new HashSet<>();
         vertices = new LinkedList<>();
 
-        Set<Baggage> set = new HashSet<>();
-        set.addAll(board.getBaggs());
+        Set<Baggage> set = new HashSet<>(board.getBaggs());
         StateNode root = new StateNode(' ',new Player(board.getPlayer().getX(),board.getPlayer().getY()),set,null);
         vertices.add(root);
         visited.add(root);
-        int height = 0;
+        int nodesExpanded = 0;
         while(!vertices.isEmpty()){
+            nodesExpanded++;
+            System.out.println(nodesExpanded);
             StateNode vertex = vertices.poll();
             List<StateNode> successors = vertex.getChildren(board);
 

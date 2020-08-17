@@ -8,6 +8,7 @@ public abstract class SearchStrategy {
 
     int[] dir_x = {-1, 0, 1, 0};
     int[] dir_y = {0, 1, 0, -1};
+    public Set<Baggage> deadlockedBags = new HashSet<>();
 
     public abstract  String findSolution(Board board) throws CloneNotSupportedException;
 
@@ -39,29 +40,6 @@ public abstract class SearchStrategy {
         public Set<Baggage> getBags() {
             return baggs;
         }
-        public boolean isDeadlocked(char direction){
-
-
-            switch(direction){
-                case 'L':
-
-                    for(Baggage bag: baggs){
-                        Actor top = new Actor(bag.getX(),bag.getY() -Board.SPACE);
-                        Actor bot = new Actor(bag.getX(),bag.getY() +Board.SPACE);
-                        Actor left = new Actor(bag.getX() -Board.SPACE,bag.getY());
-
-
-                    }
-
-                    break;
-            }
-
-            return false;
-        }
-
-
-
-
 
         public  List<StateNode> getChildren(Board board) throws CloneNotSupportedException {
 
@@ -71,9 +49,7 @@ public abstract class SearchStrategy {
                 for (char c : directions) {
 
                     Set<Baggage> set = new HashSet<>();
-                    baggs.forEach(b -> {
-                        set.add(new Baggage(b.getX(), b.getY()));
-                    });
+                    baggs.forEach(b -> set.add(new Baggage(b.getX(), b.getY())));
                     StateNode aux = new StateNode(' ', new Player(player.getX(), player.getY()), set, this);
 
                     aux = aux.checkMove(c, board);
@@ -98,6 +74,12 @@ public abstract class SearchStrategy {
             if(checkBagCollision(direction, board)) {
 
                 return null;
+            }
+            for (Baggage bag: baggs) {
+                if (deadlockedBags.contains(bag)) {
+
+                    return null;
+                }
             }
             switch(direction){
                 case 'L':
@@ -160,6 +142,7 @@ public abstract class SearchStrategy {
                             }
                             it1.remove();
                             bag.move(-Board.SPACE,0 );
+                            checkDeadLock(direction, bag, board);
                             toAdd = bag;
                             break;
                         }
@@ -197,6 +180,7 @@ public abstract class SearchStrategy {
                                     }
                                     it1.remove();
                                     bag.move(Board.SPACE,0 );
+                                    checkDeadLock(direction, bag, board);
                                     toAdd = bag;
                                     break;
                                 }
@@ -231,6 +215,7 @@ public abstract class SearchStrategy {
                                     }
                                     it1.remove();
                                     bag.move(0,-Board.SPACE );
+                                    checkDeadLock(direction, bag, board);
                                     toAdd = bag;
                                     break;
                                 }
@@ -267,6 +252,7 @@ public abstract class SearchStrategy {
                                     }
                                     it1.remove();
                                     bag.move(0,Board.SPACE );
+                                    checkDeadLock(direction, bag, board);
                                     toAdd = bag;
                                     break;
                                 }
@@ -284,6 +270,51 @@ public abstract class SearchStrategy {
 
                     return false;
             }
+
+        private boolean checkDeadLock(char direction, Baggage bag, Board board) {
+            boolean deadlocked = false;
+
+            switch (direction){
+                case 'L':
+                    if ( (checkWallCollision(bag, 'L', board) && checkWallCollision(bag, 'T', board))
+                            || (checkWallCollision(bag, 'L', board) && checkWallCollision(bag, 'B', board))){
+                        deadlocked = !bag.isInArea(board.getAreas());
+                        if (deadlocked){
+                            deadlockedBags.add(bag);
+                        }
+                    }
+                    break;
+                case 'R':
+                    if ( (checkWallCollision(bag, 'R', board) && checkWallCollision(bag, 'T', board))
+                            || (checkWallCollision(bag, 'R', board) && checkWallCollision(bag, 'B', board))){
+
+                        deadlocked = !bag.isInArea(board.getAreas());
+                        if (deadlocked){
+                            deadlockedBags.add(bag);
+                        }
+                    }
+                    break;
+                case 'T':
+                    if ( (checkWallCollision(bag, 'T', board) && checkWallCollision(bag, 'L', board))
+                            || (checkWallCollision(bag, 'T', board) && checkWallCollision(bag, 'R', board))){
+
+                        deadlocked = !bag.isInArea(board.getAreas());
+                        if (deadlocked)
+                            deadlockedBags.add(bag);
+                    }
+                    break;
+                case 'B':
+                    if ( (checkWallCollision(bag, 'B', board) && checkWallCollision(bag, 'L', board))
+                            || (checkWallCollision(bag, 'B', board) && checkWallCollision(bag, 'R', board))){
+
+                        deadlocked = !bag.isInArea(board.getAreas());
+                        if (deadlocked)
+                            deadlockedBags.add(bag);
+                    }
+                    break;
+            }
+            return deadlocked;
+        }
 
 
         private boolean checkWallCollision(Actor actor, char direction, Board board) {

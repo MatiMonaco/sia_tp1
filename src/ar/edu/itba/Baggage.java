@@ -1,6 +1,7 @@
 package ar.edu.itba;
 
 import java.awt.Image;
+import java.util.List;
 import javax.swing.ImageIcon;
 
 public class Baggage extends Actor {
@@ -35,5 +36,16 @@ public class Baggage extends Actor {
     @Override
     public boolean equals(Object obj) {
         return super.equals(obj);
+    }
+
+    public boolean isInArea(List<Area> areas) {
+        for (Area a: areas) {
+            if ((getX() == a.getX() && getY() == a.getY())){
+
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -12,11 +12,11 @@ import javax.swing.Timer;
 
 public class Board extends JPanel {
 
-    public static final int OFFSET = 30;
+    public static final int OFFSET = 0;
     public static final int SPACE = 20;
     private List<Wall> walls;
     private Set<Baggage> baggs;
-    private List<Area> areas;
+    private List<Goal> goals;
     private String solution;
     private Player player;
     private int w = 0;
@@ -96,11 +96,11 @@ public class Board extends JPanel {
         addKeyListener(new TAdapter());
         setFocusable(true);
         initWorld();
-        BFSStrategy bfs = new BFSStrategy();
-
-            solution =  bfs.findSolution(this);
-
-
+//        BFSStrategy bfs = new BFSStrategy();
+//
+//            solution =  bfs.findSolution(this);
+        AStarStrategy aStar = new AStarStrategy(Heuristics::simpleGoalDistances);
+        solution = aStar.findSolution(this);
 
 //        DFSStrategy dfs = new DFSStrategy();
 //        try {
@@ -124,14 +124,14 @@ public class Board extends JPanel {
         
         walls = new ArrayList<>();
         baggs = new HashSet<>();
-        areas = new ArrayList<>();
+        goals = new ArrayList<>();
 
         int x = OFFSET;
         int y = OFFSET;
 
         Wall wall;
         Baggage b;
-        Area a;
+        Goal a;
 
         for (int i = 0; i < level.length(); i++) {
 
@@ -162,8 +162,8 @@ public class Board extends JPanel {
                     break;
 
                 case '.':
-                    a = new Area(x, y);
-                    areas.add(a);
+                    a = new Goal(x, y);
+                    goals.add(a);
                     x += SPACE;
                     break;
 
@@ -209,7 +209,7 @@ public class Board extends JPanel {
         ArrayList<Actor> world = new ArrayList<>();
 
         world.addAll(walls);
-        world.addAll(areas);
+        world.addAll(goals);
         world.addAll(baggs);
         world.add(player);
 
@@ -532,7 +532,7 @@ public class Board extends JPanel {
             
             for (int j = 0; j < nOfBags; j++) {
                 
-                Area area =  areas.get(j);
+                Goal area =  goals.get(j);
                 
                 if (bag.getX() == area.getX() && bag.getY() == area.getY()) {
                     
@@ -548,7 +548,7 @@ public class Board extends JPanel {
 
     public void restartLevel() {
 
-        areas.clear();
+        goals.clear();
         baggs.clear();
         walls.clear();
 
@@ -571,7 +571,7 @@ public class Board extends JPanel {
         return walls;
     }
 
-    public List<Area> getAreas() {
-        return areas;
+    public List<Goal> getGoals() {
+        return goals;
     }
 }

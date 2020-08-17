@@ -1,12 +1,12 @@
 package ar.edu.itba;
 
 import java.util.*;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 public class AStarStrategy extends InformedSearchStrategy {
 
 
-    public AStarStrategy(Function<StateNode, Integer> heuristic) {
+    public AStarStrategy(BiFunction<StateNode,Board, Integer> heuristic) {
         super(heuristic);
     }
 
@@ -17,7 +17,7 @@ public class AStarStrategy extends InformedSearchStrategy {
         Queue<StateNode> frontier;
         board.restartLevel();
         visited = new HashSet<>();
-        frontier = new PriorityQueue<>(5,Comparator.comparingInt(informedStateNode -> getTotalCost(informedStateNode)));
+        frontier = new PriorityQueue<>(5,Comparator.comparingInt(informedStateNode -> getTotalCost(informedStateNode,board)));
 
         Set<Baggage> set = new HashSet<>();
         set.addAll(board.getBaggs());
@@ -26,6 +26,7 @@ public class AStarStrategy extends InformedSearchStrategy {
         visited.add(root);
 
         while(!frontier.isEmpty()){
+            System.out.println("QUEUE: "+frontier);
             StateNode vertex = frontier.poll();
 
             if(board.isCompleted(vertex.baggs)){
@@ -37,12 +38,12 @@ public class AStarStrategy extends InformedSearchStrategy {
             visited.add(vertex);
             List<StateNode> successors = vertex.getChildren(board);
             for(StateNode successor : successors){
-
+                System.out.println("Node: "+successor);
                 if(!visited.contains(successor) && !frontier.contains(successor)){
 
                     frontier.add(successor);
 
-                }else if(getTotalCost(successor) > getTotalCost(frontier.peek())){
+                }else if( !frontier.isEmpty() && getTotalCost(successor,board) > getTotalCost(frontier.peek(),board)){
                     frontier.poll();
                     frontier.add(successor);
                 }

@@ -1,10 +1,10 @@
 package ar.edu.itba;
 
 import java.util.*;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 public class GGSStrategy extends InformedSearchStrategy {
-    public GGSStrategy(Function<StateNode, Integer> heuristic) {
+    public GGSStrategy(BiFunction<StateNode,Board, Integer> heuristic) {
         super(heuristic);
     }
 
@@ -15,7 +15,7 @@ public class GGSStrategy extends InformedSearchStrategy {
         Queue<StateNode> frontier;
         board.restartLevel();
         visited = new HashSet<>();
-        frontier = new PriorityQueue<>(5, Comparator.comparingInt(informedStateNode -> heuristic.apply(informedStateNode)));
+        frontier = new PriorityQueue<>(5, Comparator.comparingInt(informedStateNode -> heuristic.apply(informedStateNode,board)));
 
         Set<Baggage> set = new HashSet<>();
         set.addAll(board.getBaggs());
@@ -40,7 +40,7 @@ public class GGSStrategy extends InformedSearchStrategy {
 
                     frontier.add(successor);
 
-                }else if(getTotalCost(successor) > getTotalCost(frontier.peek())){
+                }else if(getTotalCost(successor,board) > getTotalCost(frontier.peek(),board)){
                     frontier.poll();
                     frontier.add(successor);
                 }

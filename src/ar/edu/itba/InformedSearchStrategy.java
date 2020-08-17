@@ -1,19 +1,19 @@
 package ar.edu.itba;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Set;
-import java.util.function.Function;
+
+import java.util.function.BiFunction;
+
 
 public abstract class InformedSearchStrategy extends SearchStrategy {
 
-    protected  Function<StateNode,Integer> heuristic;
+    protected BiFunction<StateNode,Board,Integer> heuristic;
 
 
-    public InformedSearchStrategy(Function<StateNode, Integer> heuristic) {
+    public InformedSearchStrategy(BiFunction<StateNode,Board,Integer> heuristic) {
         this.heuristic = heuristic;
     }
-    public int getTotalCost(StateNode node){
-        return node.pathCost + heuristic.apply(node);
+    public int getTotalCost(StateNode node,Board board){
+        return node.pathCost + heuristic.apply(node,board);
     }
 
 

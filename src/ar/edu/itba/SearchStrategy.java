@@ -288,7 +288,7 @@ public abstract class SearchStrategy {
                 case 'L':
                     if ( (checkWallCollision(bag, 'L', board) && checkWallCollision(bag, 'T', board))
                             || (checkWallCollision(bag, 'L', board) && checkWallCollision(bag, 'B', board))){
-                        deadlocked = !bag.isInArea(board.getAreas());
+                        deadlocked = !bag.isInGoal(board.getGoals());
                         if (deadlocked){
                             deadlockedBags.add(bag);
                         }
@@ -298,7 +298,7 @@ public abstract class SearchStrategy {
                     if ( (checkWallCollision(bag, 'R', board) && checkWallCollision(bag, 'T', board))
                             || (checkWallCollision(bag, 'R', board) && checkWallCollision(bag, 'B', board))){
 
-                        deadlocked = !bag.isInArea(board.getAreas());
+                        deadlocked = !bag.isInGoal(board.getGoals());
                         if (deadlocked){
                             deadlockedBags.add(bag);
                         }
@@ -308,7 +308,7 @@ public abstract class SearchStrategy {
                     if ( (checkWallCollision(bag, 'T', board) && checkWallCollision(bag, 'L', board))
                             || (checkWallCollision(bag, 'T', board) && checkWallCollision(bag, 'R', board))){
 
-                        deadlocked = !bag.isInArea(board.getAreas());
+                        deadlocked = !bag.isInGoal(board.getGoals());
                         if (deadlocked)
                             deadlockedBags.add(bag);
                     }
@@ -317,7 +317,7 @@ public abstract class SearchStrategy {
                     if ( (checkWallCollision(bag, 'B', board) && checkWallCollision(bag, 'L', board))
                             || (checkWallCollision(bag, 'B', board) && checkWallCollision(bag, 'R', board))){
 
-                        deadlocked = !bag.isInArea(board.getAreas());
+                        deadlocked = !bag.isInGoal(board.getGoals());
                         if (deadlocked)
                             deadlockedBags.add(bag);
                     }

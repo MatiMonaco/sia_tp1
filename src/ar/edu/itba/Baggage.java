@@ -38,8 +38,8 @@ public class Baggage extends Actor {
         return super.equals(obj);
     }
 
-    public boolean isInArea(List<Area> areas) {
-        for (Area a: areas) {
+    public boolean isInGoal(List<Goal> areas) {
+        for (Goal a: areas) {
             if ((getX() == a.getX() && getY() == a.getY())){
 
                 return true;

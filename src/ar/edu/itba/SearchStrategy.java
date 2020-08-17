@@ -8,6 +8,7 @@ public abstract class SearchStrategy {
 
     int[] dir_x = {-1, 0, 1, 0};
     int[] dir_y = {0, 1, 0, -1};
+
     public Set<Baggage> deadlockedBags = new HashSet<>();
 
     public abstract  String findSolution(Board board) ;

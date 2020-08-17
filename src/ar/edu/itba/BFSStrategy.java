@@ -21,8 +21,8 @@ public class BFSStrategy extends SearchStrategy {
         StateNode root = new StateNode(' ',new Player(board.getPlayer().getX(),board.getPlayer().getY()),set,null,0);
         if(board.isCompleted(root.baggs)){
             String solution =getSolutionPath(root);
-            System.out.println("Solution: " + solution);
-
+            System.out.println("BFS Solution: " + solution);
+            System.out.println("Solution length: "+solution.length());
             return solution;
         }
         frontier.add(root);
@@ -38,7 +38,8 @@ public class BFSStrategy extends SearchStrategy {
                 if(!visited.contains(successor) && !frontier.contains(successor)){
                     if(board.isCompleted(successor.baggs)){
                         String solution =getSolutionPath(successor);
-                        System.out.println("Solution: " + solution);
+                        System.out.println("BFS Solution: " + solution);
+                        System.out.println("Solution length: "+solution.length());
 
                         return solution;
                     }

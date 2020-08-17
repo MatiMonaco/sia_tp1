@@ -31,7 +31,7 @@ public  class Heuristics {
     }
 
     public static int simpleGoalDistances(StateNode node,Board board){
-        System.out.println("HEU NODE: "+node);
+
         List<Goal> goals = board.getGoals();
 
         Set<Baggage> baggageSet = node.getBags();
@@ -39,11 +39,11 @@ public  class Heuristics {
         int totalDistance = 0;
 
         for(Baggage bagg :baggageSet){
-            System.out.println("bagg: "+bagg);
+
             Integer minDistance = null;
             for (Goal goal: goals){
 
-                System.out.println("goal: "+goal);
+
 
                 Integer distance = Math.abs(bagg.getX() - goal.getX()) + Math.abs(bagg.getY() - goal.getY());
 
@@ -52,10 +52,9 @@ public  class Heuristics {
                 }
 
             }
-            System.out.println("minDistance: "+minDistance);
+
             totalDistance+=minDistance;
         }
-        System.out.println("totalDistance: "+totalDistance);
         return totalDistance;
     }
 }

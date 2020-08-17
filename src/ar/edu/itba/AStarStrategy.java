@@ -26,26 +26,24 @@ public class AStarStrategy extends InformedSearchStrategy {
         visited.add(root);
 
         while(!frontier.isEmpty()){
-            System.out.println("QUEUE: "+frontier);
+
             StateNode vertex = frontier.poll();
 
             if(board.isCompleted(vertex.baggs)){
                 String solution =getSolutionPath(vertex);
                 System.out.println("A* Solution: " + solution);
+                System.out.println("Solution length: "+solution.length());
 
                 return solution;
             }
             visited.add(vertex);
             List<StateNode> successors = vertex.getChildren(board);
             for(StateNode successor : successors){
-                System.out.println("Node: "+successor);
+
                 if(!visited.contains(successor) && !frontier.contains(successor)){
 
                     frontier.add(successor);
 
-                }else if( !frontier.isEmpty() && getTotalCost(successor,board) > getTotalCost(frontier.peek(),board)){
-                    frontier.poll();
-                    frontier.add(successor);
                 }
             }
         }

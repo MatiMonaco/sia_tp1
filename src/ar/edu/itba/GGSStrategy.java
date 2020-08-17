@@ -1,50 +1,48 @@
 package ar.edu.itba;
 
 import java.util.*;
+import java.util.function.BiFunction;
 
-public class BFSStrategy extends SearchStrategy {
-
+public class GGSStrategy extends InformedSearchStrategy {
+    public GGSStrategy(BiFunction<StateNode,Board, Integer> heuristic) {
+        super(heuristic);
+    }
 
     @Override
-    public String findSolution(Board board)  {
+    public String findSolution(Board board){
 
-        //init
         Set<StateNode> visited;
         Queue<StateNode> frontier;
         board.restartLevel();
         visited = new HashSet<>();
-        frontier = new LinkedList<>();
+        frontier = new PriorityQueue<>(5, Comparator.comparingInt(informedStateNode -> heuristic.apply(informedStateNode,board)));
 
         Set<Baggage> set = new HashSet<>();
         set.addAll(board.getBaggs());
-
         StateNode root = new StateNode(' ',new Player(board.getPlayer().getX(),board.getPlayer().getY()),set,null,0);
-        if(board.isCompleted(root.baggs)){
-            String solution =getSolutionPath(root);
-            System.out.println("Solution: " + solution);
-
-            return solution;
-        }
         frontier.add(root);
+        visited.add(root);
 
         while(!frontier.isEmpty()){
-
             StateNode vertex = frontier.poll();
+
+            if(board.isCompleted(vertex.baggs)){
+                String solution =getSolutionPath(vertex);
+                System.out.println("GGS Solution: " + solution);
+
+                return solution;
+            }
             visited.add(vertex);
             List<StateNode> successors = vertex.getChildren(board);
-
             for(StateNode successor : successors){
 
                 if(!visited.contains(successor) && !frontier.contains(successor)){
-                    if(board.isCompleted(successor.baggs)){
-                        String solution =getSolutionPath(successor);
-                        System.out.println("Solution: " + solution);
-
-                        return solution;
-                    }
 
                     frontier.add(successor);
 
+                }else if(getTotalCost(successor,board) > getTotalCost(frontier.peek(),board)){
+                    frontier.poll();
+                    frontier.add(successor);
                 }
             }
         }

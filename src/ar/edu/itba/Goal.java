@@ -3,9 +3,9 @@ package ar.edu.itba;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 
-public class Area extends Actor {
+public class Goal extends Actor {
 
-    public Area(int x, int y) {
+    public Goal(int x, int y) {
         super(x, y);
         
         initArea();

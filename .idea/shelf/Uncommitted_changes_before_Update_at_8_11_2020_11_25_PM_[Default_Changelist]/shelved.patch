@@ -1,0 +1,144 @@
+Index: src/ar/edu/itba/SearchStrategy.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package ar.edu.itba;\r\n\r\nimport javax.swing.plaf.nimbus.State;\r\nimport java.util.*;\r\nimport java.util.stream.Collectors;\r\n\r\npublic abstract class SearchStrategy {\r\n\r\n    int[] dir_x = {-1, 0, 1, 0};\r\n    int[] dir_y = {0, 1, 0, -1};\r\n\r\n    public abstract  void findSolution(Board board) throws CloneNotSupportedException;\r\n\r\n    public String getSolutionPath(StateNode node){\r\n        StringBuilder sb = new StringBuilder();\r\n        while(node.prev != null){\r\n            StateNode parent = node.prev;\r\n            sb.append(node.direction);\r\n            node = parent;\r\n        }\r\n        return sb.reverse().toString();\r\n    }\r\n\r\n    class StateNode implements Cloneable{\r\n        StateNode prev;\r\n        Player player;\r\n        Set<Baggage> baggs;\r\n        char direction;\r\n\r\n\r\n        StateNode(char direction,Player player,Set<Baggage> baggs,StateNode prev){\r\n            this.direction = direction;\r\n            this.player  = player;\r\n            this.baggs = baggs;\r\n            this.prev = prev;\r\n\r\n        }\r\n\r\n\r\n\r\n        public  List<StateNode> getChildren(Board board) throws CloneNotSupportedException {\r\n            List<StateNode> children = new ArrayList<>();\r\n            char[] directions = {'L','T','R','B'};\r\n\r\n            for(int i = 0; i < directions.length; i++){\r\n\r\n                Set<Baggage> set = new HashSet<>();\r\n                baggs.forEach(b->{set.add(new Baggage(b.getX(),b.getY()));});\r\n                StateNode aux = new StateNode(' ',new Player(player.getX(),player.getY()),set,this);\r\n                System.out.println(\"clone: \"+aux);\r\n                aux = aux.checkMove(directions[i],board);\r\n                System.out.println(\"direction: \"+directions[i] + \" is \"+ aux);\r\n                if(aux != null){\r\n                    aux.prev = this;\r\n                    children.add(aux);\r\n                }\r\n\r\n            }\r\n            return children;\r\n        }\r\n\r\n        private StateNode checkMove(char direction,Board board) {\r\n\r\n            if (checkWallCollision(player, direction, board)){\r\n                System.out.println(\"checkwall in \"+direction+\" is true\");\r\n                return null;\r\n              }else{\r\n                System.out.println(\"checkwall in \"+direction+\" is false\");\r\n            }\r\n            if(checkBagCollision(direction, board)) {\r\n                System.out.println(\"checkBag in \"+direction+\" is true\");\r\n                return null;\r\n            }else{\r\n                System.out.println(\"checkBag in \"+direction+\" is false\");\r\n            }\r\n            switch(direction){\r\n                case 'L':\r\n                    player.move(-board.SPACE,0);\r\n                    break;\r\n                case 'T':\r\n                    player.move(0,-board.SPACE);\r\n                    break;\r\n                case 'R':\r\n                    player.move(board.SPACE,0);\r\n                    break;\r\n                case 'B':\r\n                    player.move(0,board.SPACE);\r\n                    break;\r\n            }\r\n            this.direction = direction;\r\n            return this;\r\n\r\n        }\r\n\r\n        @Override\r\n        public String toString() {\r\n            return \"StateNode{\" +\r\n                    \" direction='\" + direction + '\\'' +\r\n                    \", player=\" + player +\r\n                    \", baggs=\" + baggs +\r\n\r\n                    '}';\r\n        }\r\n\r\n        private boolean checkBagCollision(char direction, Board board) {\r\n\r\n            Iterator<Baggage> it1 = baggs.iterator();\r\n            List<Baggage> toAdd = new ArrayList<>();\r\n            switch (direction) {\r\n\r\n                case 'L':\r\n\r\n\r\n                    while(it1.hasNext()) {\r\n                        Baggage bag = it1.next();\r\n                        if (player.isLeftCollision(bag)) {\r\n                            for (Baggage item : baggs) {\r\n                                {\r\n\r\n\r\n                                    if (!bag.equals(item)) {\r\n\r\n                                        if (bag.isLeftCollision(item)) {\r\n                                            return true;\r\n                                        }\r\n                                    }\r\n\r\n                                    if (checkWallCollision(bag, 'L', board)) {\r\n                                        return true;\r\n                                    }\r\n                                }\r\n\r\n                            }\r\n                            it1.remove();\r\n                            bag.move(-board.SPACE,0 );\r\n                            toAdd.add(bag);\r\n                            break;\r\n                        }\r\n                    }\r\n                    baggs.addAll(toAdd);\r\n\r\n\r\n                        return false;\r\n\r\n                        case 'R':\r\n\r\n\r\n                            while(it1.hasNext()) {\r\n                                Baggage bag = it1.next();\r\n                                if (player.isRightCollision(bag)) {\r\n                                    for (Baggage item : baggs) {\r\n                                        {\r\n\r\n\r\n                                            if (!bag.equals(item)) {\r\n\r\n                                                if (bag.isRightCollision(item)) {\r\n                                                    return true;\r\n                                                }\r\n                                            }\r\n\r\n                                            if (checkWallCollision(bag, 'R', board)) {\r\n                                                return true;\r\n                                            }\r\n                                        }\r\n\r\n                                    }\r\n                                    it1.remove();\r\n                                    bag.move(board.SPACE,0 );\r\n                                    toAdd.add(bag);\r\n                                    break;\r\n                                }\r\n                            }\r\n                            baggs.addAll(toAdd);\r\n\r\n\r\n                            return false;\r\n\r\n                        case 'T':\r\n\r\n                            while(it1.hasNext()) {\r\n                                Baggage bag = it1.next();\r\n                                if (player.isTopCollision(bag)) {\r\n                                    for (Baggage item : baggs) {\r\n                                        {\r\n\r\n\r\n                                            if (!bag.equals(item)) {\r\n\r\n                                                if (bag.isTopCollision(item)) {\r\n                                                    return true;\r\n                                                }\r\n                                            }\r\n\r\n                                            if (checkWallCollision(bag, 'T', board)) {\r\n                                                return true;\r\n                                            }\r\n                                        }\r\n\r\n                                    }\r\n                                    it1.remove();\r\n                                    bag.move(0,-Board.SPACE );\r\n                                    toAdd.add(bag);\r\n                                    break;\r\n                                }\r\n                            }\r\n                            baggs.addAll(toAdd);\r\n\r\n\r\n                            return false;\r\n\r\n                        case 'B':\r\n\r\n\r\n                            while(it1.hasNext()) {\r\n                                Baggage bag = it1.next();\r\n                                if (player.isBottomCollision(bag)) {\r\n                                    for (Baggage item : baggs) {\r\n                                        {\r\n\r\n\r\n                                            if (!bag.equals(item)) {\r\n\r\n                                                if (bag.isBottomCollision(item)) {\r\n                                                    return true;\r\n                                                }\r\n                                            }\r\n\r\n                                            if (checkWallCollision(bag, 'B', board)) {\r\n                                                return true;\r\n                                            }\r\n                                        }\r\n\r\n                                    }\r\n                                    it1.remove();\r\n                                    bag.move(0,Board.SPACE );\r\n                                    toAdd.add(bag);\r\n                                    break;\r\n                                }\r\n                            }\r\n                            baggs.addAll(toAdd);\r\n\r\n\r\n                            return false;\r\n\r\n\r\n                        default:\r\n                            break;\r\n                    }\r\n\r\n                    return false;\r\n            }\r\n\r\n\r\n        private boolean checkWallCollision(Actor actor, char direction, Board board) {\r\n            List<Wall> walls = board.getWalls();\r\n            switch (direction) {\r\n\r\n                case 'L':\r\n\r\n                    for (int i = 0; i < walls.size(); i++) {\r\n\r\n                        Wall wall = walls.get(i);\r\n\r\n                        if (actor.isLeftCollision(wall)) {\r\n\r\n                            return true;\r\n                        }\r\n                    }\r\n\r\n                    return false;\r\n\r\n                case 'R':\r\n\r\n                    for (int i = 0; i < walls.size(); i++) {\r\n\r\n                        Wall wall = walls.get(i);\r\n\r\n                        if (actor.isRightCollision(wall)) {\r\n                            return true;\r\n                        }\r\n                    }\r\n\r\n                    return false;\r\n\r\n                case 'T':\r\n\r\n                    for (int i = 0; i < walls.size(); i++) {\r\n\r\n                        Wall wall = walls.get(i);\r\n\r\n                        if (actor.isTopCollision(wall)) {\r\n\r\n                            return true;\r\n                        }\r\n                    }\r\n\r\n                    return false;\r\n\r\n                case 'B':\r\n\r\n                    for (int i = 0; i < walls.size(); i++) {\r\n\r\n                        Wall wall = walls.get(i);\r\n\r\n                        if (actor.isBottomCollision(wall)) {\r\n\r\n                            return true;\r\n                        }\r\n                    }\r\n\r\n                    return false;\r\n\r\n                default:\r\n                    break;\r\n            }\r\n\r\n            return false;\r\n        }\r\n\r\n\r\n\r\n        /*     public ArrayList<StateNode> getChildren(Board board){\r\n            if(children.isEmpty()){\r\n                for(int i = 0; i < directions.length; i++){\r\n                    if(board.canMove(player,baggs,i)){\r\n                        StateNode child = new StateNode(directions[i],player,baggs);\r\n                    }\r\n                }\r\n            }\r\n        }\r\n*/\r\n        public StateNode getPrev() {\r\n            return prev;\r\n        }\r\n\r\n        public char getDirection() {\r\n            return direction;\r\n        }\r\n\r\n        @Override\r\n        public boolean equals(Object o) {\r\n            if (this == o) return true;\r\n            if (o == null || getClass() != o.getClass()) return false;\r\n            StateNode stateNode = (StateNode) o;\r\n\r\n            return player.equals(stateNode.player) &&\r\n                    baggs.equals(stateNode.baggs);\r\n        }\r\n\r\n        @Override\r\n        public int hashCode() {\r\n            return Objects.hash(player, baggs);\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/ar/edu/itba/SearchStrategy.java	(revision 10fbeaa60dbc2944d3fc909e909948348f0dfba9)
++++ src/ar/edu/itba/SearchStrategy.java	(date 1597190732226)
+@@ -36,7 +36,9 @@
+ 
+         }
+ 
+-
++        public Set<Baggage> getBags() {
++            return baggs;
++        }
+ 
+         public  List<StateNode> getChildren(Board board) throws CloneNotSupportedException {
+             List<StateNode> children = new ArrayList<>();
+Index: src/ar/edu/itba/Board.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package ar.edu.itba;\r\n\r\nimport java.awt.Color;\r\nimport java.awt.Graphics;\r\nimport java.awt.event.KeyAdapter;\r\nimport java.awt.event.KeyEvent;\r\nimport java.util.*;\r\nimport javax.swing.JPanel;\r\n\r\npublic class Board extends JPanel {\r\n\r\n    public static final int OFFSET = 30;\r\n    public static final int SPACE = 20;\r\n    public static final int LEFT_COLLISION = 1;\r\n    public static final int RIGHT_COLLISION = 2;\r\n    public static final int TOP_COLLISION = 3;\r\n    public static final int BOTTOM_COLLISION = 4;\r\n\r\n    private List<Wall> walls;\r\n    private Set<Baggage> baggs;\r\n    private List<Area> areas;\r\n    \r\n    private Player soko;\r\n    private int w = 0;\r\n    private int h = 0;\r\n    \r\n    private boolean isCompleted = false;\r\n\r\n/*    private String level\r\n            = \"    ######\\n\"\r\n            + \"    ##   #\\n\"\r\n            + \"    ##$  #\\n\"\r\n            + \"  ####  $##\\n\"\r\n            + \"  ##  $ $ #\\n\"\r\n            + \"#### # ## #   ######\\n\"\r\n            + \"##   # ## #####  ..#\\n\"\r\n            + \"## $  $          ..#\\n\"\r\n            + \"###### ### #@##  ..#\\n\"\r\n            + \"    ##     #########\\n\"\r\n            + \"    ########\\n\";*/\r\n\r\n    private String level = \"####################\\n\"\r\n                        +  \"## @             .#\\n\"\r\n                        +  \"#### ###########$###\\n\"\r\n                        +  \"####             ###\\n\"\r\n                        +  \"####################\\n\"\r\n                        +  \"####################\\n\";\r\n\r\n\r\n    public Board()  {\r\n\r\n        initBoard();\r\n        BFSStrategy bfs = new BFSStrategy();\r\n        try {\r\n            bfs.findSolution(this);\r\n        } catch (CloneNotSupportedException e) {\r\n            e.printStackTrace();\r\n        }\r\n    }\r\n\r\n    private void initBoard() {\r\n\r\n       // addKeyListener(new TAdapter());\r\n        setFocusable(true);\r\n        initWorld();\r\n    }\r\n\r\n    public int getBoardWidth() {\r\n        return this.w;\r\n    }\r\n\r\n    public int getBoardHeight() {\r\n        return this.h;\r\n    }\r\n\r\n    private void initWorld() {\r\n        \r\n        walls = new ArrayList<>();\r\n        baggs = new HashSet<>();\r\n        areas = new ArrayList<>();\r\n\r\n        int x = OFFSET;\r\n        int y = OFFSET;\r\n\r\n        Wall wall;\r\n        Baggage b;\r\n        Area a;\r\n\r\n        for (int i = 0; i < level.length(); i++) {\r\n\r\n            char item = level.charAt(i);\r\n\r\n            switch (item) {\r\n\r\n                case '\\n':\r\n                    y += SPACE;\r\n\r\n                    if (this.w < x) {\r\n                        this.w = x;\r\n                    }\r\n\r\n                    x = OFFSET;\r\n                    break;\r\n\r\n                case '#':\r\n                    wall = new Wall(x, y);\r\n                    walls.add(wall);\r\n                    x += SPACE;\r\n                    break;\r\n\r\n                case '$':\r\n                    b = new Baggage(x, y);\r\n                    baggs.add(b);\r\n                    x += SPACE;\r\n                    break;\r\n\r\n                case '.':\r\n                    a = new Area(x, y);\r\n                    areas.add(a);\r\n                    x += SPACE;\r\n                    break;\r\n\r\n                case '@':\r\n                    soko = new Player(x, y);\r\n                    x += SPACE;\r\n                    break;\r\n\r\n                case ' ':\r\n                    x += SPACE;\r\n                    break;\r\n\r\n                default:\r\n                    break;\r\n            }\r\n\r\n            h = y;\r\n        }\r\n    }\r\n\r\n    private void buildWorld(Graphics g) {\r\n\r\n        g.setColor(new Color(250, 240, 170));\r\n        g.fillRect(0, 0, this.getWidth(), this.getHeight());\r\n\r\n        ArrayList<Actor> world = new ArrayList<>();\r\n\r\n        world.addAll(walls);\r\n        world.addAll(areas);\r\n        world.addAll(baggs);\r\n        world.add(soko);\r\n\r\n        for (int i = 0; i < world.size(); i++) {\r\n\r\n            Actor item = world.get(i);\r\n\r\n            if (item instanceof Player || item instanceof Baggage) {\r\n                \r\n                g.drawImage(item.getImage(), item.getX() + 2, item.getY() + 2, this);\r\n            } else {\r\n                \r\n                g.drawImage(item.getImage(), item.getX(), item.getY(), this);\r\n            }\r\n\r\n            if (isCompleted) {\r\n                \r\n                g.setColor(new Color(0, 0, 0));\r\n                g.drawString(\"Completed\", 25, 20);\r\n            }\r\n\r\n        }\r\n    }\r\n\r\n    @Override\r\n    public void paintComponent(Graphics g) {\r\n        super.paintComponent(g);\r\n\r\n        buildWorld(g);\r\n    }\r\n\r\n\r\n    public boolean isCompleted(Set<Baggage> baggsSet) {\r\n\r\n        int nOfBags = baggsSet.size();\r\n       Baggage[] baggsArray = baggsSet.toArray(new Baggage[0]);\r\n        int finishedBags = 0;\r\n\r\n        for (int i = 0; i < nOfBags; i++) {\r\n            \r\n            Baggage bag = baggsArray[i];\r\n            \r\n            for (int j = 0; j < nOfBags; j++) {\r\n                \r\n                Area area =  areas.get(j);\r\n                \r\n                if (bag.getX() == area.getX() && bag.getY() == area.getY()) {\r\n                    \r\n                    finishedBags += 1;\r\n                }\r\n            }\r\n        }\r\n\r\n        if (finishedBags == nOfBags) {\r\n\r\n            return true;\r\n           /* isCompleted = true;\r\n            repaint();*/\r\n        }\r\n        return false;\r\n    }\r\n\r\n    public void restartLevel() {\r\n\r\n        areas.clear();\r\n        baggs.clear();\r\n        walls.clear();\r\n\r\n        initWorld();\r\n\r\n        if (isCompleted) {\r\n            isCompleted = false;\r\n        }\r\n    }\r\n\r\n    public Set<Baggage> getBaggs() {\r\n        return baggs;\r\n    }\r\n\r\n    public Player getPlayer() {\r\n        return soko;\r\n    }\r\n\r\n    public List<Wall> getWalls() {\r\n        return walls;\r\n    }\r\n\r\n    public List<Area> getAreas() {\r\n        return areas;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/ar/edu/itba/Board.java	(revision 10fbeaa60dbc2944d3fc909e909948348f0dfba9)
++++ src/ar/edu/itba/Board.java	(date 1597190375447)
+@@ -40,12 +40,27 @@
+             + "    ########\n";*/
+ 
+     private String level = "####################\n"
+-                        +  "## @             .#\n"
++                        +  "## @           $..#\n"
+                         +  "#### ###########$###\n"
+                         +  "####             ###\n"
+                         +  "####################\n"
+                         +  "####################\n";
+ 
++//    private String level = "      ###          \n"
++//                        +  "      #.#          \n"
++//                        +  "  #####.#####      \n"
++//                        +  " ##         ##     \n"
++//                        +  "##  # # # #  ##    \n"
++//                        +  "#  ##     ##  #    \n"
++//                        +  "# ##  # #  ## #    \n"
++//                        +  "#     $@$     #    \n"
++//                        +  "####  ###  ####    \n"
++//                        +  "   #### ####       \n";
++
++
++
++
++
+ 
+     public Board()  {
+ 
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_1_8\" default=\"false\" project-jdk-name=\"12\" project-jdk-type=\"JavaSDK\">\r\n    <output url=\"file://$PROJECT_DIR$/out\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/misc.xml	(revision 10fbeaa60dbc2944d3fc909e909948348f0dfba9)
++++ .idea/misc.xml	(date 1597188101656)
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="false" project-jdk-name="12" project-jdk-type="JavaSDK">
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="false" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+     <output url="file://$PROJECT_DIR$/out" />
+   </component>
+ </project>
+\ No newline at end of file
+Index: src/ar/edu/itba/IDDFSStrategy.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/ar/edu/itba/IDDFSStrategy.java	(date 1597194416649)
++++ src/ar/edu/itba/IDDFSStrategy.java	(date 1597194416649)
+@@ -0,0 +1,41 @@
++package ar.edu.itba;
++
++public class IDDFSStrategy extends SearchStrategy {
++
++    private Board board;
++    private boolean found = false;
++    private boolean remaining = true;
++    private int depth = 0;
++    private StateNode root;
++
++
++    public IDDFSStrategy(Board board) {
++        this.board = board;
++//        root = new StateNode(null, board.getPlayer(), board.getBaggs(), null);
++
++    }
++
++    @Override
++    public void findSolution(Board board) {
++        while(!found){
++            StateNode found = dls(root, depth);
++            if(found != null){
++                return; //Encontro, hay que ver que hacer con found
++            }else if(!remaining){
++                return; //No encontro
++            }
++        }
++    }
++
++    StateNode dls(StateNode current, int depth){
++        if (depth == 0){
++
++            if (board.isCompleted(current.getBags()))
++                return current;
++            else
++                return null;
++        }
++
++        return null;
++    }
++}
+Index: .idea/sia_tp1.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<module type=\"JAVA_MODULE\" version=\"4\">\r\n  <component name=\"NewModuleRootManager\" inherit-compiler-output=\"true\">\r\n    <exclude-output />\r\n    <content url=\"file://$MODULE_DIR$\">\r\n      <sourceFolder url=\"file://$MODULE_DIR$/src\" isTestSource=\"false\" />\r\n      <sourceFolder url=\"file://$MODULE_DIR$/src/resources\" type=\"java-resource\" />\r\n    </content>\r\n    <orderEntry type=\"jdk\" jdkName=\"12\" jdkType=\"JavaSDK\" />\r\n    <orderEntry type=\"sourceFolder\" forTests=\"false\" />\r\n  </component>\r\n</module>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/sia_tp1.iml	(revision 10fbeaa60dbc2944d3fc909e909948348f0dfba9)
++++ .idea/sia_tp1.iml	(date 1597188101664)
+@@ -6,7 +6,7 @@
+       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+       <sourceFolder url="file://$MODULE_DIR$/src/resources" type="java-resource" />
+     </content>
+-    <orderEntry type="jdk" jdkName="12" jdkType="JavaSDK" />
++    <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
+     <orderEntry type="sourceFolder" forTests="false" />
+   </component>
+ </module>
+\ No newline at end of file

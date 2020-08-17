@@ -1,8 +1,7 @@
 package ar.edu.itba;
 
 import java.awt.EventQueue;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import javax.swing.JFrame;
 
 public class Sokoban extends JFrame {

@@ -28,7 +28,7 @@ public class AStarStrategy extends InformedSearchStrategy {
         while(!frontier.isEmpty()){
 
             StateNode vertex = frontier.poll();
-            System.out.println("head: "+vertex);
+
             if(board.isCompleted(vertex.baggs)){
                 String solution =getSolutionPath(vertex);
                 System.out.println("A* Solution: " + solution);

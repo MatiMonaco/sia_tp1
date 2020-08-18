@@ -107,8 +107,11 @@ public class Board extends JPanel {
         initWorld();
 //        BFSStrategy bfs = new BFSStrategy();
 //            solution =  bfs.findSolution(this);
-        AStarStrategy aStar = new AStarStrategy(Heuristics::simpleGoalDistances);
-        solution = aStar.findSolution(this);
+//        AStarStrategy aStar = new AStarStrategy(Heuristics::simpleGoalDistances);
+//        solution = aStar.findSolution(this);
+
+        GGSStrategy ggs = new GGSStrategy(Heuristics::simpleGoalDistances);
+        solution = ggs.findSolution(this);
 
 //        DFSStrategy dfs = new DFSStrategy();
 //            solution =  dfs.findSolution(this);

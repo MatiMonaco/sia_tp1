@@ -15,7 +15,7 @@ public class GGSStrategy extends InformedSearchStrategy {
         Queue<StateNode> frontier;
         board.restartLevel();
         visited = new HashSet<>();
-        frontier = new PriorityQueue<>(5, Comparator.comparingInt(informedStateNode -> heuristic.apply(informedStateNode,board)));
+        frontier = new PriorityQueue<>(5, Comparator.comparingInt(stateNode -> heuristic.apply(stateNode,board)));
 
         Set<Baggage> set = new HashSet<>();
         set.addAll(board.getBaggs());
@@ -35,14 +35,27 @@ public class GGSStrategy extends InformedSearchStrategy {
             visited.add(vertex);
             List<StateNode> successors = vertex.getChildren(board);
             for(StateNode successor : successors){
-
-                if(!visited.contains(successor) && !frontier.contains(successor)){
-
+                boolean inFrontier = false;
+                if(!visited.contains(successor) && !(inFrontier = frontier.contains(successor))){
                     frontier.add(successor);
+                }else if(inFrontier){
 
-                }else if(getTotalCost(successor,board) > getTotalCost(frontier.peek(),board)){
-                    frontier.poll();
-                    frontier.add(successor);
+                    StateNode aux = null;
+                    for(StateNode node : frontier){
+                        if(node.equals(successor)){
+                            if(heuristic.apply(node,board) > heuristic.apply(successor,board)){
+                                aux = node;
+
+                                break;
+                            }
+                        }
+                    }
+                    if(aux!= null){
+
+                        frontier.remove(aux);
+                        frontier.add(successor);
+                    }
+
                 }
             }
         }

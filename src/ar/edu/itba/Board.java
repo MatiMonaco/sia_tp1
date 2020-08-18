@@ -21,11 +21,15 @@ public class Board extends JPanel {
     private Player player;
     private int w = 0;
     private int h = 0;
-    
+    private List<Actor> positions;
+    private Map<Goal,Map<Actor,Double>> distancesToGoal;
+
+
+
+
     private boolean isCompleted = false;
     private int i = 0;
     private  Timer timer = new Timer(250, new ActionListener() {
-
         @Override
         public void actionPerformed(ActionEvent e) {
 
@@ -94,27 +98,56 @@ public class Board extends JPanel {
 //                                "#######################\n";
 
 
-    public Board()  {
+    public Board(String chosenAlgorithm)  {
 
-        initBoard();
+        initBoard(chosenAlgorithm);
 
     }
 
-    private void initBoard() {
+    private void initBoard(String chosenAlgorithm) {
 
         addKeyListener(new TAdapter());
         setFocusable(true);
         initWorld();
-//        BFSStrategy bfs = new BFSStrategy();
-//            solution =  bfs.findSolution(this);
-//        AStarStrategy aStar = new AStarStrategy(Heuristics::simpleGoalDistances);
-//        solution = aStar.findSolution(this);
 
-        GGSStrategy ggs = new GGSStrategy(Heuristics::simpleGoalDistances);
-        solution = ggs.findSolution(this);
+        switch(chosenAlgorithm){
+            case "BFS":
+                BFSStrategy bfs = new BFSStrategy();
+          solution =  bfs.findSolution(this);
+                break;
 
-//        DFSStrategy dfs = new DFSStrategy();
-//            solution =  dfs.findSolution(this);
+            case "DFS":
+                DFSStrategy dfs = new DFSStrategy();
+                solution =  dfs.findSolution(this);
+                break;
+
+            case "IDDFS":
+
+                IDDFSStrategy iddfs = new IDDFSStrategy();
+                solution =  iddfs.findSolution(this);
+                break;
+
+            case "IDA*":
+
+                break;
+
+            case "GGS":
+
+                GGSStrategy ggs = new GGSStrategy(Heuristics::simpleManhattanDistances);
+                solution = ggs.findSolution(this);
+
+                break;
+
+            case "A*":
+                        AStarStrategy aStar = new AStarStrategy(Heuristics::simpleManhattanDistances);
+                        solution = aStar.findSolution(this);
+
+                break;
+
+
+        }
+
+
 
     }
 
@@ -127,7 +160,7 @@ public class Board extends JPanel {
     }
 
     private void initWorld() {
-        
+        positions = new ArrayList<>();
         walls = new ArrayList<>();
         baggs = new HashSet<>();
         goals = new ArrayList<>();
@@ -158,27 +191,32 @@ public class Board extends JPanel {
                 case '#':
                     wall = new Wall(x, y);
                     walls.add(wall);
+                    positions.add(new Actor(x,y));
                     x += SPACE;
                     break;
 
                 case '$':
                     b = new Baggage(x, y);
                     baggs.add(b);
+                    positions.add(new Actor(x,y));
                     x += SPACE;
                     break;
 
                 case '.':
                     a = new Goal(x, y);
                     goals.add(a);
+                    positions.add(new Actor(x,y));
                     x += SPACE;
                     break;
 
                 case '@':
                     player = new Player(x, y);
+                    positions.add(new Actor(x,y));
                     x += SPACE;
                     break;
 
                 case ' ':
+                    positions.add(new Actor(x,y));
                     x += SPACE;
                     break;
 
@@ -189,6 +227,9 @@ public class Board extends JPanel {
             h = y;
         }
     }
+
+
+
 
     private class TAdapter extends KeyAdapter {
 

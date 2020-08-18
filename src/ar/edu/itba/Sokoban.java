@@ -10,15 +10,15 @@ public class Sokoban extends JFrame {
 
     public Sokoban() {
 
-        initUI();
+        initUI("A*");
     }
 
-    private void initUI() {
+    private void initUI(String chosenAlgorithm) {
         
-        Board board = new Board();
+        Board board = new Board(chosenAlgorithm);
         add(board);
 
-        setTitle("Sokoban");
+        setTitle("Sokoban - "+chosenAlgorithm);
         
         setSize(board.getBoardWidth() +OFFSET,
                 board.getBoardHeight() +3* OFFSET);

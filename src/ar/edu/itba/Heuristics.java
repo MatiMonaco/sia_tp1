@@ -30,7 +30,7 @@ public  class Heuristics {
         return goalCount;
     }
 
-    public static int simpleGoalDistances(StateNode node,Board board){
+    public static int simpleManhattanDistances(StateNode node,Board board){
 
         List<Goal> goals = board.getGoals();
 
@@ -42,15 +42,11 @@ public  class Heuristics {
 
             Integer minDistance = null;
             for (Goal goal: goals){
-
-
-
                 Integer distance = Math.abs(bagg.getX() - goal.getX()) + Math.abs(bagg.getY() - goal.getY());
 
                 if( minDistance == null || minDistance > distance){
-                    minDistance = distance/20;
+                    minDistance = distance/Board.SPACE;
                 }
-
             }
 
             totalDistance+=minDistance;

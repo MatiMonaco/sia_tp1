@@ -55,7 +55,7 @@ public class Board extends JPanel {
             + "###### ### #@##  ..#\n"
             + "    ##     #########\n"
             + "    ########\n";*/
-
+//
     private String level =      "      ###\n"+
                                 "      #.#\n"+
                                 "  #####.#####\n"+
@@ -84,10 +84,14 @@ public class Board extends JPanel {
 //                                "########";
 
 
-// private String level =         "#######\n" +
-//                                "#   @ #\n" +
-//                                "# $  .#\n" +
-//                                "#######\n";
+// private String level =         "#######################\n" +
+//                                "#                   . #\n" +
+//                                "#                     #\n"+
+//                                "## ###################\n"+
+//                                "#                     #\n"+
+//                                "#         $         @ #\n" +
+//                                "#                     #\n"+
+//                                "#######################\n";
 
 
     public Board()  {
@@ -101,10 +105,10 @@ public class Board extends JPanel {
         addKeyListener(new TAdapter());
         setFocusable(true);
         initWorld();
-        BFSStrategy bfs = new BFSStrategy();
-            solution =  bfs.findSolution(this);
-//        AStarStrategy aStar = new AStarStrategy(Heuristics::simpleGoalDistances);
-//        solution = aStar.findSolution(this);
+//        BFSStrategy bfs = new BFSStrategy();
+//            solution =  bfs.findSolution(this);
+        AStarStrategy aStar = new AStarStrategy(Heuristics::simpleGoalDistances);
+        solution = aStar.findSolution(this);
 
 //        DFSStrategy dfs = new DFSStrategy();
 //            solution =  dfs.findSolution(this);

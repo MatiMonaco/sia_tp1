@@ -48,7 +48,7 @@ public  class Heuristics {
                 Integer distance = Math.abs(bagg.getX() - goal.getX()) + Math.abs(bagg.getY() - goal.getY());
 
                 if( minDistance == null || minDistance > distance){
-                    minDistance = distance;
+                    minDistance = distance/20;
                 }
 
             }

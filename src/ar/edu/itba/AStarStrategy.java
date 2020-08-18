@@ -17,7 +17,7 @@ public class AStarStrategy extends InformedSearchStrategy {
         Queue<StateNode> frontier;
         board.restartLevel();
         visited = new HashSet<>();
-        frontier = new PriorityQueue<>(5,Comparator.comparingInt(informedStateNode -> getTotalCost(informedStateNode,board)));
+        frontier = new PriorityQueue<>(5,Comparator.comparingInt(stateNode -> getTotalCost(stateNode,board)));
 
         Set<Baggage> set = new HashSet<>();
         set.addAll(board.getBaggs());
@@ -28,21 +28,36 @@ public class AStarStrategy extends InformedSearchStrategy {
         while(!frontier.isEmpty()){
 
             StateNode vertex = frontier.poll();
-
+            System.out.println("head: "+vertex);
             if(board.isCompleted(vertex.baggs)){
                 String solution =getSolutionPath(vertex);
                 System.out.println("A* Solution: " + solution);
                 System.out.println("Solution length: "+solution.length());
-
                 return solution;
             }
             visited.add(vertex);
             List<StateNode> successors = vertex.getChildren(board);
             for(StateNode successor : successors){
-
-                if(!visited.contains(successor) && !frontier.contains(successor)){
-
+                boolean inFrontier = false;
+                if(!visited.contains(successor) && !(inFrontier = frontier.contains(successor))){
                     frontier.add(successor);
+                }else if(inFrontier){
+
+                    StateNode aux = null;
+                    for(StateNode node : frontier){
+                        if(node.equals(successor)){
+                            if(getTotalCost(node,board) > getTotalCost(successor,board)){
+                                aux = node;
+
+                                break;
+                            }
+                        }
+                    }
+                    if(aux!= null){
+                        
+                        frontier.remove(aux);
+                        frontier.add(successor);
+                    }
 
                 }
             }

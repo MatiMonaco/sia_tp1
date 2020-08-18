@@ -55,17 +55,17 @@ public class Board extends JPanel {
             + "###### ### #@##  ..#\n"
             + "    ##     #########\n"
             + "    ########\n";*/
-
-    private String level =      "      ###\n"+
-                                "      #.#\n"+
-                                "  #####.#####\n"+
-                                " ##         ##\n"+
-                                "##  # # # #  ##\n"+
-                                "#  ##     ##  #\n"+
-                                "# ##  # #  ## #\n"+
-                                "#     $@$     #\n"+
-                                "####  ###  ####\n"+
-                                "   #### ####\n";
+//
+//    private String level =      "      ###\n"+
+//                                "      #.#\n"+
+//                                "  #####.#####\n"+
+//                                " ##         ##\n"+
+//                                "##  # # # #  ##\n"+
+//                                "#  ##     ##  #\n"+
+//                                "# ##  # #  ## #\n"+
+//                                "#     $@$     #\n"+
+//                                "####  ###  ####\n"+
+//                                "   #### ####\n";
 //
 // private String level =         "  ####    \n" +
 //                                " ##  ##   \n" +
@@ -77,12 +77,10 @@ public class Board extends JPanel {
 //                                " ##  #    \n" +
 //                                "  #### ";
 
-// private String level =         "#########\n" +
-//                                "#.$ @ $.#\n" +
-//                                "#       #\n" +
-//                                "#    ####\n" +
-//                                "#.$   $.#\n" +
-//                                "#########\n";
+ private String level =         "#######\n" +
+                                "#.$@$.#\n" +
+                                "#.$   #\n" +
+                                "#######\n";
 
 
     public Board()  {
@@ -98,8 +96,8 @@ public class Board extends JPanel {
         initWorld();
 //        BFSStrategy bfs = new BFSStrategy();
 //
-//            solution =  bfs.findSolution(this);
-        AStarStrategy aStar = new AStarStrategy(Heuristics::simpleGoalDistances);
+//        solution =  bfs.findSolution(this);
+        IDAStarStrategy aStar = new IDAStarStrategy(Heuristics::simpleGoalDistances);
         solution = aStar.findSolution(this);
 
 //        DFSStrategy dfs = new DFSStrategy();

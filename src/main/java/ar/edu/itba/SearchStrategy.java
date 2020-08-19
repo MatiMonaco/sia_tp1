@@ -18,7 +18,7 @@ public abstract class SearchStrategy {
         return name;
     }
 
-    public Set<Baggage> deadlockedBags = new HashSet<>();
+    public Set<Box> deadlockedBags = new HashSet<>();
 
     public abstract  SearchResult findSolution(Board board) ;
 
@@ -36,20 +36,20 @@ public abstract class SearchStrategy {
     class StateNode {
         StateNode prev;
         Player player;
-        Set<Baggage> baggs;
+        Set<Box> boxes;
         char direction;
         int pathCost;
 
-        StateNode(char direction,Player player,Set<Baggage> baggs,StateNode prev,int pathCost){
+        StateNode(char direction, Player player, Set<Box> baggs, StateNode prev, int pathCost){
             this.direction = direction;
             this.player  = player;
-            this.baggs = baggs;
+            this.boxes = baggs;
             this.prev = prev;
             this.pathCost = pathCost;
         }
 
-        public Set<Baggage> getBags() {
-            return baggs;
+        public Set<Box> getBags() {
+            return boxes;
         }
 
 
@@ -64,8 +64,8 @@ public abstract class SearchStrategy {
 
                 for (char c : directions) {
 
-                    Set<Baggage> set = new HashSet<>();
-                    baggs.forEach(b -> set.add(new Baggage(b.getX(), b.getY())));
+                    Set<Box> set = new HashSet<>();
+                    boxes.forEach(b -> set.add(new Box(b.getX(), b.getY())));
                     StateNode aux = new StateNode(' ', new Player(player.getX(), player.getY()), set, this,pathCost+1);
 
                     aux = aux.checkMove(c, board);
@@ -91,7 +91,7 @@ public abstract class SearchStrategy {
 
                 return null;
             }
-            for (Baggage bag: baggs) {
+            for (Box bag: boxes) {
                 if (deadlockedBags.contains(bag)) {
 
                     return null;
@@ -121,27 +121,27 @@ public abstract class SearchStrategy {
             return "StateNode{" +
                     " direction='" + direction + '\'' +
                     ", player=" + player +
-                    ", baggs=" + baggs +
+                    ", baggs=" + boxes +
 
                     '}';
         }
 
         private boolean checkBagCollision(char direction, Board board) {
 
-            Iterator<Baggage> it1 = baggs.iterator();
-            Baggage toAdd = null;
+            Iterator<Box> it1 = boxes.iterator();
+            Box toAdd = null;
             switch (direction) {
 
                 case 'L':
 
 
                     while(it1.hasNext()) {
-                        Baggage bag = it1.next();
+                        Box bag = it1.next();
                         if (player.isLeftCollision(bag)) {
                             if (checkWallCollision(bag, 'L', board)) {
                                 return true;
                             }
-                            for (Baggage item : baggs) {
+                            for (Box item : boxes) {
                                 {
 
 
@@ -164,7 +164,7 @@ public abstract class SearchStrategy {
                         }
                     }
                     if(toAdd != null){
-                        baggs.add(toAdd);
+                        boxes.add(toAdd);
                     }
 
 
@@ -175,9 +175,9 @@ public abstract class SearchStrategy {
 
 
                             while(it1.hasNext()) {
-                                Baggage bag = it1.next();
+                                Box bag = it1.next();
                                 if (player.isRightCollision(bag)) {
-                                    for (Baggage item : baggs) {
+                                    for (Box item : boxes) {
                                         {
 
 
@@ -202,7 +202,7 @@ public abstract class SearchStrategy {
                                 }
                             }
                             if(toAdd != null){
-                                baggs.add(toAdd);
+                                boxes.add(toAdd);
                             }
 
                             return false;
@@ -210,9 +210,9 @@ public abstract class SearchStrategy {
                         case 'T':
 
                             while(it1.hasNext()) {
-                                Baggage bag = it1.next();
+                                Box bag = it1.next();
                                 if (player.isTopCollision(bag)) {
-                                    for (Baggage item : baggs) {
+                                    for (Box item : boxes) {
                                         {
 
 
@@ -237,7 +237,7 @@ public abstract class SearchStrategy {
                                 }
                             }
                             if(toAdd != null){
-                                baggs.add(toAdd);
+                                boxes.add(toAdd);
                             }
 
 
@@ -247,9 +247,9 @@ public abstract class SearchStrategy {
 
 
                             while(it1.hasNext()) {
-                                Baggage bag = it1.next();
+                                Box bag = it1.next();
                                 if (player.isBottomCollision(bag)) {
-                                    for (Baggage item : baggs) {
+                                    for (Box item : boxes) {
                                         {
 
 
@@ -274,7 +274,7 @@ public abstract class SearchStrategy {
                                 }
                             }
                             if(toAdd != null){
-                                baggs.add(toAdd);
+                                boxes.add(toAdd);
                             }
 
                             return false;
@@ -287,7 +287,7 @@ public abstract class SearchStrategy {
                     return false;
             }
 
-        private boolean checkDeadLock(char direction, Baggage bag, Board board) {
+        private boolean checkDeadLock(char direction, Box bag, Board board) {
             boolean deadlocked = false;
 
             switch (direction){
@@ -407,12 +407,12 @@ public abstract class SearchStrategy {
             StateNode stateNode = (StateNode) o;
 
             return player.equals(stateNode.player) &&
-                    baggs.equals(stateNode.baggs);
+                    boxes.equals(stateNode.boxes);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(player, baggs);
+            return Objects.hash(player, boxes);
         }
 
     }

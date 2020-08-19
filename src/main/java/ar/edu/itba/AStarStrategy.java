@@ -20,7 +20,7 @@ public class AStarStrategy extends InformedSearchStrategy {
         visited = new HashSet<>();
         frontier = new PriorityQueue<>(5,Comparator.comparingInt(stateNode -> getTotalCost(stateNode,board)));
 
-        Set<Baggage> set = new HashSet<>(board.getBaggs());
+        Set<Box> set = new HashSet<>(board.getBaggs());
         StateNode root = new StateNode(' ',new Player(board.getPlayer().getX(),board.getPlayer().getY()),set,null,0);
         frontier.add(root);
         visited.add(root);
@@ -29,7 +29,7 @@ public class AStarStrategy extends InformedSearchStrategy {
 
             StateNode vertex = frontier.poll();
 
-            if(board.isCompleted(vertex.baggs)){
+            if(board.isCompleted(vertex.boxes)){
                 String solution =getSolutionPath(vertex);
                 System.out.println("A* Solution: " + solution);
                 System.out.println("Solution length: "+solution.length());

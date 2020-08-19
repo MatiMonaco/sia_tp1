@@ -4,9 +4,9 @@ import java.awt.Image;
 import java.util.List;
 import javax.swing.ImageIcon;
 
-public class Baggage extends Actor {
+public class Box extends Actor {
 
-    public Baggage(int x, int y) {
+    public Box(int x, int y) {
         super(x, y);
         
         initBaggage();
@@ -14,8 +14,8 @@ public class Baggage extends Actor {
     
     private void initBaggage() {
         
-        ImageIcon iicon = new ImageIcon(getClass().getClassLoader().getResource("baggage.png"));
-        Image image = iicon.getImage();
+        ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("box.png"));
+        Image image = icon.getImage();
         setImage(image);
     }
 

@@ -22,7 +22,7 @@ public class DFSStrategy extends SearchStrategy {
         visited = new HashSet<>();
         frontier = new Stack<>();
 
-        Set<Baggage> set = new HashSet<>(board.getBaggs());
+        Set<Box> set = new HashSet<>(board.getBaggs());
 
         StateNode root = new StateNode(' ',new Player(board.getPlayer().getX(),board.getPlayer().getY()),set,null,0);
         frontier.push(root);
@@ -37,7 +37,7 @@ public class DFSStrategy extends SearchStrategy {
             for(StateNode successor : successors){
 
                 if(!visited.contains(successor) && !frontier.contains(successor)){
-                    if(board.isCompleted(successor.baggs)){
+                    if(board.isCompleted(successor.boxes)){
                         String solution =getSolutionPath(successor);
                         System.out.println("DFS Solution: " + solution);
                         System.out.println("Solution length: "+solution.length());

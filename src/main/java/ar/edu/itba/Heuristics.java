@@ -16,11 +16,11 @@ public class Heuristics {
 
         List<Goal> goals = board.getGoals();
 
-        Set<Baggage> baggageSet = node.getBags();
+        Set<Box> baggageSet = node.getBags();
 
         int goalCount = 0;
 
-        for(Baggage bagg :baggageSet){
+        for(Box bagg :baggageSet){
             for (Goal goal: goals){
                 if(bagg.getX() == goal.getX() && bagg.getY() == goal.getY()){
                     goalCount++;
@@ -36,11 +36,11 @@ public class Heuristics {
 
         List<Goal> goals = board.getGoals();
 
-        Set<Baggage> baggageSet = node.getBags();
+        Set<Box> baggageSet = node.getBags();
 
         int totalDistance = 0;
 
-        for(Baggage bagg :baggageSet){
+        for(Box bagg :baggageSet){
 
             Integer minDistance = null;
             for (Goal goal: goals){
@@ -76,16 +76,16 @@ public class Heuristics {
 
     private static List<Matching> getGoalMatchings(StateNode node,Board board){
         List<Goal> goals = board.getGoals();
-        Set<Baggage> baggageSet = node.getBags();
+        Set<Box> baggageSet = node.getBags();
         Queue<Matching> priorityQueue = new PriorityQueue<>(11,Comparator.comparingInt(Matching::getDistance));
 
         for(Goal goal: goals){
-            for(Baggage bag : baggageSet){
+            for(Box bag : baggageSet){
                 Matching matching = new Matching(goal,bag,board.getDistancesToGoal().get(goal).get(new Actor(bag.getX(),bag.getY())));
                 priorityQueue.add(matching);
             }
         }
-        Set<Baggage> matchedBaggs = new HashSet<>();
+        Set<Box> matchedBaggs = new HashSet<>();
         Set<Goal> matchedGoals = new HashSet<>();
         List<Matching> matchings = new ArrayList<>();
         while(!priorityQueue.isEmpty()){
@@ -97,7 +97,7 @@ public class Heuristics {
 
             }
         }
-        for(Baggage bag: baggageSet){
+        for(Box bag: baggageSet){
             if(!matchedBaggs.contains(bag)){
                 Goal closestGoal = getClosestGoal(board,bag);
                 matchings.add(new Matching(closestGoal,bag,board.getDistancesToGoal().get(closestGoal).get(new Actor(bag.getX(),bag.getY()))));
@@ -108,7 +108,7 @@ public class Heuristics {
         return matchings;
     }
 
-    private static Goal getClosestGoal(Board board,Baggage bagg){
+    private static Goal getClosestGoal(Board board, Box bagg){
         List<Goal> goals = board.getGoals();
         Integer minDistance = null;
         Actor position = new Actor(bagg.getX(), bagg.getY());
@@ -125,9 +125,9 @@ public class Heuristics {
 
     private static class Matching{
         private Goal goal;
-        private Baggage bag;
+        private Box bag;
         private int distance;
-        public Matching(Goal goal, Baggage bag,int distance) {
+        public Matching(Goal goal, Box bag, int distance) {
             this.goal = goal;
             this.bag = bag;
             this.distance = distance;

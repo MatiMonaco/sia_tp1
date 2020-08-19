@@ -27,7 +27,7 @@ public class IDDFSStrategy extends SearchStrategy {
             System.out.println("Solution: " + solution);
             System.out.println("Solution length: " + solution.length());
             System.out.println("Expanded nodes: " + expandedNodes);
-            return new SearchResult(name, endNode, expandedNodes, getSolutionPath(endNode));
+            return new SearchResult(name, null,endNode, expandedNodes, getSolutionPath(endNode));
         }
         System.out.println("NO SOLUTION FOUND");
         return new SearchResult(name, null, null, expandedNodes, null);

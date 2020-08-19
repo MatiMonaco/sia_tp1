@@ -18,7 +18,7 @@ public class Board extends JPanel {
     private List<Wall> walls;
     private Set<Baggage> baggs;
     private List<Goal> goals;
-    private String solution;
+    private SearchResult solution;
     private Player player;
     private int w = 0;
     private int h = 0;
@@ -34,8 +34,8 @@ public class Board extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            if(i< solution.length()){
-                char key = solution.charAt(i++);
+            if(solution != null && i< solution.getLength()){
+                char key = solution.getSolution().charAt(i++);
 
                 movePlayer(key);
                 repaint();
@@ -61,16 +61,16 @@ public class Board extends JPanel {
             + "    ##     #########\n"
             + "    ########\n";*/
 //
-    private String level =      "      ###\n"+
-                                "      #.#\n"+
-                                "  #####.#####\n"+
-                                " ##         ##\n"+
-                                "##  # # # #  ##\n"+
-                                "#  ##     ##  #\n"+
-                                "# ##  # #  ## #\n"+
-                                "#     $@$     #\n"+
-                                "####  ###  ####\n"+
-                                "   #### ####\n";
+//    private String level =      "      ###\n"+
+//                                "      #.#\n"+
+//                                "  #####.#####\n"+
+//                                " ##         ##\n"+
+//                                "##  # # # #  ##\n"+
+//                                "#  ##     ##  #\n"+
+//                                "# ##  # #  ## #\n"+
+//                                "#     $@$     #\n"+
+//                                "####  ###  ####\n"+
+//                                "   #### ####\n";
 //
 // private String level =         "  ####    \n" +
 //                                " ##  ##   \n" +
@@ -82,11 +82,15 @@ public class Board extends JPanel {
 //                                " ##  #    \n" +
 //                                "  #### ";
 
-// private String level =         "########\n" +
-//                                "#  ..$ #\n" +
-//                                "# $@ $ #\n" +
-//                                "# $..  #\n" +
-//                                "########";
+ private String level =         "########\n" +
+                                "#  ..$ #\n" +
+                                "# $@ $ #\n" +
+                                "# $..  #\n" +
+                                "########";
+
+// private String level =         "#######\n" +
+//                                "# @ $.#\n" +
+//                                "#######";
 
 
 // private String level =         "#######################\n" +
@@ -303,9 +307,11 @@ public class Board extends JPanel {
 
             int key = e.getKeyCode();
             if (key == KeyEvent.VK_S) {
-                if (!solution.isEmpty()) {
+                if (solution != null) {
 
                     showSolution();
+                }else {
+                    System.out.println("No solution found!");
                 }
             }
 

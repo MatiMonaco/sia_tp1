@@ -4,19 +4,18 @@ import java.util.*;
 
 public class IDDFSStrategy extends SearchStrategy {
 
-    private boolean found = false;
-    private boolean remaining = true;
+    private long expandedNodes = 0;
     private StateNode root;
     private Set<StateNode> visited;
 
     @Override
-    public String findSolution(Board board)  {
+    public SearchResult findSolution(Board board)  {
 
         board.restartLevel();
         root = new StateNode(' ', board.getPlayer(), board.getBaggs(), null,0);
         visited = new HashSet<>();
-        int maxIter = 100;
-        for (int depth = 0; depth < maxIter; depth++) {
+        int maxIter = Integer.MAX_VALUE;
+        for (int depth = 0; depth < maxIter;) {
 
             StateNode found = dls(root, depth, board);
 
@@ -24,42 +23,16 @@ public class IDDFSStrategy extends SearchStrategy {
 
                 String solution = getSolutionPath(found);
                 System.out.println("Solution: " + solution);
-                return solution;
+                System.out.println("Solution length: " + solution.length());
+                System.out.println("Expanded nodes: " + expandedNodes);
+                return new SearchResult(found, expandedNodes, getSolutionPath(found));
             }
-            depth++;
             visited.clear();
-            System.out.println(depth);
+            System.out.println(++depth);
         }
         System.out.println("NO SOLUTION FOUND");
         return null;
     }
-
-//    StateNode dls(StateNode current, int depth, Board board) throws CloneNotSupportedException {
-//        StateNode found = null;
-//
-//        if (depth == 0){
-//
-//            if (board.isCompleted(current.getBags()))
-//                return current;
-//            else
-//                return null;
-//        }else if (depth > 0){
-//
-//            boolean anyRemaining = false;
-//            List<StateNode> successors = current.getChildren(board);
-//
-//            for(StateNode successor : successors){
-//                if (!successor.checkRepeats()){
-//                    found = dls(successor, depth-1, board);
-//
-//                    if (found!=null)
-//                        return found;
-//                }
-//            }
-//        }
-//
-//        return found;
-//    }
 
     StateNode dls(StateNode current, int depth, Board board){
 
@@ -71,6 +44,7 @@ public class IDDFSStrategy extends SearchStrategy {
             return null;
 
         visited.add(current);
+        expandedNodes++;
         StateNode found = null;
         for(StateNode successor : current.getChildren(board)) {
 

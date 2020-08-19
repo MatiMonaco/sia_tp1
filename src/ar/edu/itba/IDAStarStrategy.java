@@ -8,6 +8,7 @@ public class IDAStarStrategy extends InformedSearchStrategy {
 
     private Stack<StateNode> path;
     private StateNode endNode;
+    private long expandedNodes = 0;
 
     public IDAStarStrategy(BiFunction<StateNode, Board, Integer> heuristic) {
         super(heuristic);
@@ -15,7 +16,7 @@ public class IDAStarStrategy extends InformedSearchStrategy {
 
 
     @Override
-    public String findSolution(Board board) {
+    public SearchResult findSolution(Board board) {
 
         board.restartLevel();
         path = new Stack<>();
@@ -27,8 +28,11 @@ public class IDAStarStrategy extends InformedSearchStrategy {
 
             String solution = getSolutionPath(endNode);
             System.out.println("Solution: " + solution);
-            return solution;
+            System.out.println("Solution length: " + solution.length());
+            System.out.println("Expanded nodes: " + expandedNodes);
+            return new SearchResult(endNode, expandedNodes, getSolutionPath(endNode));
         }
+        System.out.println("NO SOLUTION FOUND");
         return null;
     }
 
@@ -44,17 +48,10 @@ public class IDAStarStrategy extends InformedSearchStrategy {
                 return false;
             }
 
-            System.out.println("temp no es inf");
-
             if (temp == -1){
                 endNode = path.peek();
-                if (board.isCompleted(endNode.getBags())){
-                    System.out.println("encontre");
-                }
                 return true;
             }
-
-            System.out.println("actualice threshold");
 
             threshold = temp;
         }
@@ -63,6 +60,7 @@ public class IDAStarStrategy extends InformedSearchStrategy {
     public int search(int g, int bound, Board board){
 
         StateNode current = path.peek();
+        expandedNodes++;
         int f = g + heuristic.apply(current, board);
 
         if (f > bound){
@@ -90,7 +88,6 @@ public class IDAStarStrategy extends InformedSearchStrategy {
 
                 if (temp < min){
                     min = temp;
-                    System.out.printf("actualice min: %d\n", min);
                 }
                 path.pop();
             }

@@ -5,6 +5,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
@@ -47,59 +52,6 @@ public class Board extends JPanel {
         }
     });
 
-/*    private String level
-            = "    ######\n"
-            + "    ##   #\n"
-            + "    ##$  #\n"
-            + "  ####  $##\n"
-            + "  ##  $ $ #\n"
-            + "#### # ## #   ######\n"
-            + "##   # ## #####  ..#\n"
-            + "## $  $          ..#\n"
-            + "###### ### #@##  ..#\n"
-            + "    ##     #########\n"
-            + "    ########\n";*/
-//
-    private String level =      "      ###\n"+
-                                "      #.#\n"+
-                                "  #####.#####\n"+
-                                " ##         ##\n"+
-                                "##  # # # #  ##\n"+
-                                "#  ##     ##  #\n"+
-                                "# ##  # #  ## #\n"+
-                                "#     $@$     #\n"+
-                                "####  ###  ####\n"+
-                                "   #### ####\n";
-//
-// private String level =         "  ####    \n" +
-//                                " ##  ##   \n" +
-//                                "## $  ####\n" +
-//                                "#  ..$  @#\n" +
-//                                "# $..#   #\n" +
-//                                "#   $#####\n" +
-//                                "##   #    \n" +
-//                                " ##  #    \n" +
-//                                "  #### ";
-
-// private String level =         "########\n" +
-//                                "#  ..$ #\n" +
-//                                "# $@ $ #\n" +
-//                                "# $..  #\n" +
-//                                "########";
-
-// private String level =         "#######\n" +
-//                                "# @ $.#\n" +
-//                                "#######";
-
-
-// private String level =         "#######################\n" +
-//                                "#                   . #\n" +
-//                                "#                     #\n"+
-//                                "## ###################\n"+
-//                                "#                     #\n"+
-//                                "#         $         @ #\n" +
-//                                "#                     #\n"+
-//                                "#######################\n";
 
 
     public Board(String chosenAlgorithm)  {
@@ -227,6 +179,25 @@ public class Board extends JPanel {
     }
 
 
+    private String getLevelData(){
+        StringBuilder sb = new StringBuilder();
+        try {
+            URL res = getClass().getClassLoader().getResource("level.txt");
+            File myObj = Paths.get(res.toURI()).toFile();
+
+            Scanner myReader = new Scanner(myObj);
+            while (myReader.hasNextLine()) {
+                String data = myReader.nextLine();
+                sb.append(data);
+                sb.append('\n');
+            }
+            myReader.close();
+        } catch (FileNotFoundException | URISyntaxException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+        return sb.toString();
+    }
 
     private void initWorld() {
        positions = new ArrayList<>();
@@ -240,10 +211,11 @@ public class Board extends JPanel {
         Wall wall;
         Baggage b;
         Goal a;
+        String levelData = getLevelData();
 
-        for (int i = 0; i < level.length(); i++) {
+        for (int i = 0; i < levelData.length(); i++) {
 
-            char item = level.charAt(i);
+            char item = levelData.charAt(i);
 
             switch (item) {
 

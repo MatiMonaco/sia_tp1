@@ -13,7 +13,7 @@ public class Goal extends Actor {
     
     private void initArea() {
 
-        ImageIcon iicon = new ImageIcon("src/main/java/resources/area.png");
+        ImageIcon iicon = new ImageIcon(getClass().getClassLoader().getResource("area.png"));
         Image image = iicon.getImage();
         setImage(image);
     }

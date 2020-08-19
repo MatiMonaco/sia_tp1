@@ -26,7 +26,7 @@ public class IDDFSStrategy extends SearchStrategy {
             return new SearchResult(endNode, expandedNodes, getSolutionPath(endNode));
         }
         System.out.println("NO SOLUTION FOUND");
-        return null;
+        return new SearchResult(null, expandedNodes, null);
     }
 
     public boolean iddfs(StateNode root, Board board){

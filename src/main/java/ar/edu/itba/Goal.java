@@ -3,20 +3,18 @@ package ar.edu.itba;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 
-public class Wall extends Actor {
+public class Goal extends Actor {
 
-    private Image image;
-
-    public Wall(int x, int y) {
+    public Goal(int x, int y) {
         super(x, y);
         
-        initWall();
+        initArea();
     }
     
-    private void initWall() {
-        
-        ImageIcon iicon = new ImageIcon("src/resources/wall.png");
-        image = iicon.getImage();
+    private void initArea() {
+
+        ImageIcon iicon = new ImageIcon(getClass().getClassLoader().getResource("area.png"));
+        Image image = iicon.getImage();
         setImage(image);
     }
 

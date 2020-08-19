@@ -2,10 +2,8 @@ package ar.edu.itba;
 
 import java.util.*;
 
-public class DFSStrategy extends SearchStrategy {
+public class BFSStrategy extends SearchStrategy {
 
-    private Set<StateNode> visited;
-    private Stack<StateNode> vertices;
     private long expandedNodes = 0;
 
     @Override
@@ -13,21 +11,21 @@ public class DFSStrategy extends SearchStrategy {
 
         //init
         Set<StateNode> visited;
-        Stack<StateNode> frontier;
+        Queue<StateNode> frontier;
         board.restartLevel();
         visited = new HashSet<>();
-        frontier = new Stack<>();
+        frontier = new LinkedList<>();
 
         Set<Baggage> set = new HashSet<>(board.getBaggs());
 
         StateNode root = new StateNode(' ',new Player(board.getPlayer().getX(),board.getPlayer().getY()),set,null,0);
-        frontier.push(root);
+        frontier.add(root);
 
         while(!frontier.isEmpty()){
 
-            StateNode vertex = frontier.pop();
-            visited.add(vertex);
+            StateNode vertex = frontier.poll();
             expandedNodes++;
+            visited.add(vertex);
             List<StateNode> successors = vertex.getChildren(board);
 
             for(StateNode successor : successors){
@@ -35,19 +33,19 @@ public class DFSStrategy extends SearchStrategy {
                 if(!visited.contains(successor) && !frontier.contains(successor)){
                     if(board.isCompleted(successor.baggs)){
                         String solution =getSolutionPath(successor);
-                        System.out.println("DFS Solution: " + solution);
+                        System.out.println("BFS Solution: " + solution);
                         System.out.println("Solution length: "+solution.length());
                         System.out.println("Expanded nodes: " + expandedNodes);
                         return new SearchResult(successor, expandedNodes, getSolutionPath(successor));
                     }
 
-                    frontier.push(successor);
+                    frontier.add(successor);
 
                 }
             }
         }
         System.out.println("NO SOLUTION FOUND");
-        return null;
+        return new SearchResult(null, expandedNodes, null);
 
 
     }

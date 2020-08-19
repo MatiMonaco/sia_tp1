@@ -4,6 +4,7 @@ public class SearchResult {
 
     private SearchStrategy.StateNode goalNode;
     private long expandedNodes;
+    private long frontierNodes;
     private String solution;
 
     public SearchResult(SearchStrategy.StateNode goalNode, long expandedNodes, String solution) {

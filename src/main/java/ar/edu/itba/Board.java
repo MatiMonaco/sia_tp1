@@ -1,15 +1,23 @@
 package ar.edu.itba;
 
-import java.awt.Color;
-import java.awt.Graphics;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.*;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.util.*;
+import java.util.List;
+import java.util.function.BiFunction;
 import javax.swing.*;
 import javax.swing.Timer;
-import javax.swing.border.Border;
 
 public class Board extends JPanel {
 
@@ -48,111 +56,132 @@ public class Board extends JPanel {
         }
     });
 
-//    private String level
-//            = "    ######\n"
-//            + "    ##   #\n"
-//            + "    ##$  #\n"
-//            + "  ####  $##\n"
-//            + "  ##  $ $ #\n"
-//            + "#### # ## #   ######\n"
-//            + "##   # ## #####  ..#\n"
-//            + "## $  $          ..#\n"
-//            + "###### ### #@##  ..#\n"
-//            + "    ##     #########\n"
-//            + "    ########\n";
-//
-//    private String level =      "      ###\n"+
-//                                "      #.#\n"+
-//                                "  #####.#####\n"+
-//                                " ##         ##\n"+
-//                                "##  # # # #  ##\n"+
-//                                "#  ##     ##  #\n"+
-//                                "# ##  # #  ## #\n"+
-//                                "#     $@$     #\n"+
-//                                "####  ###  ####\n"+
-//                                "   #### ####\n";
-//
-// private String level =         "  ####    \n" +
-//                                " ##  ##   \n" +
-//                                "## $  ####\n" +
-//                                "#  ..$  @#\n" +
-//                                "# $..#   #\n" +
-//                                "#   $#####\n" +
-//                                "##   #    \n" +
-//                                " ##  #    \n" +
-//                                "  #### ";
-
-// private String level =         "########\n" +
-//                                "#  ..$ #\n" +
-//                                "# $@ $ #\n" +
-//                                "# $..  #\n" +
-//                                "########";
-
- private String level =          "   ####\n" +
-                                 "   #  #\n" +
-                                 "   #  #\n" +
-                                 "   #$.#\n" +
-                                 "####  #\n" +
-                                 "#     #\n" +
-                                 "#@$.  #\n" +
-                                 "#######";
 
 
-// private String level =         "#######################\n" +
-//                                "#                   . #\n" +
-//                                "#                     #\n"+
-//                                "## ###################\n"+
-//                                "#                     #\n"+
-//                                "#         $         @ #\n" +
-//                                "#                     #\n"+
-//                                "#######################\n";
-
-
-    public Board(String chosenAlgorithm)  {
+    public Board() {
 
         initBoard();
-        computeDistancesToGoal(positions);
-        System.out.println("BOARD!");
-
-        switch(chosenAlgorithm){
-            case "BFS":
-                BFSStrategy bfs = new BFSStrategy();
-                solution =  bfs.findSolution(this);
-                break;
-
-            case "DFS":
-                DFSStrategy dfs = new DFSStrategy();
-                solution =  dfs.findSolution(this);
-                break;
-
-            case "IDDFS":
-
-                IDDFSStrategy iddfs = new IDDFSStrategy();
-                solution =  iddfs.findSolution(this);
-                break;
-
-            case "IDA*":
-                IDAStarStrategy idaStar = new IDAStarStrategy(Heuristics::simpleManhattanDistances);
-                solution = idaStar.findSolution(this);
-                break;
-
-            case "GGS":
-
-                GGSStrategy ggs = new GGSStrategy(Heuristics::minimumMatchingLowerBound);
-                solution = ggs.findSolution(this);
-
-                break;
-
-            case "A*":
-                AStarStrategy aStar = new AStarStrategy(Heuristics::simpleManhattanDistances);
-                solution = aStar.findSolution(this);
-
-                break;
-
-
+        preCompute();
+        try {
+            compute();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
         }
 
 
+    }
+    private void compute() throws URISyntaxException {
+        String algorithm = null;
+        JSONParser parser = new JSONParser();
+        URL res = getClass().getClassLoader().getResource("parameters.json");
+        String  path = Paths.get(res.toURI()).toString();
+        try (Reader reader = new FileReader(path)) {
+
+            JSONObject jsonObject = (JSONObject) parser.parse(reader);
+            System.out.println(jsonObject);
+
+            algorithm = (String) jsonObject.get("algorithm");
+            if(algorithm == null){
+                System.out.println("Algorithm can't be null");
+
+            }
+            System.out.println(algorithm);
+            String heuristic;
+            switch(algorithm){
+                case "BFS":
+                    BFSStrategy bfs = new BFSStrategy();
+                    solution =  bfs.findSolution(this);
+                    break;
+
+                case "DFS":
+                    DFSStrategy dfs = new DFSStrategy();
+                    solution =  dfs.findSolution(this);
+                    break;
+
+                case "IDDFS":
+
+                    IDDFSStrategy iddfs = new IDDFSStrategy();
+                    solution =  iddfs.findSolution(this);
+                    break;
+
+                case "IDA*":
+                    heuristic = (String) jsonObject.get("heuristic");
+                    if(heuristic == null){
+                        System.out.println("Heuristic can't be null");
+
+                    }else {
+                        BiFunction<SearchStrategy.StateNode, Board, Integer> func;
+                        if((func =Heuristics.heuristicsMap.get(heuristic)) == null){
+                            System.out.println("Heuristic '+"+heuristic+"' doesn't exists");
+                        }else{
+                            IDAStarStrategy idaStar = new IDAStarStrategy(func);
+                            solution = idaStar.findSolution(this);
+
+                        }
+                    }
+
+                    break;
+
+                case "GGS":
+
+                  heuristic = (String) jsonObject.get("heuristic");
+                    if(heuristic == null){
+                        System.out.println("Heuristic can't be null");
+
+                    }else {
+                        BiFunction<SearchStrategy.StateNode, Board, Integer> func;
+                        if((func =Heuristics.heuristicsMap.get(heuristic)) == null){
+                            System.out.println("Heuristic '+"+heuristic+"' doesn't exists");
+                        }else{
+                            GGSStrategy ggs = new GGSStrategy(func);
+                            solution = ggs.findSolution(this);
+
+                        }
+                    }
+
+                    break;
+
+                case "A*":
+                    heuristic = (String) jsonObject.get("heuristic");
+                    if(heuristic == null){
+                        System.out.println("Heuristic can't be null");
+
+                    }else {
+                        BiFunction<SearchStrategy.StateNode, Board, Integer> func;
+                        if((func =Heuristics.heuristicsMap.get(heuristic)) == null){
+                            System.out.println("Heuristic '+"+heuristic+"' doesn't exists");
+                        }else{
+                            AStarStrategy aStar = new AStarStrategy(func);
+                            solution = aStar.findSolution(this);
+
+                        }
+                    }
+
+                    break;
+
+
+            }
+
+            // loop array
+//            JSONArray msg = (JSONArray) jsonObject.get("messages");
+//            Iterator<String> iterator = msg.iterator();
+//            while (iterator.hasNext()) {
+//                System.out.println(iterator.next());
+//            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+    }
+
+    private void preCompute(){
+        computeDistancesToGoal(positions);
     }
 
     private void initBoard() {
@@ -232,6 +261,27 @@ public class Board extends JPanel {
         return this.h;
     }
 
+
+    private String getLevelData(){
+        StringBuilder sb = new StringBuilder();
+        try {
+            URL res = getClass().getClassLoader().getResource("level.txt");
+            File myObj = Paths.get(res.toURI()).toFile();
+
+            Scanner myReader = new Scanner(myObj);
+            while (myReader.hasNextLine()) {
+                String data = myReader.nextLine();
+                sb.append(data);
+                sb.append('\n');
+            }
+            myReader.close();
+        } catch (FileNotFoundException | URISyntaxException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+        return sb.toString();
+    }
+
     private void initWorld() {
        positions = new ArrayList<>();
         walls = new ArrayList<>();
@@ -244,10 +294,11 @@ public class Board extends JPanel {
         Wall wall;
         Baggage b;
         Goal a;
+        String levelData = getLevelData();
 
-        for (int i = 0; i < level.length(); i++) {
+        for (int i = 0; i < levelData.length(); i++) {
 
-            char item = level.charAt(i);
+            char item = levelData.charAt(i);
 
             switch (item) {
 
@@ -323,10 +374,32 @@ public class Board extends JPanel {
         }
     }
 
+    private void printResult(Graphics g){
+        if(solution != null){
+            boolean found = solution.getGoalNode() != null;
+
+            g.setColor(found ? Color.black:Color.RED);
+            g.setFont(new Font("Arial",Font.BOLD,14));
+            g.drawString("Resultados:",w + 5,20);
+            g.setFont(new Font("Arial",Font.BOLD,12));
+            g.drawString("Nodos expandidos: "+solution.getExpandedNodes(),w + 5,45);
+            g.drawString("Nodos frontera al finalizar: "+solution.getExpandedNodes(),w + 5,65);
+            g.drawString("Profundidad alcanzada: "+solution.getGoalNode().pathCost,w + 5,85);
+            g.drawString(found ? "Solucion encontrada (Pulse 'S' para ver)":"Solucion no encontrada",w + 5,105);
+
+
+
+        }
+    }
+
+
         private void buildWorld(Graphics g) {
 
         g.setColor(new Color(250, 240, 170));
-        g.fillRect(0, 0, this.getWidth(), this.getHeight());
+        g.fillRect(0, 0, w, this.getHeight());
+            g.setColor(Color.lightGray);
+            g.fillRect(w, 0, this.getWidth()-w, this.getHeight());
+        printResult(g);
 
         ArrayList<Actor> world = new ArrayList<>();
 

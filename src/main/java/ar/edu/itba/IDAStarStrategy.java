@@ -33,7 +33,7 @@ public class IDAStarStrategy extends InformedSearchStrategy {
             return new SearchResult(endNode, expandedNodes, getSolutionPath(endNode));
         }
         System.out.println("NO SOLUTION FOUND");
-        return null;
+        return new SearchResult(null, expandedNodes, null);
     }
 
     public boolean idaStar(StateNode root, Board board){

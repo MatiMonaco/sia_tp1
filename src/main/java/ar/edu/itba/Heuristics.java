@@ -5,10 +5,13 @@ import ar.edu.itba.SearchStrategy.StateNode;
 
 
 import java.util.*;
+import java.util.function.BiFunction;
 
-public  class Heuristics {
+public class Heuristics {
 
-
+    public static Map<String, BiFunction<StateNode,Board,Integer>> heuristicsMap = new HashMap<>(){{
+        put("MML",Heuristics::minimumMatchingLowerBound);
+        put("SMD",Heuristics::simpleManhattanDistances);}};
     public static int goalCount(StateNode node,Board board){
 
         List<Goal> goals = board.getGoals();
@@ -74,7 +77,7 @@ public  class Heuristics {
     private static List<Matching> getGoalMatchings(StateNode node,Board board){
         List<Goal> goals = board.getGoals();
         Set<Baggage> baggageSet = node.getBags();
-        Queue<Matching> priorityQueue = new PriorityQueue<>(11,Comparator.comparingInt(matching->matching.getDistance()));
+        Queue<Matching> priorityQueue = new PriorityQueue<>(11,Comparator.comparingInt(Matching::getDistance));
 
         for(Goal goal: goals){
             for(Baggage bag : baggageSet){

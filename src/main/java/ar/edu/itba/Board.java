@@ -24,7 +24,7 @@ public class Board extends JPanel {
     public static final int OFFSET = 0;
     public static final int SPACE = 20;
     private List<Wall> walls;
-    private Set<Baggage> baggs;
+    private Set<Box> baggs;
     private List<Goal> goals;
     private SearchResult solution;
     private Player player;
@@ -71,7 +71,7 @@ public class Board extends JPanel {
 
     }
     private void compute() throws URISyntaxException {
-        String algorithm = null;
+        String algorithm;
         JSONParser parser = new JSONParser();
         URL res = getClass().getClassLoader().getResource("parameters.json");
         String  path = Paths.get(res.toURI()).toString();
@@ -173,13 +173,9 @@ public class Board extends JPanel {
 //                System.out.println(iterator.next());
 //            }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
+        } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
-
-
 
 
     }
@@ -296,7 +292,7 @@ public class Board extends JPanel {
         int y = OFFSET;
 
         Wall wall;
-        Baggage b;
+        Box b;
         Goal a;
         String levelData = getLevelData();
 
@@ -324,7 +320,7 @@ public class Board extends JPanel {
                     break;
 
                 case '$':
-                    b = new Baggage(x, y);
+                    b = new Box(x, y);
                     baggs.add(b);
                     positions.add(new Actor(x,y));
                     x += SPACE;
@@ -405,7 +401,7 @@ public class Board extends JPanel {
 
         private void buildWorld(Graphics g) {
 
-        g.setColor(new Color(250, 240, 170));
+        g.setColor(new Color(197, 131, 114));
         g.fillRect(0, 0, w, this.getHeight());
             g.setColor(Color.lightGray);
             g.fillRect(w, 0, this.getWidth()-w, this.getHeight());
@@ -420,7 +416,7 @@ public class Board extends JPanel {
 
             for (Actor item : world) {
 
-                if (item instanceof Player || item instanceof Baggage) {
+                if (item instanceof Player || item instanceof Box) {
 
                     g.drawImage(item.getImage(), item.getX() + 2, item.getY() + 2, this);
                 } else {
@@ -576,17 +572,17 @@ public class Board extends JPanel {
 
     private boolean checkBagCollision(char direction) {
 
-        Iterator<Baggage> it1 = baggs.iterator();
-        List<Baggage> toAdd = new ArrayList<>();
+        Iterator<Box> it1 = baggs.iterator();
+        List<Box> toAdd = new ArrayList<>();
         switch (direction) {
 
             case 'L':
 
 
                 while(it1.hasNext()) {
-                    Baggage bag = it1.next();
+                    Box bag = it1.next();
                     if (player.isLeftCollision(bag)) {
-                        for (Baggage item : baggs) {
+                        for (Box item : baggs) {
                             {
 
 
@@ -618,9 +614,9 @@ public class Board extends JPanel {
 
 
                 while(it1.hasNext()) {
-                    Baggage bag = it1.next();
+                    Box bag = it1.next();
                     if (player.isRightCollision(bag)) {
-                        for (Baggage item : baggs) {
+                        for (Box item : baggs) {
                             {
 
 
@@ -651,9 +647,9 @@ public class Board extends JPanel {
             case 'T':
 
                 while(it1.hasNext()) {
-                    Baggage bag = it1.next();
+                    Box bag = it1.next();
                     if (player.isTopCollision(bag)) {
-                        for (Baggage item : baggs) {
+                        for (Box item : baggs) {
                             {
 
 
@@ -685,9 +681,9 @@ public class Board extends JPanel {
 
 
                 while(it1.hasNext()) {
-                    Baggage bag = it1.next();
+                    Box bag = it1.next();
                     if (player.isBottomCollision(bag)) {
-                        for (Baggage item : baggs) {
+                        for (Box item : baggs) {
                             {
 
 
@@ -725,15 +721,15 @@ public class Board extends JPanel {
 
 
 
-    public boolean isCompleted(Set<Baggage> baggsSet) {
+    public boolean isCompleted(Set<Box> baggsSet) {
 
         int nOfBags = baggsSet.size();
-       Baggage[] baggsArray = baggsSet.toArray(new Baggage[0]);
+       Box[] baggsArray = baggsSet.toArray(new Box[0]);
         int finishedBags = 0;
 
         for (int i = 0; i < nOfBags; i++) {
             
-            Baggage bag = baggsArray[i];
+            Box bag = baggsArray[i];
             
             for (int j = 0; j < nOfBags; j++) {
                 
@@ -764,7 +760,7 @@ public class Board extends JPanel {
         }
     }
 
-    public Set<Baggage> getBaggs() {
+    public Set<Box> getBaggs() {
         return baggs;
     }
 

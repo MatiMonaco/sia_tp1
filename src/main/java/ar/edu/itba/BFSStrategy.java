@@ -21,7 +21,7 @@ public class BFSStrategy extends SearchStrategy {
         visited = new HashSet<>();
         frontier = new LinkedList<>();
 
-        Set<Baggage> set = new HashSet<>(board.getBaggs());
+        Set<Box> set = new HashSet<>(board.getBaggs());
 
         StateNode root = new StateNode(' ',new Player(board.getPlayer().getX(),board.getPlayer().getY()),set,null,0);
         frontier.add(root);
@@ -36,7 +36,7 @@ public class BFSStrategy extends SearchStrategy {
             for(StateNode successor : successors){
 
                 if(!visited.contains(successor) && !frontier.contains(successor)){
-                    if(board.isCompleted(successor.baggs)){
+                    if(board.isCompleted(successor.boxes)){
                         String solution =getSolutionPath(successor);
                         System.out.println("BFS Solution: " + solution);
                         System.out.println("Solution length: "+solution.length());

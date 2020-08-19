@@ -10,7 +10,7 @@ import javax.swing.JFrame;
 
 public class Sokoban extends JFrame {
 
-    private final int OFFSET = 60;
+    private final int OFFSET = 40;
 
     public Sokoban() {
         initUI();
@@ -24,7 +24,7 @@ public class Sokoban extends JFrame {
         add(board);
         setTitle("Sokoban");
         setSize(board.getBoardWidth() +250,
-                board.getBoardHeight() +OFFSET+20);
+                board.getBoardHeight() +OFFSET);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);

@@ -8,6 +8,10 @@ public class IDDFSStrategy extends SearchStrategy {
     private Set<StateNode> visited;
     private StateNode endNode;
 
+    public IDDFSStrategy() {
+        super("IDDFS");
+    }
+
     @Override
     public SearchResult findSolution(Board board)  {
 
@@ -23,10 +27,10 @@ public class IDDFSStrategy extends SearchStrategy {
             System.out.println("Solution: " + solution);
             System.out.println("Solution length: " + solution.length());
             System.out.println("Expanded nodes: " + expandedNodes);
-            return new SearchResult(endNode, expandedNodes, getSolutionPath(endNode));
+            return new SearchResult(name, endNode, expandedNodes, getSolutionPath(endNode));
         }
         System.out.println("NO SOLUTION FOUND");
-        return new SearchResult(null, expandedNodes, null);
+        return new SearchResult(name, null, null, expandedNodes, null);
     }
 
     public boolean iddfs(StateNode root, Board board){
@@ -62,6 +66,7 @@ public class IDDFSStrategy extends SearchStrategy {
 
         visited.add(current);
         expandedNodes++;
+        StateNode found = null;
         for(StateNode successor : current.getChildren(board)) {
 
             if(!visited.contains(successor)){

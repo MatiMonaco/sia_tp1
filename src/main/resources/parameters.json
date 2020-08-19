@@ -1,3 +1,4 @@
 {
-  "algorithm":"BFS"
+  "algorithm":"A*",
+  "heuristic": "SMD"
 }

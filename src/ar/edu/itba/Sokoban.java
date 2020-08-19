@@ -6,7 +6,7 @@ import javax.swing.JFrame;
 
 public class Sokoban extends JFrame {
 
-    private final int OFFSET = 40;
+    private final int OFFSET = 60;
 
     public Sokoban() {
 
@@ -19,10 +19,12 @@ public class Sokoban extends JFrame {
         add(board);
 
         setTitle("Sokoban - "+chosenAlgorithm);
-        
-        setSize(board.getBoardWidth() +OFFSET+200,
-                board.getBoardHeight() +OFFSET);
-        
+
+
+
+        setSize(board.getBoardWidth() +250,
+                board.getBoardHeight() +OFFSET+20);
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
     }

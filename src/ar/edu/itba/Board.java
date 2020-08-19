@@ -1,12 +1,12 @@
 package ar.edu.itba;
 
-import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.*;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.Timer;
 import javax.swing.border.Border;
@@ -227,6 +227,8 @@ public class Board extends JPanel {
         return this.h;
     }
 
+
+
     private void initWorld() {
        positions = new ArrayList<>();
         walls = new ArrayList<>();
@@ -318,11 +320,32 @@ public class Board extends JPanel {
         }
     }
 
+    private void printResult(Graphics g){
+        if(solution != null){
+            boolean found = solution.getGoalNode() != null;
+
+            g.setColor(found ? Color.blue:Color.RED);
+            g.setFont(new Font("Arial",Font.BOLD,14));
+            g.drawString("Resultados:",w + 5,20);
+            g.setFont(new Font("Arial",Font.BOLD,12));
+            g.drawString("Nodos expandidos: "+solution.getExpandedNodes(),w + 5,45);
+            g.drawString("Nodos frontera al finalizar: "+solution.getExpandedNodes(),w + 5,65);
+            g.drawString("Profundidad alcanzada: "+solution.getGoalNode().pathCost,w + 5,85);
+            g.drawString(found ? "Solucion encontrada (Pulse 'S' para ver)":"Solucion no encontrada",w + 5,105);
+
+
+
+        }
+    }
+
+
         private void buildWorld(Graphics g) {
 
         g.setColor(new Color(250, 240, 170));
         g.fillRect(0, 0, w, this.getHeight());
-        
+            g.setColor(Color.gray);
+            g.fillRect(w, 0, this.getWidth()-w, this.getHeight());
+        printResult(g);
 
         ArrayList<Actor> world = new ArrayList<>();
 

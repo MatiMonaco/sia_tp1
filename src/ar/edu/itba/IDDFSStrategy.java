@@ -31,7 +31,7 @@ public class IDDFSStrategy extends SearchStrategy {
             System.out.println(++depth);
         }
         System.out.println("NO SOLUTION FOUND");
-        return null;
+        return new SearchResult(null, expandedNodes, null);
     }
 
     StateNode dls(StateNode current, int depth, Board board){

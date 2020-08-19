@@ -47,7 +47,7 @@ public class DFSStrategy extends SearchStrategy {
             }
         }
         System.out.println("NO SOLUTION FOUND");
-        return null;
+        return  new SearchResult(null, expandedNodes, null);
 
 
     }

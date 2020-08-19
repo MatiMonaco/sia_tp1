@@ -8,7 +8,7 @@ public class GGSStrategy extends InformedSearchStrategy {
     private long expandedNodes = 0;
 
     public GGSStrategy(String heuristicName,BiFunction<StateNode,Board, Integer> heuristic) {
-        super("GGS",heuristicName,heuristic);
+        super("GGS",heuristicName,heuristic,true);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class GGSStrategy extends InformedSearchStrategy {
                 System.out.println("Solution length: " + solution.length());
                 System.out.println("Expanded nodes: " + expandedNodes);
 
-                return new SearchResult(name,heuristicName,vertex, expandedNodes, getSolutionPath(vertex));
+                return new SearchResult(name,heuristicName,vertex, expandedNodes,frontier.size(), getSolutionPath(vertex));
             }
             visited.add(vertex);
             expandedNodes++;
@@ -65,7 +65,7 @@ public class GGSStrategy extends InformedSearchStrategy {
             }
         }
         System.out.println("NO SOLUTION FOUND");
-        return new SearchResult(name,heuristicName,null, expandedNodes, null);
+        return new SearchResult(name,heuristicName,null, expandedNodes,frontier.size(), null);
 
 
     }

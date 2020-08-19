@@ -6,8 +6,8 @@ public class BFSStrategy extends SearchStrategy {
 
     private long expandedNodes = 0;
 
-    public BFSStrategy() {
-        super("BFS");
+    public BFSStrategy(boolean deadlockCheck) {
+        super("BFS",deadlockCheck);
     }
 
 
@@ -41,7 +41,7 @@ public class BFSStrategy extends SearchStrategy {
                         System.out.println("BFS Solution: " + solution);
                         System.out.println("Solution length: "+solution.length());
                         System.out.println("Expanded nodes: " + expandedNodes);
-                        return new SearchResult(name,null,successor, expandedNodes, getSolutionPath(successor));
+                        return new SearchResult(name,null,successor, expandedNodes,frontier.size(), getSolutionPath(successor));
                     }
 
                     frontier.add(successor);
@@ -50,7 +50,7 @@ public class BFSStrategy extends SearchStrategy {
             }
         }
         System.out.println("NO SOLUTION FOUND");
-        return new SearchResult(name,null,null, expandedNodes, null);
+        return new SearchResult(name,null,null, expandedNodes,frontier.size(), null);
 
 
     }

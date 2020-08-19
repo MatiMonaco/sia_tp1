@@ -9,9 +9,10 @@ public abstract class SearchStrategy {
     int[] dir_x = {-1, 0, 1, 0};
     int[] dir_y = {0, 1, 0, -1};
     String name;
-
-    public SearchStrategy(String name) {
+    boolean deadlockCheck;
+    public SearchStrategy(String name,boolean deadlockCheck) {
         this.name = name;
+        this.deadlockCheck = deadlockCheck;
     }
 
     public String getName() {
@@ -93,12 +94,15 @@ public abstract class SearchStrategy {
 
                 return null;
             }
-            for (Baggage bag: baggs) {
-                if (deadlockedBags.contains(bag)) {
+            if(deadlockCheck){
+                for (Baggage bag: baggs) {
+                    if (deadlockedBags.contains(bag)) {
 
-                    return null;
+                        return null;
+                    }
                 }
             }
+
             switch(direction){
                 case 'L':
                     player.move(-Board.SPACE,0);
@@ -160,7 +164,10 @@ public abstract class SearchStrategy {
                             }
                             it1.remove();
                             bag.move(-Board.SPACE,0 );
-                            checkDeadLock(direction, bag, board);
+                            if(deadlockCheck){
+                                checkDeadLock(direction, bag, board);
+                            }
+
                             toAdd = bag;
                             break;
                         }
@@ -198,7 +205,9 @@ public abstract class SearchStrategy {
                                     }
                                     it1.remove();
                                     bag.move(Board.SPACE,0 );
-                                    checkDeadLock(direction, bag, board);
+                                    if(deadlockCheck){
+                                        checkDeadLock(direction, bag, board);
+                                    }
                                     toAdd = bag;
                                     break;
                                 }
@@ -233,7 +242,9 @@ public abstract class SearchStrategy {
                                     }
                                     it1.remove();
                                     bag.move(0,-Board.SPACE );
-                                    checkDeadLock(direction, bag, board);
+                                    if(deadlockCheck){
+                                        checkDeadLock(direction, bag, board);
+                                    }
                                     toAdd = bag;
                                     break;
                                 }
@@ -270,7 +281,9 @@ public abstract class SearchStrategy {
                                     }
                                     it1.remove();
                                     bag.move(0,Board.SPACE );
-                                    checkDeadLock(direction, bag, board);
+                                    if(deadlockCheck){
+                                        checkDeadLock(direction, bag, board);
+                                    }
                                     toAdd = bag;
                                     break;
                                 }

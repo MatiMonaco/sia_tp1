@@ -9,8 +9,8 @@ public abstract class InformedSearchStrategy extends SearchStrategy {
     protected BiFunction<StateNode,Board,Integer> heuristic;
     protected String heuristicName;
 
-    public InformedSearchStrategy(String name,String heuristicName,BiFunction<StateNode,Board,Integer> heuristic) {
-        super(name);
+    public InformedSearchStrategy(String name,String heuristicName,BiFunction<StateNode,Board,Integer> heuristic,boolean deadlockCheck) {
+        super(name,deadlockCheck);
         this.heuristic = heuristic;
         this.heuristicName = heuristicName;
     }

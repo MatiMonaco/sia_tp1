@@ -1,4 +1,5 @@
 {
-  "algorithm":"A*",
-  "heuristic": "SMD"
+  "algorithm":"BFS",
+  "heuristic": "SMD",
+  "deadlockCheck":"true"
 }

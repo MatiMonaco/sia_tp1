@@ -87,20 +87,24 @@ public class Board extends JPanel {
             }
             System.out.println(algorithm);
             String heuristic;
+            String deadlockCheck;
             switch(algorithm){
                 case "BFS":
-                    BFSStrategy bfs = new BFSStrategy();
+                    deadlockCheck = (String) jsonObject.get("deadlockCheck");
+
+                    BFSStrategy bfs = new BFSStrategy((deadlockCheck == null || deadlockCheck == "false") ? false:true);
                     solution =  bfs.findSolution(this);
                     break;
 
                 case "DFS":
-                    DFSStrategy dfs = new DFSStrategy();
+                    deadlockCheck = (String) jsonObject.get("deadlockCheck");
+                    DFSStrategy dfs = new DFSStrategy((deadlockCheck == null || deadlockCheck == "false") ? false:true);
                     solution =  dfs.findSolution(this);
                     break;
 
                 case "IDDFS":
-
-                    IDDFSStrategy iddfs = new IDDFSStrategy();
+                    deadlockCheck = (String) jsonObject.get("deadlockCheck");
+                    IDDFSStrategy iddfs = new IDDFSStrategy((deadlockCheck == null || deadlockCheck == "false") ? false:true);
                     solution =  iddfs.findSolution(this);
                     break;
 
@@ -388,7 +392,7 @@ public class Board extends JPanel {
             }
 
             g.drawString("Nodos expandidos: "+solution.getExpandedNodes(),w + 5,i++*space);
-            g.drawString("Nodos frontera al finalizar: "+solution.getExpandedNodes(),w + 5,i++*space);
+            g.drawString("Nodos frontera al finalizar: "+solution.getFrontierNodes(),w + 5,i++*space);
             g.drawString("Profundidad alcanzada: "+solution.getGoalNode().pathCost,w + 5,i++*space);
             g.setColor(found ? Color.BLUE:Color.RED);
             g.drawString(found ? "Solucion encontrada (Pulse 'S' para ver)":"Solucion no encontrada",w + 5,i++*space);

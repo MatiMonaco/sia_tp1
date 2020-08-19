@@ -9,12 +9,13 @@ public class SearchResult {
     private String algorithm;
     private String heuristicName;
 
-    public SearchResult(String algorithm,String heuristicName,SearchStrategy.StateNode goalNode, long expandedNodes, String solution) {
+    public SearchResult(String algorithm,String heuristicName,SearchStrategy.StateNode goalNode, long expandedNodes,long frontierNodes, String solution) {
         this.goalNode = goalNode;
         this.expandedNodes = expandedNodes;
         this.solution = solution;
         this.algorithm = algorithm;
         this.heuristicName = heuristicName;
+        this.frontierNodes = frontierNodes;
     }
 
     public long getFrontierNodes() {

@@ -9,6 +9,7 @@ import java.awt.event.KeyEvent;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.Timer;
+import javax.swing.border.Border;
 
 public class Board extends JPanel {
 
@@ -21,11 +22,15 @@ public class Board extends JPanel {
     private Player player;
     private int w = 0;
     private int h = 0;
-    
+    private List<Actor> positions;
+    private Map<Goal,Map<Actor,Integer>> distancesToGoal;
+
+
+
+
     private boolean isCompleted = false;
     private int i = 0;
     private  Timer timer = new Timer(250, new ActionListener() {
-
         @Override
         public void actionPerformed(ActionEvent e) {
 
@@ -56,16 +61,16 @@ public class Board extends JPanel {
             + "    ##     #########\n"
             + "    ########\n";*/
 //
-//    private String level =      "      ###\n"+
-//                                "      #.#\n"+
-//                                "  #####.#####\n"+
-//                                " ##         ##\n"+
-//                                "##  # # # #  ##\n"+
-//                                "#  ##     ##  #\n"+
-//                                "# ##  # #  ## #\n"+
-//                                "#     $@$     #\n"+
-//                                "####  ###  ####\n"+
-//                                "   #### ####\n";
+    private String level =      "      ###\n"+
+                                "      #.#\n"+
+                                "  #####.#####\n"+
+                                " ##         ##\n"+
+                                "##  # # # #  ##\n"+
+                                "#  ##     ##  #\n"+
+                                "# ##  # #  ## #\n"+
+                                "#     $@$     #\n"+
+                                "####  ###  ####\n"+
+                                "   #### ####\n";
 //
 // private String level =         "  ####    \n" +
 //                                " ##  ##   \n" +
@@ -77,15 +82,67 @@ public class Board extends JPanel {
 //                                " ##  #    \n" +
 //                                "  #### ";
 
- private String level =         "#######\n" +
-                                "#.$@$.#\n" +
-                                "#.$   #\n" +
-                                "#######\n";
+// private String level =         "########\n" +
+//                                "#  ..$ #\n" +
+//                                "# $@ $ #\n" +
+//                                "# $..  #\n" +
+//                                "########";
 
 
-    public Board()  {
+// private String level =         "#######################\n" +
+//                                "#                   . #\n" +
+//                                "#                     #\n"+
+//                                "## ###################\n"+
+//                                "#                     #\n"+
+//                                "#         $         @ #\n" +
+//                                "#                     #\n"+
+//                                "#######################\n";
+
+
+    public Board(String chosenAlgorithm)  {
 
         initBoard();
+        computeDistancesToGoal(positions);
+        System.out.println("BOARD!");
+
+        switch(chosenAlgorithm){
+            case "BFS":
+                BFSStrategy bfs = new BFSStrategy();
+                solution =  bfs.findSolution(this);
+                break;
+
+            case "DFS":
+                DFSStrategy dfs = new DFSStrategy();
+                solution =  dfs.findSolution(this);
+                break;
+
+            case "IDDFS":
+
+                IDDFSStrategy iddfs = new IDDFSStrategy();
+                solution =  iddfs.findSolution(this);
+                break;
+
+            case "IDA*":
+                IDAStarStrategy idaStar = new IDAStarStrategy(Heuristics::simpleManhattanDistances);
+                solution = idaStar.findSolution(this);
+                break;
+
+            case "GGS":
+
+                GGSStrategy ggs = new GGSStrategy(Heuristics::minimumMatchingLowerBound);
+                solution = ggs.findSolution(this);
+
+                break;
+
+            case "A*":
+                AStarStrategy aStar = new AStarStrategy(Heuristics::simpleManhattanDistances);
+                solution = aStar.findSolution(this);
+
+                break;
+
+
+        }
+
 
     }
 
@@ -94,20 +151,68 @@ public class Board extends JPanel {
         addKeyListener(new TAdapter());
         setFocusable(true);
         initWorld();
-//        BFSStrategy bfs = new BFSStrategy();
-//
-//        solution =  bfs.findSolution(this);
-        IDAStarStrategy aStar = new IDAStarStrategy(Heuristics::simpleGoalDistances);
-        solution = aStar.findSolution(this);
 
-//        DFSStrategy dfs = new DFSStrategy();
-//        try {
-//            solution =  dfs.findSolution(this);
-//
-//        } catch (CloneNotSupportedException e) {
-//            e.printStackTrace();
-//        }
 
+
+
+    }
+
+    private void computeDistancesToGoal(List<Actor> positions){
+        System.out.println("Starting pre-computations...");
+        distancesToGoal = new HashMap<>();
+
+        for(Goal goal :goals){
+            distancesToGoal.put(goal,new HashMap<>());
+
+            for(Actor pos : positions){
+                distancesToGoal.get(goal).put(new Actor(pos.getX(),pos.getY()),Integer.MAX_VALUE);
+            }
+        }
+        int[] dir_x = {-1, 0, 1, 0};
+        int[] dir_y = {0, 1, 0, -1};
+
+        for(Goal goal: goals){
+            distancesToGoal.get(goal).put(new Actor(goal.getX(),goal.getY()),0);
+            Queue<Actor> queue = new LinkedList<>();
+            queue.add(new Actor(goal.getX(),goal.getY()));
+
+            while(!queue.isEmpty()){
+
+                Actor position = queue.poll();
+
+                for(int i = 0; i < 4;i++){
+                    Actor boxPosition = new Actor(position.getX()+dir_x[i]*Board.SPACE,position.getY() + dir_y[i]*Board.SPACE);
+                    Actor playerPosition = new Actor(position.getX()+2*dir_x[i]*Board.SPACE,position.getY() +2*dir_y[i]*Board.SPACE);
+
+                    if(distancesToGoal.get(goal).get(boxPosition) == Integer.MAX_VALUE){
+                        boolean isWall = false;
+                       for(int j = 0; j < walls.size() && !isWall;j++){
+                           Wall wall = walls.get(j);
+                            int wallX = wall.getX();
+                            int wallY = wall.getY();
+                            if((wallX == playerPosition.getX() && wallY == playerPosition.getY())|| (wallX == boxPosition.getX() && wallY == boxPosition.getY())){
+                                isWall = true;
+                            }
+                        }
+                       if(!isWall){
+
+                           distancesToGoal.get(goal).put(boxPosition,distancesToGoal.get(goal).get(position)+1);
+                           queue.add(boxPosition);
+                       }
+
+                    }
+                }
+            }
+
+
+
+        }
+        System.out.println("Pre-computations completed.");
+        System.out.println(distancesToGoal);
+    }
+
+    public Map<Goal, Map<Actor, Integer>>  getDistancesToGoal() {
+        return distancesToGoal;
     }
 
     public int getBoardWidth() {
@@ -119,7 +224,7 @@ public class Board extends JPanel {
     }
 
     private void initWorld() {
-        
+       positions = new ArrayList<>();
         walls = new ArrayList<>();
         baggs = new HashSet<>();
         goals = new ArrayList<>();
@@ -150,27 +255,32 @@ public class Board extends JPanel {
                 case '#':
                     wall = new Wall(x, y);
                     walls.add(wall);
+                    positions.add(new Actor(x,y));
                     x += SPACE;
                     break;
 
                 case '$':
                     b = new Baggage(x, y);
                     baggs.add(b);
+                    positions.add(new Actor(x,y));
                     x += SPACE;
                     break;
 
                 case '.':
                     a = new Goal(x, y);
                     goals.add(a);
+                    positions.add(new Actor(x,y));
                     x += SPACE;
                     break;
 
                 case '@':
                     player = new Player(x, y);
+                    positions.add(new Actor(x,y));
                     x += SPACE;
                     break;
 
                 case ' ':
+                    positions.add(new Actor(x,y));
                     x += SPACE;
                     break;
 
@@ -181,6 +291,9 @@ public class Board extends JPanel {
             h = y;
         }
     }
+
+
+
 
     private class TAdapter extends KeyAdapter {
 

@@ -6,6 +6,10 @@ import java.util.*;
 
 public abstract class SearchStrategy {
 
+    int[] dir_x = {-1, 0, 1, 0};
+    int[] dir_y = {0, 1, 0, -1};
+
+    public Set<Baggage> deadlockedBags = new HashSet<>();
 
     public abstract  String findSolution(Board board) ;
 
@@ -82,6 +86,12 @@ public abstract class SearchStrategy {
 
                 return null;
             }
+            for (Baggage bag: baggs) {
+                if (deadlockedBags.contains(bag)) {
+
+                    return null;
+                }
+            }
             switch(direction){
                 case 'L':
                     player.move(-Board.SPACE,0);
@@ -143,6 +153,7 @@ public abstract class SearchStrategy {
                             }
                             it1.remove();
                             bag.move(-Board.SPACE,0 );
+                            checkDeadLock(direction, bag, board);
                             toAdd = bag;
                             break;
                         }
@@ -180,6 +191,7 @@ public abstract class SearchStrategy {
                                     }
                                     it1.remove();
                                     bag.move(Board.SPACE,0 );
+                                    checkDeadLock(direction, bag, board);
                                     toAdd = bag;
                                     break;
                                 }
@@ -214,6 +226,7 @@ public abstract class SearchStrategy {
                                     }
                                     it1.remove();
                                     bag.move(0,-Board.SPACE );
+                                    checkDeadLock(direction, bag, board);
                                     toAdd = bag;
                                     break;
                                 }
@@ -250,6 +263,7 @@ public abstract class SearchStrategy {
                                     }
                                     it1.remove();
                                     bag.move(0,Board.SPACE );
+                                    checkDeadLock(direction, bag, board);
                                     toAdd = bag;
                                     break;
                                 }
@@ -267,6 +281,51 @@ public abstract class SearchStrategy {
 
                     return false;
             }
+
+        private boolean checkDeadLock(char direction, Baggage bag, Board board) {
+            boolean deadlocked = false;
+
+            switch (direction){
+                case 'L':
+                    if ( (checkWallCollision(bag, 'L', board) && checkWallCollision(bag, 'T', board))
+                            || (checkWallCollision(bag, 'L', board) && checkWallCollision(bag, 'B', board))){
+                        deadlocked = !bag.isInGoal(board.getGoals());
+                        if (deadlocked){
+                            deadlockedBags.add(bag);
+                        }
+                    }
+                    break;
+                case 'R':
+                    if ( (checkWallCollision(bag, 'R', board) && checkWallCollision(bag, 'T', board))
+                            || (checkWallCollision(bag, 'R', board) && checkWallCollision(bag, 'B', board))){
+
+                        deadlocked = !bag.isInGoal(board.getGoals());
+                        if (deadlocked){
+                            deadlockedBags.add(bag);
+                        }
+                    }
+                    break;
+                case 'T':
+                    if ( (checkWallCollision(bag, 'T', board) && checkWallCollision(bag, 'L', board))
+                            || (checkWallCollision(bag, 'T', board) && checkWallCollision(bag, 'R', board))){
+
+                        deadlocked = !bag.isInGoal(board.getGoals());
+                        if (deadlocked)
+                            deadlockedBags.add(bag);
+                    }
+                    break;
+                case 'B':
+                    if ( (checkWallCollision(bag, 'B', board) && checkWallCollision(bag, 'L', board))
+                            || (checkWallCollision(bag, 'B', board) && checkWallCollision(bag, 'R', board))){
+
+                        deadlocked = !bag.isInGoal(board.getGoals());
+                        if (deadlocked)
+                            deadlockedBags.add(bag);
+                    }
+                    break;
+            }
+            return deadlocked;
+        }
 
 
         private boolean checkWallCollision(Actor actor, char direction, Board board) {

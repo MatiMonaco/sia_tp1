@@ -6,22 +6,22 @@ import javax.swing.JFrame;
 
 public class Sokoban extends JFrame {
 
-    private final int OFFSET = 30;
+    private final int OFFSET = 15;
 
     public Sokoban() {
 
-        initUI();
+        initUI("IDA*");
     }
 
-    private void initUI() {
+    private void initUI(String chosenAlgorithm) {
         
-        Board board = new Board();
+        Board board = new Board(chosenAlgorithm);
         add(board);
 
-        setTitle("Sokoban");
+        setTitle("Sokoban - "+chosenAlgorithm);
         
-        setSize(board.getBoardWidth() + OFFSET,
-                board.getBoardHeight() + 2 * OFFSET);
+        setSize(board.getBoardWidth() +OFFSET,
+                board.getBoardHeight() +3* OFFSET);
         
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);

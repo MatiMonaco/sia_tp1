@@ -13,7 +13,10 @@ public abstract class InformedSearchStrategy extends SearchStrategy {
         this.heuristic = heuristic;
     }
     public int getTotalCost(StateNode node,Board board){
-        return node.pathCost + heuristic.apply(node,board);
+
+        int cost = node.pathCost + heuristic.apply(node,board);
+
+        return cost ;
     }
 
 

@@ -60,16 +60,16 @@ public class Board extends JPanel {
             + "    ##     #########\n"
             + "    ########\n";*/
 //
-    private String level =      "      ###\n"+
-                                "      #.#\n"+
-                                "  #####.#####\n"+
-                                " ##         ##\n"+
-                                "##  # # # #  ##\n"+
-                                "#  ##     ##  #\n"+
-                                "# ##  # #  ## #\n"+
-                                "#     $@$     #\n"+
-                                "####  ###  ####\n"+
-                                "   #### ####\n";
+//    private String level =      "      ###\n"+
+//                                "      #.#\n"+
+//                                "  #####.#####\n"+
+//                                " ##         ##\n"+
+//                                "##  # # # #  ##\n"+
+//                                "#  ##     ##  #\n"+
+//                                "# ##  # #  ## #\n"+
+//                                "#     $@$     #\n"+
+//                                "####  ###  ####\n"+
+//                                "   #### ####\n";
 //
 // private String level =         "  ####    \n" +
 //                                " ##  ##   \n" +
@@ -88,14 +88,12 @@ public class Board extends JPanel {
 //                                "########";
 
 
-// private String level =         "#######################\n" +
-//                                "#                   . #\n" +
-//                                "#                     #\n"+
-//                                "## ###################\n"+
-//                                "#                     #\n"+
-//                                "#         $         @ #\n" +
-//                                "#                     #\n"+
-//                                "#######################\n";
+ private String level =         "#############\n" +
+                                "#         . #\n" +
+                                "## ##### ####\n"+
+                                "#       $ @ #\n" +
+                                "#           #\n"+
+                                "#############\n";
 
 
     public Board(String chosenAlgorithm)  {
@@ -128,7 +126,8 @@ public class Board extends JPanel {
                 break;
 
             case "IDA*":
-
+                IDAStarStrategy idaStar = new IDAStarStrategy(Heuristics::simpleManhattanDistances);
+                solution = idaStar.findSolution(this);
                 break;
 
             case "GGS":

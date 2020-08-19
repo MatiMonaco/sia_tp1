@@ -315,7 +315,8 @@ public class Board extends JPanel {
         private void buildWorld(Graphics g) {
 
         g.setColor(new Color(250, 240, 170));
-        g.fillRect(0, 0, this.getWidth(), this.getHeight());
+        g.fillRect(0, 0, w, this.getHeight());
+        
 
         ArrayList<Actor> world = new ArrayList<>();
 

@@ -6,6 +6,11 @@ public class BFSStrategy extends SearchStrategy {
 
     private long expandedNodes = 0;
 
+    public BFSStrategy() {
+        super("BFS");
+    }
+
+
     @Override
     public SearchResult findSolution(Board board)  {
 
@@ -36,7 +41,7 @@ public class BFSStrategy extends SearchStrategy {
                         System.out.println("BFS Solution: " + solution);
                         System.out.println("Solution length: "+solution.length());
                         System.out.println("Expanded nodes: " + expandedNodes);
-                        return new SearchResult(successor, expandedNodes, getSolutionPath(successor));
+                        return new SearchResult(name,null,successor, expandedNodes, getSolutionPath(successor));
                     }
 
                     frontier.add(successor);
@@ -45,7 +50,7 @@ public class BFSStrategy extends SearchStrategy {
             }
         }
         System.out.println("NO SOLUTION FOUND");
-        return new SearchResult(null, expandedNodes, null);
+        return new SearchResult(name,null,null, expandedNodes, null);
 
 
     }

@@ -8,6 +8,10 @@ public class IDDFSStrategy extends SearchStrategy {
     private StateNode root;
     private Set<StateNode> visited;
 
+    public IDDFSStrategy() {
+        super("IDDFS");
+    }
+
     @Override
     public SearchResult findSolution(Board board)  {
 
@@ -25,13 +29,13 @@ public class IDDFSStrategy extends SearchStrategy {
                 System.out.println("Solution: " + solution);
                 System.out.println("Solution length: " + solution.length());
                 System.out.println("Expanded nodes: " + expandedNodes);
-                return new SearchResult(found, expandedNodes, getSolutionPath(found));
+                return new SearchResult(name,null,found, expandedNodes, getSolutionPath(found));
             }
             visited.clear();
             System.out.println(++depth);
         }
         System.out.println("NO SOLUTION FOUND");
-        return new SearchResult(null, expandedNodes, null);
+        return new SearchResult(name,null,null, expandedNodes, null);
     }
 
     StateNode dls(StateNode current, int depth, Board board){

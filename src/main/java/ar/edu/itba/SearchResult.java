@@ -6,11 +6,27 @@ public class SearchResult {
     private long expandedNodes;
     private long frontierNodes;
     private String solution;
+    private String algorithm;
+    private String heuristicName;
 
-    public SearchResult(SearchStrategy.StateNode goalNode, long expandedNodes, String solution) {
+    public SearchResult(String algorithm,String heuristicName,SearchStrategy.StateNode goalNode, long expandedNodes, String solution) {
         this.goalNode = goalNode;
         this.expandedNodes = expandedNodes;
         this.solution = solution;
+        this.algorithm = algorithm;
+        this.heuristicName = heuristicName;
+    }
+
+    public long getFrontierNodes() {
+        return frontierNodes;
+    }
+
+    public String getAlgorithm() {
+        return algorithm;
+    }
+
+    public String getHeuristicName() {
+        return heuristicName;
     }
 
     public SearchStrategy.StateNode getGoalNode() {

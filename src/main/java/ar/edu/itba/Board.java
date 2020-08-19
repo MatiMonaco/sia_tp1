@@ -114,7 +114,7 @@ public class Board extends JPanel {
                         if((func =Heuristics.heuristicsMap.get(heuristic)) == null){
                             System.out.println("Heuristic '+"+heuristic+"' doesn't exists");
                         }else{
-                            IDAStarStrategy idaStar = new IDAStarStrategy(func);
+                            IDAStarStrategy idaStar = new IDAStarStrategy(heuristic,func);
                             solution = idaStar.findSolution(this);
 
                         }
@@ -133,7 +133,7 @@ public class Board extends JPanel {
                         if((func =Heuristics.heuristicsMap.get(heuristic)) == null){
                             System.out.println("Heuristic '+"+heuristic+"' doesn't exists");
                         }else{
-                            GGSStrategy ggs = new GGSStrategy(func);
+                            GGSStrategy ggs = new GGSStrategy(heuristic,func);
                             solution = ggs.findSolution(this);
 
                         }
@@ -151,7 +151,7 @@ public class Board extends JPanel {
                         if((func =Heuristics.heuristicsMap.get(heuristic)) == null){
                             System.out.println("Heuristic '+"+heuristic+"' doesn't exists");
                         }else{
-                            AStarStrategy aStar = new AStarStrategy(func);
+                            AStarStrategy aStar = new AStarStrategy(heuristic,func);
                             solution = aStar.findSolution(this);
 
                         }
@@ -376,16 +376,22 @@ public class Board extends JPanel {
 
     private void printResult(Graphics g){
         if(solution != null){
+            int space = 30;
+            int i = 1;
             boolean found = solution.getGoalNode() != null;
 
             g.setColor(found ? Color.black:Color.RED);
-            g.setFont(new Font("Arial",Font.BOLD,14));
-            g.drawString("Resultados:",w + 5,20);
             g.setFont(new Font("Arial",Font.BOLD,12));
-            g.drawString("Nodos expandidos: "+solution.getExpandedNodes(),w + 5,45);
-            g.drawString("Nodos frontera al finalizar: "+solution.getExpandedNodes(),w + 5,65);
-            g.drawString("Profundidad alcanzada: "+solution.getGoalNode().pathCost,w + 5,85);
-            g.drawString(found ? "Solucion encontrada (Pulse 'S' para ver)":"Solucion no encontrada",w + 5,105);
+            g.drawString("Algoritmo: "+solution.getAlgorithm(),w + 5,i++*space);
+            if(solution.getHeuristicName() != null){
+                g.drawString("Heuristica: "+solution.getHeuristicName(),w + 5,i++*space);
+            }
+
+            g.drawString("Nodos expandidos: "+solution.getExpandedNodes(),w + 5,i++*space);
+            g.drawString("Nodos frontera al finalizar: "+solution.getExpandedNodes(),w + 5,i++*space);
+            g.drawString("Profundidad alcanzada: "+solution.getGoalNode().pathCost,w + 5,i++*space);
+            g.setColor(found ? Color.BLUE:Color.RED);
+            g.drawString(found ? "Solucion encontrada (Pulse 'S' para ver)":"Solucion no encontrada",w + 5,i++*space);
 
 
 

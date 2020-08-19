@@ -5,13 +5,14 @@ import java.util.function.BiFunction;
 
 public class AStarStrategy extends InformedSearchStrategy {
 
+    private long expandedNodes = 0;
 
     public AStarStrategy(BiFunction<StateNode,Board, Integer> heuristic) {
         super(heuristic);
     }
 
     @Override
-    public String findSolution(Board board){
+    public SearchResult findSolution(Board board){
 
         Set<StateNode> visited;
         Queue<StateNode> frontier;
@@ -19,8 +20,7 @@ public class AStarStrategy extends InformedSearchStrategy {
         visited = new HashSet<>();
         frontier = new PriorityQueue<>(5,Comparator.comparingInt(stateNode -> getTotalCost(stateNode,board)));
 
-        Set<Baggage> set = new HashSet<>();
-        set.addAll(board.getBaggs());
+        Set<Baggage> set = new HashSet<>(board.getBaggs());
         StateNode root = new StateNode(' ',new Player(board.getPlayer().getX(),board.getPlayer().getY()),set,null,0);
         frontier.add(root);
         visited.add(root);
@@ -33,9 +33,11 @@ public class AStarStrategy extends InformedSearchStrategy {
                 String solution =getSolutionPath(vertex);
                 System.out.println("A* Solution: " + solution);
                 System.out.println("Solution length: "+solution.length());
-                return solution;
+                System.out.println("Expanded nodes: " + expandedNodes);
+                return new SearchResult(vertex, expandedNodes, getSolutionPath(vertex));
             }
             visited.add(vertex);
+            expandedNodes++;
             List<StateNode> successors = vertex.getChildren(board);
             for(StateNode successor : successors){
                 boolean inFrontier = false;

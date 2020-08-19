@@ -11,7 +11,7 @@ public abstract class SearchStrategy {
 
     public Set<Baggage> deadlockedBags = new HashSet<>();
 
-    public abstract  String findSolution(Board board) ;
+    public abstract  SearchResult findSolution(Board board) ;
 
     public String getSolutionPath(StateNode node){
         StringBuilder sb = new StringBuilder();
@@ -58,9 +58,7 @@ public abstract class SearchStrategy {
                 for (char c : directions) {
 
                     Set<Baggage> set = new HashSet<>();
-                    baggs.forEach(b -> {
-                        set.add(new Baggage(b.getX(), b.getY()));
-                    });
+                    baggs.forEach(b -> set.add(new Baggage(b.getX(), b.getY())));
                     StateNode aux = new StateNode(' ', new Player(player.getX(), player.getY()), set, this,pathCost+1);
 
                     aux = aux.checkMove(c, board);

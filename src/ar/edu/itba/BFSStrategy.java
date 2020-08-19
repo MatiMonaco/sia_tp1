@@ -4,9 +4,10 @@ import java.util.*;
 
 public class BFSStrategy extends SearchStrategy {
 
+    private long expandedNodes = 0;
 
     @Override
-    public String findSolution(Board board)  {
+    public SearchResult findSolution(Board board)  {
 
         //init
         Set<StateNode> visited;
@@ -15,21 +16,15 @@ public class BFSStrategy extends SearchStrategy {
         visited = new HashSet<>();
         frontier = new LinkedList<>();
 
-        Set<Baggage> set = new HashSet<>();
-        set.addAll(board.getBaggs());
+        Set<Baggage> set = new HashSet<>(board.getBaggs());
 
         StateNode root = new StateNode(' ',new Player(board.getPlayer().getX(),board.getPlayer().getY()),set,null,0);
-        if(board.isCompleted(root.baggs)){
-            String solution =getSolutionPath(root);
-            System.out.println("BFS Solution: " + solution);
-            System.out.println("Solution length: "+solution.length());
-            return solution;
-        }
         frontier.add(root);
 
         while(!frontier.isEmpty()){
 
             StateNode vertex = frontier.poll();
+            expandedNodes++;
             visited.add(vertex);
             List<StateNode> successors = vertex.getChildren(board);
 
@@ -40,8 +35,8 @@ public class BFSStrategy extends SearchStrategy {
                         String solution =getSolutionPath(successor);
                         System.out.println("BFS Solution: " + solution);
                         System.out.println("Solution length: "+solution.length());
-
-                        return solution;
+                        System.out.println("Expanded nodes: " + expandedNodes);
+                        return new SearchResult(successor, expandedNodes, getSolutionPath(successor));
                     }
 
                     frontier.add(successor);

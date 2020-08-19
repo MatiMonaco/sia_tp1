@@ -6,8 +6,10 @@ public class DFSStrategy extends SearchStrategy {
 
     private Set<StateNode> visited;
     private Stack<StateNode> vertices;
+    private long expandedNodes = 0;
+
     @Override
-    public String findSolution(Board board)  {
+    public SearchResult findSolution(Board board)  {
 
         //init
         Set<StateNode> visited;
@@ -16,22 +18,16 @@ public class DFSStrategy extends SearchStrategy {
         visited = new HashSet<>();
         frontier = new Stack<>();
 
-        Set<Baggage> set = new HashSet<>();
-        set.addAll(board.getBaggs());
+        Set<Baggage> set = new HashSet<>(board.getBaggs());
 
         StateNode root = new StateNode(' ',new Player(board.getPlayer().getX(),board.getPlayer().getY()),set,null,0);
-        if(board.isCompleted(root.baggs)){
-            String solution =getSolutionPath(root);
-            System.out.println("Solution: " + solution);
-
-            return solution;
-        }
         frontier.push(root);
 
         while(!frontier.isEmpty()){
 
             StateNode vertex = frontier.pop();
             visited.add(vertex);
+            expandedNodes++;
             List<StateNode> successors = vertex.getChildren(board);
 
             for(StateNode successor : successors){
@@ -39,9 +35,10 @@ public class DFSStrategy extends SearchStrategy {
                 if(!visited.contains(successor) && !frontier.contains(successor)){
                     if(board.isCompleted(successor.baggs)){
                         String solution =getSolutionPath(successor);
-                        System.out.println("Solution: " + solution);
-
-                        return solution;
+                        System.out.println("DFS Solution: " + solution);
+                        System.out.println("Solution length: "+solution.length());
+                        System.out.println("Expanded nodes: " + expandedNodes);
+                        return new SearchResult(successor, expandedNodes, getSolutionPath(successor));
                     }
 
                     frontier.push(successor);

@@ -10,7 +10,7 @@ public class Sokoban extends JFrame {
 
     public Sokoban() {
 
-        initUI("IDA*");
+        initUI("A*");
     }
 
     private void initUI(String chosenAlgorithm) {

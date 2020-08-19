@@ -9,7 +9,6 @@ import java.util.*;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.Timer;
-import javax.swing.border.Border;
 
 public class Board extends JPanel {
 
@@ -61,16 +60,16 @@ public class Board extends JPanel {
             + "    ##     #########\n"
             + "    ########\n";*/
 //
-//    private String level =      "      ###\n"+
-//                                "      #.#\n"+
-//                                "  #####.#####\n"+
-//                                " ##         ##\n"+
-//                                "##  # # # #  ##\n"+
-//                                "#  ##     ##  #\n"+
-//                                "# ##  # #  ## #\n"+
-//                                "#     $@$     #\n"+
-//                                "####  ###  ####\n"+
-//                                "   #### ####\n";
+    private String level =      "      ###\n"+
+                                "      #.#\n"+
+                                "  #####.#####\n"+
+                                " ##         ##\n"+
+                                "##  # # # #  ##\n"+
+                                "#  ##     ##  #\n"+
+                                "# ##  # #  ## #\n"+
+                                "#     $@$     #\n"+
+                                "####  ###  ####\n"+
+                                "   #### ####\n";
 //
 // private String level =         "  ####    \n" +
 //                                " ##  ##   \n" +
@@ -82,11 +81,11 @@ public class Board extends JPanel {
 //                                " ##  #    \n" +
 //                                "  #### ";
 
- private String level =         "########\n" +
-                                "#  ..$ #\n" +
-                                "# $@ $ #\n" +
-                                "# $..  #\n" +
-                                "########";
+// private String level =         "########\n" +
+//                                "#  ..$ #\n" +
+//                                "# $@ $ #\n" +
+//                                "# $..  #\n" +
+//                                "########";
 
 // private String level =         "#######\n" +
 //                                "# @ $.#\n" +
@@ -139,7 +138,7 @@ public class Board extends JPanel {
                 break;
 
             case "A*":
-                AStarStrategy aStar = new AStarStrategy(Heuristics::simpleManhattanDistances);
+                AStarStrategy aStar = new AStarStrategy(Heuristics::minimumMatchingLowerBound);
                 solution = aStar.findSolution(this);
 
                 break;
@@ -324,7 +323,7 @@ public class Board extends JPanel {
         if(solution != null){
             boolean found = solution.getGoalNode() != null;
 
-            g.setColor(found ? Color.blue:Color.RED);
+            g.setColor(found ? Color.black:Color.RED);
             g.setFont(new Font("Arial",Font.BOLD,14));
             g.drawString("Resultados:",w + 5,20);
             g.setFont(new Font("Arial",Font.BOLD,12));
@@ -343,7 +342,7 @@ public class Board extends JPanel {
 
         g.setColor(new Color(250, 240, 170));
         g.fillRect(0, 0, w, this.getHeight());
-            g.setColor(Color.gray);
+            g.setColor(Color.lightGray);
             g.fillRect(w, 0, this.getWidth()-w, this.getHeight());
         printResult(g);
 

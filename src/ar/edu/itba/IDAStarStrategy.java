@@ -60,7 +60,6 @@ public class IDAStarStrategy extends InformedSearchStrategy {
     public int search(int g, int bound, Board board){
 
         StateNode current = path.peek();
-        expandedNodes++;
         int f = g + heuristic.apply(current, board);
 
         if (f > bound){
@@ -71,6 +70,7 @@ public class IDAStarStrategy extends InformedSearchStrategy {
         }
 
 
+        expandedNodes++;
         int min = Integer.MAX_VALUE;
         List<StateNode> successors = current.getChildren(board);
         for(StateNode successor : successors) {

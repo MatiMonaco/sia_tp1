@@ -30,7 +30,6 @@ public abstract class SearchStrategy {
         Set<Baggage> baggs;
         char direction;
         int pathCost;
-        private List<StateNode> children;
 
         StateNode(char direction,Player player,Set<Baggage> baggs,StateNode prev,int pathCost){
             this.direction = direction;
@@ -38,7 +37,6 @@ public abstract class SearchStrategy {
             this.baggs = baggs;
             this.prev = prev;
             this.pathCost = pathCost;
-            children = new ArrayList<>();
         }
 
         public Set<Baggage> getBags() {
@@ -53,8 +51,8 @@ public abstract class SearchStrategy {
         public  List<StateNode> getChildren(Board board) {
 
             char[] directions = {'L','T','R','B'};
+            List<StateNode> children = new ArrayList<>();
 
-            if (children.isEmpty()){
                 for (char c : directions) {
 
                     Set<Baggage> set = new HashSet<>();
@@ -69,7 +67,7 @@ public abstract class SearchStrategy {
                     }
 
                 }
-            }
+
 
             return children;
         }
@@ -385,17 +383,6 @@ public abstract class SearchStrategy {
         }
 
 
-
-        /*     public ArrayList<StateNode> getChildren(Board board){
-            if(children.isEmpty()){
-                for(int i = 0; i < directions.length; i++){
-                    if(board.canMove(player,baggs,i)){
-                        StateNode child = new StateNode(directions[i],player,baggs);
-                    }
-                }
-            }
-        }
-*/
         public StateNode getPrev() {
             return prev;
         }
@@ -419,17 +406,5 @@ public abstract class SearchStrategy {
             return Objects.hash(player, baggs);
         }
 
-        public boolean checkRepeats() {
-            StateNode grandparent = prev.prev;
-            while (grandparent!=null){
-
-                if (grandparent.equals(this)){
-                    return true;
-                }
-                grandparent = grandparent.prev;
-            }
-
-            return false;
-        }
     }
 }

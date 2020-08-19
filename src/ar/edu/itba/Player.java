@@ -40,4 +40,7 @@ public class Player extends Actor {
     public boolean equals(Object obj) {
         return super.equals(obj);
     }
+
+
+
 }

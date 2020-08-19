@@ -1,17 +1,21 @@
 package ar.edu.itba;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
+import java.util.function.BiFunction;
 import javax.swing.*;
 import javax.swing.Timer;
 
@@ -54,51 +58,130 @@ public class Board extends JPanel {
 
 
 
-    public Board(String chosenAlgorithm)  {
+    public Board() {
 
         initBoard();
-        computeDistancesToGoal(positions);
-        System.out.println("BOARD!");
-
-        switch(chosenAlgorithm){
-            case "BFS":
-                BFSStrategy bfs = new BFSStrategy();
-                solution =  bfs.findSolution(this);
-                break;
-
-            case "DFS":
-                DFSStrategy dfs = new DFSStrategy();
-                solution =  dfs.findSolution(this);
-                break;
-
-            case "IDDFS":
-
-                IDDFSStrategy iddfs = new IDDFSStrategy();
-                solution =  iddfs.findSolution(this);
-                break;
-
-            case "IDA*":
-                IDAStarStrategy idaStar = new IDAStarStrategy(Heuristics::simpleManhattanDistances);
-                solution = idaStar.findSolution(this);
-                break;
-
-            case "GGS":
-
-                GGSStrategy ggs = new GGSStrategy(Heuristics::minimumMatchingLowerBound);
-                solution = ggs.findSolution(this);
-
-                break;
-
-            case "A*":
-                AStarStrategy aStar = new AStarStrategy(Heuristics::minimumMatchingLowerBound);
-                solution = aStar.findSolution(this);
-
-                break;
-
-
+        preCompute();
+        try {
+            compute();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
         }
 
 
+    }
+    private void compute() throws URISyntaxException {
+        String algorithm = null;
+        JSONParser parser = new JSONParser();
+        URL res = getClass().getClassLoader().getResource("parameters.json");
+        String  path = Paths.get(res.toURI()).toString();
+        try (Reader reader = new FileReader(path)) {
+
+            JSONObject jsonObject = (JSONObject) parser.parse(reader);
+            System.out.println(jsonObject);
+
+            algorithm = (String) jsonObject.get("algorithm");
+            if(algorithm == null){
+                System.out.println("Algorithm can't be null");
+
+            }
+            System.out.println(algorithm);
+            String heuristic;
+            switch(algorithm){
+                case "BFS":
+                    BFSStrategy bfs = new BFSStrategy();
+                    solution =  bfs.findSolution(this);
+                    break;
+
+                case "DFS":
+                    DFSStrategy dfs = new DFSStrategy();
+                    solution =  dfs.findSolution(this);
+                    break;
+
+                case "IDDFS":
+
+                    IDDFSStrategy iddfs = new IDDFSStrategy();
+                    solution =  iddfs.findSolution(this);
+                    break;
+
+                case "IDA*":
+                    heuristic = (String) jsonObject.get("heuristic");
+                    if(heuristic == null){
+                        System.out.println("Heuristic can't be null");
+
+                    }else {
+                        BiFunction<SearchStrategy.StateNode, Board, Integer> func;
+                        if((func =Heuristics.heuristicsMap.get(heuristic)) == null){
+                            System.out.println("Heuristic '+"+heuristic+"' doesn't exists");
+                        }else{
+                            IDAStarStrategy idaStar = new IDAStarStrategy(func);
+                            solution = idaStar.findSolution(this);
+
+                        }
+                    }
+
+                    break;
+
+                case "GGS":
+
+                  heuristic = (String) jsonObject.get("heuristic");
+                    if(heuristic == null){
+                        System.out.println("Heuristic can't be null");
+
+                    }else {
+                        BiFunction<SearchStrategy.StateNode, Board, Integer> func;
+                        if((func =Heuristics.heuristicsMap.get(heuristic)) == null){
+                            System.out.println("Heuristic '+"+heuristic+"' doesn't exists");
+                        }else{
+                            GGSStrategy ggs = new GGSStrategy(func);
+                            solution = ggs.findSolution(this);
+
+                        }
+                    }
+
+                    break;
+
+                case "A*":
+                    heuristic = (String) jsonObject.get("heuristic");
+                    if(heuristic == null){
+                        System.out.println("Heuristic can't be null");
+
+                    }else {
+                        BiFunction<SearchStrategy.StateNode, Board, Integer> func;
+                        if((func =Heuristics.heuristicsMap.get(heuristic)) == null){
+                            System.out.println("Heuristic '+"+heuristic+"' doesn't exists");
+                        }else{
+                            AStarStrategy aStar = new AStarStrategy(func);
+                            solution = aStar.findSolution(this);
+
+                        }
+                    }
+
+                    break;
+
+
+            }
+
+            // loop array
+//            JSONArray msg = (JSONArray) jsonObject.get("messages");
+//            Iterator<String> iterator = msg.iterator();
+//            while (iterator.hasNext()) {
+//                System.out.println(iterator.next());
+//            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+    }
+
+    private void preCompute(){
+        computeDistancesToGoal(positions);
     }
 
     private void initBoard() {

@@ -1,7 +1,11 @@
 package ar.edu.itba;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import java.awt.EventQueue;
-import java.util.*;
 import javax.swing.JFrame;
 
 public class Sokoban extends JFrame {
@@ -9,19 +13,16 @@ public class Sokoban extends JFrame {
     private final int OFFSET = 60;
 
     public Sokoban() {
-
-        initUI("BFS");
+        initUI();
     }
 
-    private void initUI(String chosenAlgorithm) {
+
+
+    private void initUI() {
         
-        Board board = new Board(chosenAlgorithm);
+        Board board = new Board();
         add(board);
-
-        setTitle("Sokoban - "+chosenAlgorithm);
-
-
-
+        setTitle("Sokoban");
         setSize(board.getBoardWidth() +250,
                 board.getBoardHeight() +OFFSET+20);
 
@@ -34,7 +35,8 @@ public class Sokoban extends JFrame {
 
         EventQueue.invokeLater(() -> {
 
-            Sokoban game = new Sokoban();
+            Sokoban game = null;
+            game = new Sokoban();
             game.setVisible(true);
         });
 

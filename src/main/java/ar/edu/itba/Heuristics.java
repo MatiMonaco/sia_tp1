@@ -5,10 +5,13 @@ import ar.edu.itba.SearchStrategy.StateNode;
 
 
 import java.util.*;
+import java.util.function.BiFunction;
 
-public  class Heuristics {
+public class Heuristics {
 
-
+    public static Map<String, BiFunction<StateNode,Board,Integer>> heuristicsMap = new HashMap<>(){{
+        put("MML",Heuristics::minimumMatchingLowerBound);
+        put("SMD",Heuristics::simpleManhattanDistances);}};
     public static int goalCount(StateNode node,Board board){
 
         List<Goal> goals = board.getGoals();

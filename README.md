@@ -1,5 +1,9 @@
 Compilación:
+
 Al ser programado en Java, es necesario que descarguen como mínimo la SDK 12.
+Al ser un proyecto Maven, para compilar y crear el .jar se debe usar el comando 'mvn clean package', el cual crea el .jar dentro de la carpeta 
+sia_tp1/target.
+En el caso de tener los archivos de configuracion level.txt y config.json ya en esa carpeta, el comando anterior los borrará y deben crearse de nuevo.
 
 Ejecución:
 

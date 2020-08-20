@@ -24,7 +24,7 @@ public class Board extends JPanel {
     public static final int OFFSET = 0;
     public static final int SPACE = 20;
     private List<Wall> walls;
-    private Set<Box> baggs;
+    private Set<Box> boxes;
     private List<Goal> goals;
     private SearchResult solution;
     private Player player;
@@ -32,11 +32,6 @@ public class Board extends JPanel {
     private int h = 0;
     private List<Actor> positions;
     private Map<Goal,Map<Actor,Integer>> distancesToGoal;
-
-
-
-
-    private boolean isCompleted = false;
     private int i = 0;
     private  Timer timer = new Timer(250, new ActionListener() {
         @Override
@@ -285,7 +280,7 @@ public class Board extends JPanel {
     private void initWorld() {
        positions = new ArrayList<>();
         walls = new ArrayList<>();
-        baggs = new HashSet<>();
+        boxes = new HashSet<>();
         goals = new ArrayList<>();
 
         int x = OFFSET;
@@ -321,7 +316,7 @@ public class Board extends JPanel {
 
                 case '$':
                     b = new Box(x, y);
-                    baggs.add(b);
+                    boxes.add(b);
                     positions.add(new Actor(x,y));
                     x += SPACE;
                     break;
@@ -350,6 +345,7 @@ public class Board extends JPanel {
 
             h = y;
         }
+        repaint();
     }
 
 
@@ -362,12 +358,19 @@ public class Board extends JPanel {
             super.keyPressed(e);
 
             int key = e.getKeyCode();
+
             if (key == KeyEvent.VK_S) {
                 if (solution != null) {
 
                     showSolution();
                 }else {
                     System.out.println("No solution found!");
+                }
+            }
+            if (key == KeyEvent.VK_R) {
+                if (solution != null && !timer.isRunning()) {
+
+                    restartLevel();
                 }
             }
 
@@ -411,7 +414,7 @@ public class Board extends JPanel {
 
         world.addAll(walls);
         world.addAll(goals);
-        world.addAll(baggs);
+        world.addAll(boxes);
         world.add(player);
 
             for (Actor item : world) {
@@ -452,7 +455,7 @@ public class Board extends JPanel {
                       return;
                   }
 
-                  if (checkBagCollision('L')) {
+                  if (checkBoxCollision('L')) {
                       return;
                   }
 
@@ -466,7 +469,7 @@ public class Board extends JPanel {
                       return;
                   }
 
-                  if (checkBagCollision('R')) {
+                  if (checkBoxCollision('R')) {
                       return;
                   }
 
@@ -480,7 +483,7 @@ public class Board extends JPanel {
                       return;
                   }
 
-                  if (checkBagCollision('T')) {
+                  if (checkBoxCollision('T')) {
                       return;
                   }
 
@@ -494,7 +497,7 @@ public class Board extends JPanel {
                       return;
                   }
 
-                  if (checkBagCollision('B')) {
+                  if (checkBoxCollision('B')) {
                       return;
                   }
 
@@ -570,9 +573,9 @@ public class Board extends JPanel {
         return false;
     }
 
-    private boolean checkBagCollision(char direction) {
+    private boolean checkBoxCollision(char direction) {
 
-        Iterator<Box> it1 = baggs.iterator();
+        Iterator<Box> it1 = boxes.iterator();
         List<Box> toAdd = new ArrayList<>();
         switch (direction) {
 
@@ -580,32 +583,32 @@ public class Board extends JPanel {
 
 
                 while(it1.hasNext()) {
-                    Box bag = it1.next();
-                    if (player.isLeftCollision(bag)) {
-                        for (Box item : baggs) {
+                    Box box = it1.next();
+                    if (player.isLeftCollision(box)) {
+                        for (Box item : boxes) {
                             {
 
 
-                                if (!bag.equals(item)) {
+                                if (!box.equals(item)) {
 
-                                    if (bag.isLeftCollision(item)) {
+                                    if (box.isLeftCollision(item)) {
                                         return true;
                                     }
                                 }
 
-                                if (checkWallCollision(bag, 'L')) {
+                                if (checkWallCollision(box, 'L')) {
                                     return true;
                                 }
                             }
 
                         }
                         it1.remove();
-                        bag.move(-SPACE,0 );
-                        toAdd.add(bag);
+                        box.move(-SPACE,0 );
+                        toAdd.add(box);
                         break;
                     }
                 }
-                baggs.addAll(toAdd);
+                boxes.addAll(toAdd);
 
 
                 return false;
@@ -614,32 +617,32 @@ public class Board extends JPanel {
 
 
                 while(it1.hasNext()) {
-                    Box bag = it1.next();
-                    if (player.isRightCollision(bag)) {
-                        for (Box item : baggs) {
+                    Box box = it1.next();
+                    if (player.isRightCollision(box)) {
+                        for (Box item : boxes) {
                             {
 
 
-                                if (!bag.equals(item)) {
+                                if (!box.equals(item)) {
 
-                                    if (bag.isRightCollision(item)) {
+                                    if (box.isRightCollision(item)) {
                                         return true;
                                     }
                                 }
 
-                                if (checkWallCollision(bag, 'R')) {
+                                if (checkWallCollision(box, 'R')) {
                                     return true;
                                 }
                             }
 
                         }
                         it1.remove();
-                        bag.move(SPACE,0 );
-                        toAdd.add(bag);
+                        box.move(SPACE,0 );
+                        toAdd.add(box);
                         break;
                     }
                 }
-                baggs.addAll(toAdd);
+                boxes.addAll(toAdd);
 
 
                 return false;
@@ -647,32 +650,32 @@ public class Board extends JPanel {
             case 'T':
 
                 while(it1.hasNext()) {
-                    Box bag = it1.next();
-                    if (player.isTopCollision(bag)) {
-                        for (Box item : baggs) {
+                    Box box = it1.next();
+                    if (player.isTopCollision(box)) {
+                        for (Box item : boxes) {
                             {
 
 
-                                if (!bag.equals(item)) {
+                                if (!box.equals(item)) {
 
-                                    if (bag.isTopCollision(item)) {
+                                    if (box.isTopCollision(item)) {
                                         return true;
                                     }
                                 }
 
-                                if (checkWallCollision(bag, 'T')) {
+                                if (checkWallCollision(box, 'T')) {
                                     return true;
                                 }
                             }
 
                         }
                         it1.remove();
-                        bag.move(0,-Board.SPACE );
-                        toAdd.add(bag);
+                        box.move(0,-Board.SPACE );
+                        toAdd.add(box);
                         break;
                     }
                 }
-                baggs.addAll(toAdd);
+                boxes.addAll(toAdd);
 
 
                 return false;
@@ -681,32 +684,32 @@ public class Board extends JPanel {
 
 
                 while(it1.hasNext()) {
-                    Box bag = it1.next();
-                    if (player.isBottomCollision(bag)) {
-                        for (Box item : baggs) {
+                    Box box = it1.next();
+                    if (player.isBottomCollision(box)) {
+                        for (Box item : boxes) {
                             {
 
 
-                                if (!bag.equals(item)) {
+                                if (!box.equals(item)) {
 
-                                    if (bag.isBottomCollision(item)) {
+                                    if (box.isBottomCollision(item)) {
                                         return true;
                                     }
                                 }
 
-                                if (checkWallCollision(bag, 'B')) {
+                                if (checkWallCollision(box, 'B')) {
                                     return true;
                                 }
                             }
 
                         }
                         it1.remove();
-                        bag.move(0,Board.SPACE );
-                        toAdd.add(bag);
+                        box.move(0,Board.SPACE );
+                        toAdd.add(box);
                         break;
                     }
                 }
-                baggs.addAll(toAdd);
+                boxes.addAll(toAdd);
 
 
                 return false;
@@ -721,47 +724,45 @@ public class Board extends JPanel {
 
 
 
-    public boolean isCompleted(Set<Box> baggsSet) {
+    public boolean isCompleted(Set<Box> boxSet) {
 
-        int nOfBags = baggsSet.size();
-       Box[] baggsArray = baggsSet.toArray(new Box[0]);
-        int finishedBags = 0;
+        int nOfBoxes = boxSet.size();
+       Box[] boxArray = boxSet.toArray(new Box[0]);
+        int finishedBoxes = 0;
 
-        for (int i = 0; i < nOfBags; i++) {
+        for (int i = 0; i < nOfBoxes; i++) {
             
-            Box bag = baggsArray[i];
+            Box bag = boxArray[i];
             
-            for (int j = 0; j < nOfBags; j++) {
+            for (int j = 0; j < nOfBoxes; j++) {
                 
                 Goal area =  goals.get(j);
                 
                 if (bag.getX() == area.getX() && bag.getY() == area.getY()) {
-                    
-                    finishedBags += 1;
+
+                    finishedBoxes += 1;
                 }
             }
         }
 
         /* isCompleted = true;
             repaint();*/
-        return finishedBags == nOfBags;
+        return finishedBoxes == nOfBoxes;
     }
 
     public void restartLevel() {
 
         goals.clear();
-        baggs.clear();
+        boxes.clear();
         walls.clear();
-
+        i = 0;
         initWorld();
 
-        if (isCompleted) {
-            isCompleted = false;
-        }
+
     }
 
-    public Set<Box> getBaggs() {
-        return baggs;
+    public Set<Box> getBoxes() {
+        return boxes;
     }
 
     public Player getPlayer() {

@@ -19,7 +19,7 @@ public abstract class SearchStrategy {
         return name;
     }
 
-    public Set<Box> deadlockedBags = new HashSet<>();
+    public Set<Box> deadlockedBoxes = new HashSet<>();
 
     public abstract  SearchResult findSolution(Board board) ;
 
@@ -41,15 +41,15 @@ public abstract class SearchStrategy {
         char direction;
         int pathCost;
 
-        StateNode(char direction, Player player, Set<Box> baggs, StateNode prev, int pathCost){
+        StateNode(char direction, Player player, Set<Box> boxes, StateNode prev, int pathCost){
             this.direction = direction;
             this.player  = player;
-            this.boxes = baggs;
+            this.boxes = boxes;
             this.prev = prev;
             this.pathCost = pathCost;
         }
 
-        public Set<Box> getBags() {
+        public Set<Box> getBoxes() {
             return boxes;
         }
 
@@ -88,13 +88,13 @@ public abstract class SearchStrategy {
 
                 return null;
             }
-            if(checkBagCollision(direction, board)) {
+            if(checkBoxCollision(direction, board)) {
 
                 return null;
             }
             if(deadlockCheck){
-                for (Baggage bag: baggs) {
-                    if (deadlockedBags.contains(bag)) {
+                for (Box box: boxes) {
+                    if (deadlockedBoxes.contains(box)) {
 
                         return null;
                     }
@@ -130,7 +130,7 @@ public abstract class SearchStrategy {
                     '}';
         }
 
-        private boolean checkBagCollision(char direction, Board board) {
+        private boolean checkBoxCollision(char direction, Board board) {
 
             Iterator<Box> it1 = boxes.iterator();
             Box toAdd = null;
@@ -140,18 +140,18 @@ public abstract class SearchStrategy {
 
 
                     while(it1.hasNext()) {
-                        Box bag = it1.next();
-                        if (player.isLeftCollision(bag)) {
-                            if (checkWallCollision(bag, 'L', board)) {
+                        Box box = it1.next();
+                        if (player.isLeftCollision(box)) {
+                            if (checkWallCollision(box, 'L', board)) {
                                 return true;
                             }
                             for (Box item : boxes) {
                                 {
 
 
-                                    if (!bag.equals(item)) {
+                                    if (!box.equals(item)) {
 
-                                        if (bag.isLeftCollision(item)) {
+                                        if (box.isLeftCollision(item)) {
                                             return true;
                                         }
                                     }
@@ -161,12 +161,12 @@ public abstract class SearchStrategy {
 
                             }
                             it1.remove();
-                            bag.move(-Board.SPACE,0 );
+                            box.move(-Board.SPACE,0 );
                             if(deadlockCheck){
-                                checkDeadLock(direction, bag, board);
+                                checkDeadLock(direction, box, board);
                             }
 
-                            toAdd = bag;
+                            toAdd = box;
                             break;
                         }
                     }
@@ -182,31 +182,31 @@ public abstract class SearchStrategy {
 
 
                             while(it1.hasNext()) {
-                                Box bag = it1.next();
-                                if (player.isRightCollision(bag)) {
+                                Box box = it1.next();
+                                if (player.isRightCollision(box)) {
                                     for (Box item : boxes) {
                                         {
 
 
-                                            if (!bag.equals(item)) {
+                                            if (!box.equals(item)) {
 
-                                                if (bag.isRightCollision(item)) {
+                                                if (box.isRightCollision(item)) {
                                                     return true;
                                                 }
                                             }
 
-                                            if (checkWallCollision(bag, 'R', board)) {
+                                            if (checkWallCollision(box, 'R', board)) {
                                                 return true;
                                             }
                                         }
 
                                     }
                                     it1.remove();
-                                    bag.move(Board.SPACE,0 );
+                                    box.move(Board.SPACE,0 );
                                     if(deadlockCheck){
-                                        checkDeadLock(direction, bag, board);
+                                        checkDeadLock(direction, box, board);
                                     }
-                                    toAdd = bag;
+                                    toAdd = box;
                                     break;
                                 }
                             }
@@ -219,31 +219,31 @@ public abstract class SearchStrategy {
                         case 'T':
 
                             while(it1.hasNext()) {
-                                Box bag = it1.next();
-                                if (player.isTopCollision(bag)) {
+                                Box box = it1.next();
+                                if (player.isTopCollision(box)) {
                                     for (Box item : boxes) {
                                         {
 
 
-                                            if (!bag.equals(item)) {
+                                            if (!box.equals(item)) {
 
-                                                if (bag.isTopCollision(item)) {
+                                                if (box.isTopCollision(item)) {
                                                     return true;
                                                 }
                                             }
 
-                                            if (checkWallCollision(bag, 'T', board)) {
+                                            if (checkWallCollision(box, 'T', board)) {
                                                 return true;
                                             }
                                         }
 
                                     }
                                     it1.remove();
-                                    bag.move(0,-Board.SPACE );
+                                    box.move(0,-Board.SPACE );
                                     if(deadlockCheck){
-                                        checkDeadLock(direction, bag, board);
+                                        checkDeadLock(direction, box, board);
                                     }
-                                    toAdd = bag;
+                                    toAdd = box;
                                     break;
                                 }
                             }
@@ -258,31 +258,31 @@ public abstract class SearchStrategy {
 
 
                             while(it1.hasNext()) {
-                                Box bag = it1.next();
-                                if (player.isBottomCollision(bag)) {
+                                Box box = it1.next();
+                                if (player.isBottomCollision(box)) {
                                     for (Box item : boxes) {
                                         {
 
 
-                                            if (!bag.equals(item)) {
+                                            if (!box.equals(item)) {
 
-                                                if (bag.isBottomCollision(item)) {
+                                                if (box.isBottomCollision(item)) {
                                                     return true;
                                                 }
                                             }
 
-                                            if (checkWallCollision(bag, 'B', board)) {
+                                            if (checkWallCollision(box, 'B', board)) {
                                                 return true;
                                             }
                                         }
 
                                     }
                                     it1.remove();
-                                    bag.move(0,Board.SPACE );
+                                    box.move(0,Board.SPACE );
                                     if(deadlockCheck){
-                                        checkDeadLock(direction, bag, board);
+                                        checkDeadLock(direction, box, board);
                                     }
-                                    toAdd = bag;
+                                    toAdd = box;
                                     break;
                                 }
                             }
@@ -300,45 +300,45 @@ public abstract class SearchStrategy {
                     return false;
             }
 
-        private boolean checkDeadLock(char direction, Box bag, Board board) {
+        private boolean checkDeadLock(char direction, Box box, Board board) {
             boolean deadlocked = false;
 
             switch (direction){
                 case 'L':
-                    if ( (checkWallCollision(bag, 'L', board) && checkWallCollision(bag, 'T', board))
-                            || (checkWallCollision(bag, 'L', board) && checkWallCollision(bag, 'B', board))){
-                        deadlocked = !bag.isInGoal(board.getGoals());
+                    if ( (checkWallCollision(box, 'L', board) && checkWallCollision(box, 'T', board))
+                            || (checkWallCollision(box, 'L', board) && checkWallCollision(box, 'B', board))){
+                        deadlocked = !box.isInGoal(board.getGoals());
                         if (deadlocked){
-                            deadlockedBags.add(bag);
+                            deadlockedBoxes.add(box);
                         }
                     }
                     break;
                 case 'R':
-                    if ( (checkWallCollision(bag, 'R', board) && checkWallCollision(bag, 'T', board))
-                            || (checkWallCollision(bag, 'R', board) && checkWallCollision(bag, 'B', board))){
+                    if ( (checkWallCollision(box, 'R', board) && checkWallCollision(box, 'T', board))
+                            || (checkWallCollision(box, 'R', board) && checkWallCollision(box, 'B', board))){
 
-                        deadlocked = !bag.isInGoal(board.getGoals());
+                        deadlocked = !box.isInGoal(board.getGoals());
                         if (deadlocked){
-                            deadlockedBags.add(bag);
+                            deadlockedBoxes.add(box);
                         }
                     }
                     break;
                 case 'T':
-                    if ( (checkWallCollision(bag, 'T', board) && checkWallCollision(bag, 'L', board))
-                            || (checkWallCollision(bag, 'T', board) && checkWallCollision(bag, 'R', board))){
+                    if ( (checkWallCollision(box, 'T', board) && checkWallCollision(box, 'L', board))
+                            || (checkWallCollision(box, 'T', board) && checkWallCollision(box, 'R', board))){
 
-                        deadlocked = !bag.isInGoal(board.getGoals());
+                        deadlocked = !box.isInGoal(board.getGoals());
                         if (deadlocked)
-                            deadlockedBags.add(bag);
+                            deadlockedBoxes.add(box);
                     }
                     break;
                 case 'B':
-                    if ( (checkWallCollision(bag, 'B', board) && checkWallCollision(bag, 'L', board))
-                            || (checkWallCollision(bag, 'B', board) && checkWallCollision(bag, 'R', board))){
+                    if ( (checkWallCollision(box, 'B', board) && checkWallCollision(box, 'L', board))
+                            || (checkWallCollision(box, 'B', board) && checkWallCollision(box, 'R', board))){
 
-                        deadlocked = !bag.isInGoal(board.getGoals());
+                        deadlocked = !box.isInGoal(board.getGoals());
                         if (deadlocked)
-                            deadlockedBags.add(bag);
+                            deadlockedBoxes.add(box);
                     }
                     break;
             }

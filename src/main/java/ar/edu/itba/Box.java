@@ -9,10 +9,10 @@ public class Box extends Actor {
     public Box(int x, int y) {
         super(x, y);
         
-        initBaggage();
+        initBox();
     }
     
-    private void initBaggage() {
+    private void initBox() {
         
         ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("box.png"));
         Image image = icon.getImage();

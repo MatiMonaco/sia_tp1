@@ -20,7 +20,7 @@ public class GGSStrategy extends InformedSearchStrategy {
         visited = new HashSet<>();
         frontier = new PriorityQueue<>(5, Comparator.comparingInt(stateNode -> heuristic.apply(stateNode,board)));
 
-        Set<Box> set = new HashSet<>(board.getBaggs());
+        Set<Box> set = new HashSet<>(board.getBoxes());
         StateNode root = new StateNode(' ',new Player(board.getPlayer().getX(),board.getPlayer().getY()),set,null,0);
         frontier.add(root);
         visited.add(root);

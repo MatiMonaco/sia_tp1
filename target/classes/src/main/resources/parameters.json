@@ -1,0 +1,5 @@
+{
+  "algorithm": "BFS",
+  "heuristic": "SMD",
+  "deadlockCheck": "true"
+}

@@ -21,7 +21,7 @@ public class IDAStarStrategy extends InformedSearchStrategy {
         board.restartLevel();
         path = new Stack<>();
         endNode = null;
-        StateNode root = new StateNode(' ', board.getPlayer(), board.getBaggs(), null, 0);
+        StateNode root = new StateNode(' ', board.getPlayer(), board.getBoxes(), null, 0);
         boolean found = idaStar(root, board);
 
         if(found && endNode != null){
@@ -65,7 +65,7 @@ public class IDAStarStrategy extends InformedSearchStrategy {
         if (f > bound){
             return f;
         }
-        if (board.isCompleted(current.getBags())){
+        if (board.isCompleted(current.getBoxes())){
             return -1;
         }
 

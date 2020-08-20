@@ -18,7 +18,7 @@ public class IDDFSStrategy extends SearchStrategy {
         board.restartLevel();
         visited = new HashSet<>();
         endNode = null;
-        StateNode root = new StateNode(' ', board.getPlayer(), board.getBaggs(), null, 0);
+        StateNode root = new StateNode(' ', board.getPlayer(), board.getBoxes(), null, 0);
         boolean found = iddfs(root, board);
 
         if(found && endNode != null){
@@ -27,10 +27,10 @@ public class IDDFSStrategy extends SearchStrategy {
             System.out.println("Solution: " + solution);
             System.out.println("Solution length: " + solution.length());
             System.out.println("Expanded nodes: " + expandedNodes);
-            return new SearchResult(name, null,endNode, expandedNodes, getSolutionPath(endNode));
+            return new SearchResult(name, null,endNode, expandedNodes,0, getSolutionPath(endNode));
         }
         System.out.println("NO SOLUTION FOUND");
-        return new SearchResult(name, null, null, expandedNodes, null);
+        return new SearchResult(name, null, null, expandedNodes, 0,null);
     }
 
     public boolean iddfs(StateNode root, Board board){
@@ -56,7 +56,7 @@ public class IDDFSStrategy extends SearchStrategy {
     boolean dls(StateNode current, int depth, Board board){
 
 
-        if (board.isCompleted(current.getBags())){
+        if (board.isCompleted(current.getBoxes())){
             endNode = current;
             return true;
         }

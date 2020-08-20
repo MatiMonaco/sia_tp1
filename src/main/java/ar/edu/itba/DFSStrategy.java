@@ -22,7 +22,7 @@ public class DFSStrategy extends SearchStrategy {
         visited = new HashSet<>();
         frontier = new Stack<>();
 
-        Set<Box> set = new HashSet<>(board.getBaggs());
+        Set<Box> set = new HashSet<>(board.getBoxes());
 
         StateNode root = new StateNode(' ',new Player(board.getPlayer().getX(),board.getPlayer().getY()),set,null,0);
         frontier.push(root);

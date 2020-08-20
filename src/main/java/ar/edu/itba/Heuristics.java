@@ -11,18 +11,19 @@ public class Heuristics {
 
     public static Map<String, BiFunction<StateNode,Board,Integer>> heuristicsMap = new HashMap<>(){{
         put("MML",Heuristics::minimumMatchingLowerBound);
-        put("SMD",Heuristics::simpleManhattanDistances);}};
+        put("SMD",Heuristics::simpleManhattanDistances);
+        put("goalCount",Heuristics::goalCount);}};
     public static int goalCount(StateNode node,Board board){
 
         List<Goal> goals = board.getGoals();
 
-        Set<Box> baggageSet = node.getBags();
+        Set<Box> boxSet = node.getBoxes();
 
         int goalCount = 0;
 
-        for(Box bagg :baggageSet){
+        for(Box box :boxSet){
             for (Goal goal: goals){
-                if(bagg.getX() == goal.getX() && bagg.getY() == goal.getY()){
+                if(box.getX() == goal.getX() && box.getY() == goal.getY()){
                     goalCount++;
                     break;
                 }
@@ -36,15 +37,15 @@ public class Heuristics {
 
         List<Goal> goals = board.getGoals();
 
-        Set<Box> baggageSet = node.getBags();
+        Set<Box> boxSet = node.getBoxes();
 
         int totalDistance = 0;
 
-        for(Box bagg :baggageSet){
+        for(Box box :boxSet){
 
             Integer minDistance = null;
             for (Goal goal: goals){
-                Integer distance = Math.abs(bagg.getX() - goal.getX()) + Math.abs(bagg.getY() - goal.getY());
+                Integer distance = Math.abs(box.getX() - goal.getX()) + Math.abs(box.getY() - goal.getY());
 
                 if( minDistance == null || minDistance > distance){
                     minDistance = distance/Board.SPACE;
@@ -76,12 +77,12 @@ public class Heuristics {
 
     private static List<Matching> getGoalMatchings(StateNode node,Board board){
         List<Goal> goals = board.getGoals();
-        Set<Box> baggageSet = node.getBags();
+        Set<Box> boxSet = node.getBoxes();
         Queue<Matching> priorityQueue = new PriorityQueue<>(11,Comparator.comparingInt(Matching::getDistance));
 
         for(Goal goal: goals){
-            for(Box bag : baggageSet){
-                Matching matching = new Matching(goal,bag,board.getDistancesToGoal().get(goal).get(new Actor(bag.getX(),bag.getY())));
+            for(Box box : boxSet){
+                Matching matching = new Matching(goal,box,board.getDistancesToGoal().get(goal).get(new Actor(box.getX(),box.getY())));
                 priorityQueue.add(matching);
             }
         }
@@ -97,10 +98,10 @@ public class Heuristics {
 
             }
         }
-        for(Box bag: baggageSet){
-            if(!matchedBaggs.contains(bag)){
-                Goal closestGoal = getClosestGoal(board,bag);
-                matchings.add(new Matching(closestGoal,bag,board.getDistancesToGoal().get(closestGoal).get(new Actor(bag.getX(),bag.getY()))));
+        for(Box box: boxSet){
+            if(!matchedBaggs.contains(box)){
+                Goal closestGoal = getClosestGoal(board,box);
+                matchings.add(new Matching(closestGoal,box,board.getDistancesToGoal().get(closestGoal).get(new Actor(box.getX(),box.getY()))));
 
             }
         }

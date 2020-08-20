@@ -21,7 +21,7 @@ public class BFSStrategy extends SearchStrategy {
         visited = new HashSet<>();
         frontier = new LinkedList<>();
 
-        Set<Box> set = new HashSet<>(board.getBaggs());
+        Set<Box> set = new HashSet<>(board.getBoxes());
 
         StateNode root = new StateNode(' ',new Player(board.getPlayer().getX(),board.getPlayer().getY()),set,null,0);
         frontier.add(root);

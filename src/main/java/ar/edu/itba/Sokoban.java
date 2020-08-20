@@ -24,7 +24,7 @@ public class Sokoban extends JFrame {
         add(board);
         setTitle("Sokoban Solver");
 
-        int height = Math.max(board.getBoardHeight() + OFFSET, 240);
+        int height = Math.max(board.getBoardHeight() + OFFSET, 250);
         setSize(board.getBoardWidth() +250,
                 height);
 

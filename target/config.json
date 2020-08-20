@@ -1,0 +1,6 @@
+{
+  "algorithm":"DFS",
+  "heuristic": "MML",
+
+  "deadlockCheck": "true"
+}

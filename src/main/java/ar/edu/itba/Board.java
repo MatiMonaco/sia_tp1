@@ -38,6 +38,8 @@ public class Board extends JPanel {
     private List<Actor> positions;
     private Map<Goal,Map<Actor,Integer>> distancesToGoal;
     private int i = 0;
+    private Instant start, end;
+    private Duration timeElapsed;
     private  Timer timer = new Timer(500, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -88,8 +90,7 @@ public class Board extends JPanel {
 
             String heuristic;
             String deadlockCheck;
-            Instant start, end;
-            Duration timeElapsed;
+
             switch(algorithm){
                 case "BFS":
                     deadlockCheck = (String) jsonObject.get("deadlockCheck");
@@ -100,7 +101,7 @@ public class Board extends JPanel {
                     solution =  bfs.findSolution(this);
                     end = Instant.now();
                     timeElapsed = Duration.between(start, end);
-                    System.out.println(timeElapsed);
+
                     break;
 
                 case "DFS":
@@ -110,7 +111,7 @@ public class Board extends JPanel {
                     solution =  dfs.findSolution(this);
                     end = Instant.now();
                     timeElapsed = Duration.between(start, end);
-                    System.out.println(timeElapsed);
+
                     break;
 
                 case "IDDFS":
@@ -126,7 +127,7 @@ public class Board extends JPanel {
                     solution =  iddfs.findSolution(this);
                     end = Instant.now();
                     timeElapsed = Duration.between(start, end);
-                    System.out.println(timeElapsed);
+
                     break;
 
                 case "IDA*":
@@ -144,7 +145,7 @@ public class Board extends JPanel {
                             solution =  idaStar.findSolution(this);
                             end = Instant.now();
                             timeElapsed = Duration.between(start, end);
-                            System.out.println(timeElapsed);
+
                         }
                     }
 
@@ -187,7 +188,7 @@ public class Board extends JPanel {
                             solution =  aStar.findSolution(this);
                             end = Instant.now();
                             timeElapsed = Duration.between(start, end);
-                            System.out.println(timeElapsed);
+
                         }
                     }
 
@@ -414,13 +415,14 @@ public class Board extends JPanel {
 
     private void printResult(Graphics g){
         if(solution != null){
-            int space = 30;
-            int i = 1;
+            int space = 25;
+            int i = 2;
             boolean found = solution.getGoalNode() != null;
 
             g.setColor(found ? Color.black:Color.RED);
             g.setFont(new Font("Arial",Font.BOLD,12));
-            g.drawString("Algoritmo: "+solution.getAlgorithm(),w + 5,i++*space);
+            g.drawString("Algoritmo: "+solution.getAlgorithm(),w + 5,15);
+
             if(solution.getHeuristicName() != null){
                 g.drawString("Heuristica: "+solution.getHeuristicName(),w + 5,i++*space);
             }
@@ -429,6 +431,8 @@ public class Board extends JPanel {
             g.drawString("Nodos frontera al finalizar: "+solution.getFrontierNodes(),w + 5,i++*space);
             g.drawString("Profundidad alcanzada: "+solution.getGoalNode().getPathCost(),w + 5,i++*space);
             g.drawString("Costo total: "+solution.getTotalCost(),w + 5,i++*space);
+
+            g.drawString("Tiempo de busqueda: "+(timeElapsed.toSeconds() > 1 ? timeElapsed.toSeconds()+"s":timeElapsed.toMillis())+"ms",w + 5,i++*space);
             g.setColor(found ? Color.BLUE:Color.RED);
             g.drawString(found ? "Solucion encontrada (Pulse 'S' para ver)":"Solucion no encontrada",w + 5,i++*space);
 

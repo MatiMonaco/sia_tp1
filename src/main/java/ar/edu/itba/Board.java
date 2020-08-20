@@ -16,6 +16,8 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -36,7 +38,7 @@ public class Board extends JPanel {
     private List<Actor> positions;
     private Map<Goal,Map<Actor,Integer>> distancesToGoal;
     private int i = 0;
-    private  Timer timer = new Timer(250, new ActionListener() {
+    private  Timer timer = new Timer(500, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
 
@@ -86,18 +88,28 @@ public class Board extends JPanel {
             System.out.println(algorithm);
             String heuristic;
             String deadlockCheck;
+            Instant start, end;
+            Duration timeElapsed;
             switch(algorithm){
                 case "BFS":
                     deadlockCheck = (String) jsonObject.get("deadlockCheck");
 
                     BFSStrategy bfs = new BFSStrategy(deadlockCheck != null && !deadlockCheck.equals("false"));
+                    start = Instant.now();
                     solution =  bfs.findSolution(this);
+                    end = Instant.now();
+                    timeElapsed = Duration.between(start, end);
+                    System.out.println(timeElapsed);
                     break;
 
                 case "DFS":
                     deadlockCheck = (String) jsonObject.get("deadlockCheck");
                     DFSStrategy dfs = new DFSStrategy(deadlockCheck != null && !deadlockCheck.equals("false"));
+                    start = Instant.now();
                     solution =  dfs.findSolution(this);
+                    end = Instant.now();
+                    timeElapsed = Duration.between(start, end);
+                    System.out.println(timeElapsed);
                     break;
 
                 case "IDDFS":
@@ -109,7 +121,11 @@ public class Board extends JPanel {
                         break;
                     }
                     IDDFSStrategy iddfs = new IDDFSStrategy(deadlockCheck != null && !deadlockCheck.equals("false"), Integer.parseInt(maxIter));
+                    start = Instant.now();
                     solution =  iddfs.findSolution(this);
+                    end = Instant.now();
+                    timeElapsed = Duration.between(start, end);
+                    System.out.println(timeElapsed);
                     break;
 
                 case "IDA*":
@@ -123,8 +139,11 @@ public class Board extends JPanel {
                             System.out.println("Heuristic '+"+heuristic+"' doesn't exists");
                         }else{
                             IDAStarStrategy idaStar = new IDAStarStrategy(heuristic,func);
-                            solution = idaStar.findSolution(this);
-
+                            start = Instant.now();
+                            solution =  idaStar.findSolution(this);
+                            end = Instant.now();
+                            timeElapsed = Duration.between(start, end);
+                            System.out.println(timeElapsed);
                         }
                     }
 
@@ -142,8 +161,11 @@ public class Board extends JPanel {
                             System.out.println("Heuristic '+"+heuristic+"' doesn't exists");
                         }else{
                             GGSStrategy ggs = new GGSStrategy(heuristic,func);
-                            solution = ggs.findSolution(this);
-
+                            start = Instant.now();
+                            solution =  ggs.findSolution(this);
+                            end = Instant.now();
+                            timeElapsed = Duration.between(start, end);
+                            System.out.println(timeElapsed);
                         }
                     }
 
@@ -160,8 +182,11 @@ public class Board extends JPanel {
                             System.out.println("Heuristic '+"+heuristic+"' doesn't exists");
                         }else{
                             AStarStrategy aStar = new AStarStrategy(heuristic,func);
-                            solution = aStar.findSolution(this);
-
+                            start = Instant.now();
+                            solution =  aStar.findSolution(this);
+                            end = Instant.now();
+                            timeElapsed = Duration.between(start, end);
+                            System.out.println(timeElapsed);
                         }
                     }
 

@@ -1,4 +1,5 @@
 {
-  "algorithm":"DFS",
-  "heuristic": "SMD"
+  "algorithm":"IDDFS",
+  "heuristic": "SMD",
+  "maxIter": "100"
 }

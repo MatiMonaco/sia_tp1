@@ -99,8 +99,12 @@ public class Board extends JPanel {
                     break;
 
                 case "IDDFS":
-
-                    IDDFSStrategy iddfs = new IDDFSStrategy();
+                    String maxIter = (String) jsonObject.get("maxIter");
+                    if (maxIter == null){
+                        System.out.println("Se debe especificar el limite de profundidad para IDDFS");
+                        break;
+                    }
+                    IDDFSStrategy iddfs = new IDDFSStrategy(Integer.parseInt(maxIter));
                     solution =  iddfs.findSolution(this);
                     break;
 

@@ -13,10 +13,13 @@ import java.util.function.BiFunction;
 public class Heuristics {
 
     public static Map<String, BiFunction<StateNode, Board,Integer>> heuristicsMap = new HashMap<>(){{
+
         put("MML",Heuristics::minimumMatchingLowerBound);
         put("SMD",Heuristics::simpleManhattanDistances);
         put("goalCount",Heuristics::goalCount);}};
-    public static int goalCount(StateNode node,Board board){
+
+
+       public static int goalCount(StateNode node,Board board){
 
         List<Goal> goals = board.getGoals();
 

@@ -1,5 +1,0 @@
-{
-  "algorithm": "A*",
-  "heuristic": "goalCount",
-  "deadlockCheck": "true"
-}

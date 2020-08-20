@@ -1,5 +1,8 @@
 package ar.edu.itba;
 
+import ar.edu.itba.algorithms.*;
+import ar.edu.itba.entities.*;
+import ar.edu.itba.entities.Box;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -24,7 +27,7 @@ public class Board extends JPanel {
     public static final int OFFSET = 0;
     public static final int SPACE = 20;
     private List<Wall> walls;
-    private Set<Box> boxes;
+    private Set<ar.edu.itba.entities.Box> boxes;
     private List<Goal> goals;
     private SearchResult solution;
     private Player player;
@@ -110,7 +113,7 @@ public class Board extends JPanel {
 
                     }else {
                         BiFunction<SearchStrategy.StateNode, Board, Integer> func;
-                        if((func =Heuristics.heuristicsMap.get(heuristic)) == null){
+                        if((func = Heuristics.heuristicsMap.get(heuristic)) == null){
                             System.out.println("Heuristic '+"+heuristic+"' doesn't exists");
                         }else{
                             IDAStarStrategy idaStar = new IDAStarStrategy(heuristic,func);
@@ -287,7 +290,7 @@ public class Board extends JPanel {
         int y = OFFSET;
 
         Wall wall;
-        Box b;
+        ar.edu.itba.entities.Box b;
         Goal a;
         String levelData = getLevelData();
 
@@ -315,7 +318,7 @@ public class Board extends JPanel {
                     break;
 
                 case '$':
-                    b = new Box(x, y);
+                    b = new ar.edu.itba.entities.Box(x, y);
                     boxes.add(b);
                     positions.add(new Actor(x,y));
                     x += SPACE;
@@ -392,7 +395,7 @@ public class Board extends JPanel {
 
             g.drawString("Nodos expandidos: "+solution.getExpandedNodes(),w + 5,i++*space);
             g.drawString("Nodos frontera al finalizar: "+solution.getFrontierNodes(),w + 5,i++*space);
-            g.drawString("Profundidad alcanzada: "+solution.getGoalNode().pathCost,w + 5,i++*space);
+            g.drawString("Profundidad alcanzada: "+solution.getGoalNode().getPathCost(),w + 5,i++*space);
             g.setColor(found ? Color.BLUE:Color.RED);
             g.drawString(found ? "Solucion encontrada (Pulse 'S' para ver)":"Solucion no encontrada",w + 5,i++*space);
 
@@ -419,7 +422,7 @@ public class Board extends JPanel {
 
             for (Actor item : world) {
 
-                if (item instanceof Player || item instanceof Box) {
+                if (item instanceof Player || item instanceof ar.edu.itba.entities.Box) {
 
                     g.drawImage(item.getImage(), item.getX() + 2, item.getY() + 2, this);
                 } else {
@@ -575,17 +578,17 @@ public class Board extends JPanel {
 
     private boolean checkBoxCollision(char direction) {
 
-        Iterator<Box> it1 = boxes.iterator();
-        List<Box> toAdd = new ArrayList<>();
+        Iterator<ar.edu.itba.entities.Box> it1 = boxes.iterator();
+        List<ar.edu.itba.entities.Box> toAdd = new ArrayList<>();
         switch (direction) {
 
             case 'L':
 
 
                 while(it1.hasNext()) {
-                    Box box = it1.next();
+                    ar.edu.itba.entities.Box box = it1.next();
                     if (player.isLeftCollision(box)) {
-                        for (Box item : boxes) {
+                        for (ar.edu.itba.entities.Box item : boxes) {
                             {
 
 
@@ -617,9 +620,9 @@ public class Board extends JPanel {
 
 
                 while(it1.hasNext()) {
-                    Box box = it1.next();
+                    ar.edu.itba.entities.Box box = it1.next();
                     if (player.isRightCollision(box)) {
-                        for (Box item : boxes) {
+                        for (ar.edu.itba.entities.Box item : boxes) {
                             {
 
 
@@ -650,9 +653,9 @@ public class Board extends JPanel {
             case 'T':
 
                 while(it1.hasNext()) {
-                    Box box = it1.next();
+                    ar.edu.itba.entities.Box box = it1.next();
                     if (player.isTopCollision(box)) {
-                        for (Box item : boxes) {
+                        for (ar.edu.itba.entities.Box item : boxes) {
                             {
 
 
@@ -684,9 +687,9 @@ public class Board extends JPanel {
 
 
                 while(it1.hasNext()) {
-                    Box box = it1.next();
+                    ar.edu.itba.entities.Box box = it1.next();
                     if (player.isBottomCollision(box)) {
-                        for (Box item : boxes) {
+                        for (ar.edu.itba.entities.Box item : boxes) {
                             {
 
 
@@ -724,15 +727,15 @@ public class Board extends JPanel {
 
 
 
-    public boolean isCompleted(Set<Box> boxSet) {
+    public boolean isCompleted(Set<ar.edu.itba.entities.Box> boxSet) {
 
         int nOfBoxes = boxSet.size();
-       Box[] boxArray = boxSet.toArray(new Box[0]);
+       ar.edu.itba.entities.Box[] boxArray = boxSet.toArray(new ar.edu.itba.entities.Box[0]);
         int finishedBoxes = 0;
 
         for (int i = 0; i < nOfBoxes; i++) {
             
-            Box bag = boxArray[i];
+            ar.edu.itba.entities.Box bag = boxArray[i];
             
             for (int j = 0; j < nOfBoxes; j++) {
                 

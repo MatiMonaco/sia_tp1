@@ -167,7 +167,7 @@ public class Board extends JPanel {
                             solution =  ggs.findSolution(this);
                             end = Instant.now();
                             timeElapsed = Duration.between(start, end);
-                            System.out.println(timeElapsed);
+                          
                         }
                     }
 

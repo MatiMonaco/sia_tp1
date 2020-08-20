@@ -28,13 +28,13 @@ Ejemplos de configuraciones de ejecución:
 {
   "algorithm":"BFS",
   "deadlockCheck":"true"
-}
-,
+},
+
 {
   "algorithm":"A*",
   "heuristic":"MML"
-}
-,
+},
+
 {
   "algorithm":"IDDFS",
   "maxIter":"100",

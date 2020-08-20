@@ -1,6 +1,0 @@
-{
-  "algorithm":"IDDFS",
-  "heuristic": "SMD",
-  "maxIter": "100",
-  "deadlockCheck": "true"
-}

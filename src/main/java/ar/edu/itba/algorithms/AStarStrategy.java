@@ -22,7 +22,26 @@ public class AStarStrategy extends InformedSearchStrategy {
         Queue<StateNode> frontier;
         board.restartLevel();
         visited = new HashSet<>();
-        frontier = new PriorityQueue<>(5,Comparator.comparingInt(stateNode -> getTotalCost(stateNode,board)));
+        frontier = new PriorityQueue<>(5, (o1, o2) -> {
+            int h1 = heuristic.apply(o1,board);
+            int h2 = heuristic.apply(o2,board);
+            int total1 = o1.getPathCost() + h1;
+            int total2 = o2.getPathCost() + h2;
+
+            if(total1 > total2){
+                return 1;
+            }else if(total2 > total1){
+                return -1;
+            }else {
+                if(h1 > h2){
+                    return 1;
+                }else if(h2>h1){
+                    return -1;
+                }else{
+                    return 0;
+                }
+            }
+        });
 
         Set<Box> set = new HashSet<>(board.getBoxes());
         StateNode root = new StateNode(' ',new Player(board.getPlayer().getX(),board.getPlayer().getY()),set,null,0);

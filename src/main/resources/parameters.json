@@ -1,5 +1,6 @@
 {
-  "algorithm": "A*",
-  "heuristic": "goalCount",
+  "algorithm":"IDDFS",
+  "heuristic": "SMD",
+  "maxIter": "100",
   "deadlockCheck": "true"
 }

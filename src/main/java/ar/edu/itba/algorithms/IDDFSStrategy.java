@@ -9,9 +9,11 @@ public class IDDFSStrategy extends SearchStrategy {
     private long expandedNodes = 0;
     private Set<StateNode> visited;
     private StateNode endNode;
+    private int maxIter;
 
-    public IDDFSStrategy(boolean deadlockCheck) {
+    public IDDFSStrategy(boolean deadlockCheck, int maxIter) {
         super("IDDFS",deadlockCheck);
+        this.maxIter = maxIter;
     }
 
     @Override
@@ -37,7 +39,6 @@ public class IDDFSStrategy extends SearchStrategy {
 
     public boolean iddfs(StateNode root, Board board){
 
-        int maxIter = Integer.MAX_VALUE;
         for (int depth = 0; depth < maxIter; depth++) {
             System.out.println(depth);
             boolean found = dls(root, depth, board);

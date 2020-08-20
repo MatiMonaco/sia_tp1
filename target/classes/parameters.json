@@ -1,6 +1,0 @@
-{
-  "algorithm":"IDA*",
-  "heuristic": "goalCount",
-  "maxIter": "100",
-  "deadlockCheck": "true"
-}

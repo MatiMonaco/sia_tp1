@@ -9,10 +9,10 @@ import java.util.function.BiFunction;
 
 public class AStarStrategy extends InformedSearchStrategy {
 
-    private long expandedNodes = 0;
 
-    public AStarStrategy(String heuristicName,BiFunction<StateNode, Board, Integer> heuristic) {
-        super("A*",heuristicName,heuristic,true);
+
+    public AStarStrategy(String heuristicName,BiFunction<StateNode, Board, Integer> heuristic,int actionCost) {
+        super("A*",heuristicName,heuristic,true,actionCost);
     }
 
     @Override
@@ -22,7 +22,26 @@ public class AStarStrategy extends InformedSearchStrategy {
         Queue<StateNode> frontier;
         board.restartLevel();
         visited = new HashSet<>();
-        frontier = new PriorityQueue<>(5,Comparator.comparingInt(stateNode -> getTotalCost(stateNode,board)));
+        frontier = new PriorityQueue<>(5, (o1, o2) -> {
+            int h1 = heuristic.apply(o1,board);
+            int h2 = heuristic.apply(o2,board);
+            int total1 = o1.getPathCost() + h1;
+            int total2 = o2.getPathCost() + h2;
+
+            if(total1 > total2){
+                return 1;
+            }else if(total2 > total1){
+                return -1;
+            }else {
+                if(h1 > h2){
+                    return 1;
+                }else if(h2>h1){
+                    return -1;
+                }else{
+                    return 0;
+                }
+            }
+        });
 
         Set<Box> set = new HashSet<>(board.getBoxes());
         StateNode root = new StateNode(' ',new Player(board.getPlayer().getX(),board.getPlayer().getY()),set,null,0);
@@ -38,7 +57,8 @@ public class AStarStrategy extends InformedSearchStrategy {
                 System.out.println("A* Solution: " + solution);
                 System.out.println("Solution length: "+solution.length());
                 System.out.println("Expanded nodes: " + expandedNodes);
-                return new SearchResult(name,heuristicName,vertex, expandedNodes,frontier.size(), getSolutionPath(vertex));
+                System.out.println("Frontier nodes: " + frontier.size());
+                return new SearchResult(name,heuristicName,vertex, actionCost,expandedNodes,frontier.size(), getSolutionPath(vertex));
             }
             visited.add(vertex);
             expandedNodes++;
@@ -69,7 +89,7 @@ public class AStarStrategy extends InformedSearchStrategy {
             }
         }
         System.out.println("NO SOLUTION FOUND");
-        return  new SearchResult(name,heuristicName,null, expandedNodes,frontier.size(), null);
+        return  new SearchResult(name,heuristicName,null,actionCost, expandedNodes,frontier.size(), null);
 
 
     }

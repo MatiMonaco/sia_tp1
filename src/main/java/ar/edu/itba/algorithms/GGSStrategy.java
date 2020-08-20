@@ -9,10 +9,10 @@ import java.util.function.BiFunction;
 
 public class GGSStrategy extends InformedSearchStrategy {
 
-    private long expandedNodes = 0;
 
-    public GGSStrategy(String heuristicName,BiFunction<StateNode, Board, Integer> heuristic) {
-        super("GGS",heuristicName,heuristic,true);
+
+    public GGSStrategy(String heuristicName,BiFunction<StateNode, Board, Integer> heuristic,int actionCost) {
+        super("GGS",heuristicName,heuristic,true,actionCost);
     }
 
     @Override
@@ -22,7 +22,19 @@ public class GGSStrategy extends InformedSearchStrategy {
         Queue<StateNode> frontier;
         board.restartLevel();
         visited = new HashSet<>();
-        frontier = new PriorityQueue<>(5, Comparator.comparingInt(stateNode -> heuristic.apply(stateNode,board)));
+        frontier = new PriorityQueue<>(5, (o1, o2) -> {
+            int h1 = heuristic.apply(o1,board);
+            int h2 = heuristic.apply(o2,board);
+
+                if(h1 > h2){
+                    return 1;
+                }else if(h2>h1){
+                    return -1;
+                }else{
+                    return 0;
+                }
+
+        });
 
         Set<Box> set = new HashSet<>(board.getBoxes());
         StateNode root = new StateNode(' ',new Player(board.getPlayer().getX(),board.getPlayer().getY()),set,null,0);
@@ -37,8 +49,9 @@ public class GGSStrategy extends InformedSearchStrategy {
                 System.out.println("GGS Solution: " + solution);
                 System.out.println("Solution length: " + solution.length());
                 System.out.println("Expanded nodes: " + expandedNodes);
+                System.out.println("Frontier nodes: " + frontier.size());
 
-                return new SearchResult(name,heuristicName,vertex, expandedNodes,frontier.size(), getSolutionPath(vertex));
+                return new SearchResult(name,heuristicName,vertex,actionCost, expandedNodes,frontier.size(), getSolutionPath(vertex));
             }
             visited.add(vertex);
             expandedNodes++;
@@ -69,7 +82,7 @@ public class GGSStrategy extends InformedSearchStrategy {
             }
         }
         System.out.println("NO SOLUTION FOUND");
-        return new SearchResult(name,heuristicName,null, expandedNodes,frontier.size(), null);
+        return new SearchResult(name,heuristicName,null, actionCost,expandedNodes,frontier.size(), null);
 
 
     }

@@ -73,8 +73,8 @@ public class Board extends JPanel {
     private void compute() throws URISyntaxException {
         String algorithm;
         JSONParser parser = new JSONParser();
-        URL res = getClass().getClassLoader().getResource("parameters.json");
-        String  path = Paths.get(res.toURI()).toString();
+       String path = "./config.json";
+
         try (Reader reader = new FileReader(path)) {
 
             JSONObject jsonObject = (JSONObject) parser.parse(reader);
@@ -82,10 +82,10 @@ public class Board extends JPanel {
 
             algorithm = (String) jsonObject.get("algorithm");
             if(algorithm == null){
-                System.out.println("Algorithm can't be null");
+                System.out.println("Se debe especificar el algoritmo a utilizar ['BFS','DFS','IDDFS','A*','GGS','IDA*']");
 
             }
-            System.out.println(algorithm);
+
             String heuristic;
             String deadlockCheck;
             Instant start, end;
@@ -94,8 +94,9 @@ public class Board extends JPanel {
                 case "BFS":
                     deadlockCheck = (String) jsonObject.get("deadlockCheck");
 
-                    BFSStrategy bfs = new BFSStrategy(deadlockCheck != null && !deadlockCheck.equals("false"));
+                    BFSStrategy bfs = new BFSStrategy(deadlockCheck != null && !deadlockCheck.equals("false"), 1);
                     start = Instant.now();
+
                     solution =  bfs.findSolution(this);
                     end = Instant.now();
                     timeElapsed = Duration.between(start, end);
@@ -104,7 +105,7 @@ public class Board extends JPanel {
 
                 case "DFS":
                     deadlockCheck = (String) jsonObject.get("deadlockCheck");
-                    DFSStrategy dfs = new DFSStrategy(deadlockCheck != null && !deadlockCheck.equals("false"));
+                    DFSStrategy dfs = new DFSStrategy(deadlockCheck != null && !deadlockCheck.equals("false"), 1);
                     start = Instant.now();
                     solution =  dfs.findSolution(this);
                     end = Instant.now();
@@ -120,7 +121,7 @@ public class Board extends JPanel {
                         System.out.println("Se debe especificar el limite de profundidad para IDDFS");
                         break;
                     }
-                    IDDFSStrategy iddfs = new IDDFSStrategy(deadlockCheck != null && !deadlockCheck.equals("false"), Integer.parseInt(maxIter));
+                    IDDFSStrategy iddfs = new IDDFSStrategy(deadlockCheck != null && !deadlockCheck.equals("false"), Integer.parseInt(maxIter),1);
                     start = Instant.now();
                     solution =  iddfs.findSolution(this);
                     end = Instant.now();
@@ -131,14 +132,14 @@ public class Board extends JPanel {
                 case "IDA*":
                     heuristic = (String) jsonObject.get("heuristic");
                     if(heuristic == null){
-                        System.out.println("Heuristic can't be null");
+                        System.out.println("Se debe especificar la heuristica a utilizar ['goalCount','SMD','MML']");
 
                     }else {
                         BiFunction<SearchStrategy.StateNode, Board, Integer> func;
                         if((func = Heuristics.heuristicsMap.get(heuristic)) == null){
                             System.out.println("Heuristic '+"+heuristic+"' doesn't exists");
                         }else{
-                            IDAStarStrategy idaStar = new IDAStarStrategy(heuristic,func);
+                            IDAStarStrategy idaStar = new IDAStarStrategy(heuristic,func,1);
                             start = Instant.now();
                             solution =  idaStar.findSolution(this);
                             end = Instant.now();
@@ -160,7 +161,7 @@ public class Board extends JPanel {
                         if((func =Heuristics.heuristicsMap.get(heuristic)) == null){
                             System.out.println("Heuristic '+"+heuristic+"' doesn't exists");
                         }else{
-                            GGSStrategy ggs = new GGSStrategy(heuristic,func);
+                            GGSStrategy ggs = new GGSStrategy(heuristic,func,1);
                             start = Instant.now();
                             solution =  ggs.findSolution(this);
                             end = Instant.now();
@@ -181,7 +182,7 @@ public class Board extends JPanel {
                         if((func =Heuristics.heuristicsMap.get(heuristic)) == null){
                             System.out.println("Heuristic '+"+heuristic+"' doesn't exists");
                         }else{
-                            AStarStrategy aStar = new AStarStrategy(heuristic,func);
+                            AStarStrategy aStar = new AStarStrategy(heuristic,func,1);
                             start = Instant.now();
                             solution =  aStar.findSolution(this);
                             end = Instant.now();
@@ -275,7 +276,7 @@ public class Board extends JPanel {
 
         }
         System.out.println("Pre-computations completed.");
-        System.out.println(distancesToGoal);
+
     }
 
     public Map<Goal, Map<Actor, Integer>>  getDistancesToGoal() {
@@ -294,8 +295,8 @@ public class Board extends JPanel {
     private String getLevelData(){
         StringBuilder sb = new StringBuilder();
         try {
-            URL res = getClass().getClassLoader().getResource("level.txt");
-            File myObj = Paths.get(res.toURI()).toFile();
+
+            File myObj = new File("./level.txt");
 
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
@@ -304,7 +305,7 @@ public class Board extends JPanel {
                 sb.append('\n');
             }
             myReader.close();
-        } catch (FileNotFoundException | URISyntaxException e) {
+        } catch (FileNotFoundException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
@@ -427,6 +428,7 @@ public class Board extends JPanel {
             g.drawString("Nodos expandidos: "+solution.getExpandedNodes(),w + 5,i++*space);
             g.drawString("Nodos frontera al finalizar: "+solution.getFrontierNodes(),w + 5,i++*space);
             g.drawString("Profundidad alcanzada: "+solution.getGoalNode().getPathCost(),w + 5,i++*space);
+            g.drawString("Costo total: "+solution.getTotalCost(),w + 5,i++*space);
             g.setColor(found ? Color.BLUE:Color.RED);
             g.drawString(found ? "Solucion encontrada (Pulse 'S' para ver)":"Solucion no encontrada",w + 5,i++*space);
 

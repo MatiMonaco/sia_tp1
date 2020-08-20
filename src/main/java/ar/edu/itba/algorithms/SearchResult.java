@@ -10,14 +10,16 @@ public class SearchResult {
     private String solution;
     private String algorithm;
     private String heuristicName;
+    private int actionCost;
 
-    public SearchResult(String algorithm,String heuristicName,SearchStrategy.StateNode goalNode, long expandedNodes,long frontierNodes, String solution) {
+    public SearchResult(String algorithm,String heuristicName,SearchStrategy.StateNode goalNode,int actionCost, long expandedNodes,long frontierNodes, String solution) {
         this.goalNode = goalNode;
         this.expandedNodes = expandedNodes;
         this.solution = solution;
         this.algorithm = algorithm;
         this.heuristicName = heuristicName;
         this.frontierNodes = frontierNodes;
+        this.actionCost = actionCost;
     }
 
     public long getFrontierNodes() {
@@ -46,5 +48,8 @@ public class SearchResult {
 
     public int getLength(){
         return solution.length();
+    }
+    public long getTotalCost(){
+        return actionCost * goalNode.getPathCost();
     }
 }

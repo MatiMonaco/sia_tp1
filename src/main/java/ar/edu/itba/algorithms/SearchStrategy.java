@@ -12,13 +12,24 @@ import java.util.*;
 
 public abstract class SearchStrategy {
 
-    int[] dir_x = {-1, 0, 1, 0};
-    int[] dir_y = {0, 1, 0, -1};
+
     String name;
     boolean deadlockCheck;
-    public SearchStrategy(String name,boolean deadlockCheck) {
+    int actionCost;
+    long expandedNodes;
+
+    public SearchStrategy(String name,boolean deadlockCheck,int actionCost) {
         this.name = name;
         this.deadlockCheck = deadlockCheck;
+        this.actionCost = actionCost;
+    }
+
+    public int getActionCost() {
+        return actionCost;
+    }
+
+    public void setActionCost(int actionCost) {
+        this.actionCost = actionCost;
     }
 
     public String getName() {
@@ -28,6 +39,10 @@ public abstract class SearchStrategy {
     public Set<Box> deadlockedBoxes = new HashSet<>();
 
     public abstract SearchResult findSolution(Board board) ;
+
+    public int getTotalCost(StateNode node){
+        return node.getPathCost() * actionCost;
+    }
 
     public String getSolutionPath(StateNode node){
         StringBuilder sb = new StringBuilder();

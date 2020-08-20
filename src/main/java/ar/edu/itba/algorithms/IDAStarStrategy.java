@@ -10,10 +10,10 @@ public class IDAStarStrategy extends InformedSearchStrategy {
 
     private Stack<StateNode> path;
     private StateNode endNode;
-    private long expandedNodes = 0;
 
-    public IDAStarStrategy(String heuristicName,BiFunction<StateNode, Board, Integer> heuristic) {
-        super("IDA*",heuristicName,heuristic,true);
+
+    public IDAStarStrategy(String heuristicName,BiFunction<StateNode, Board, Integer> heuristic,int actionCost) {
+        super("IDA*",heuristicName,heuristic,true,actionCost);
     }
 
 
@@ -32,10 +32,10 @@ public class IDAStarStrategy extends InformedSearchStrategy {
             System.out.println("Solution: " + solution);
             System.out.println("Solution length: " + solution.length());
             System.out.println("Expanded nodes: " + expandedNodes);
-            return new SearchResult(name,heuristicName,endNode, expandedNodes, 0,getSolutionPath(endNode));
+            return new SearchResult(name,heuristicName,endNode,actionCost, expandedNodes, 0,getSolutionPath(endNode));
         }
         System.out.println("NO SOLUTION FOUND");
-        return new SearchResult(name,heuristicName,null, expandedNodes,0, null);
+        return new SearchResult(name,heuristicName,null, actionCost,expandedNodes,0, null);
     }
 
     public boolean idaStar(StateNode root, Board board){

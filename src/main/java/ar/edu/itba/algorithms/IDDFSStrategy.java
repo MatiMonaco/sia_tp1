@@ -11,8 +11,8 @@ public class IDDFSStrategy extends SearchStrategy {
     private StateNode endNode;
     private int maxIter;
 
-    public IDDFSStrategy(boolean deadlockCheck, int maxIter) {
-        super("IDDFS",deadlockCheck);
+    public IDDFSStrategy(boolean deadlockCheck, int maxIter,int actionCost) {
+        super("IDDFS",deadlockCheck,actionCost);
         this.maxIter = maxIter;
     }
 
@@ -31,10 +31,10 @@ public class IDDFSStrategy extends SearchStrategy {
             System.out.println("Solution: " + solution);
             System.out.println("Solution length: " + solution.length());
             System.out.println("Expanded nodes: " + expandedNodes);
-            return new SearchResult(name, null,endNode, expandedNodes,0, getSolutionPath(endNode));
+            return new SearchResult(name, null,endNode, actionCost,expandedNodes,0, getSolutionPath(endNode));
         }
         System.out.println("NO SOLUTION FOUND");
-        return new SearchResult(name, null, null, expandedNodes, 0,null);
+        return new SearchResult(name, null, null,actionCost, expandedNodes, 0,null);
     }
 
     public boolean iddfs(StateNode root, Board board){

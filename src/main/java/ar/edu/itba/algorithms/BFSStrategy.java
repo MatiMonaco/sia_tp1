@@ -9,10 +9,9 @@ import java.util.*;
 
 public class BFSStrategy extends SearchStrategy {
 
-    private long expandedNodes = 0;
 
-    public BFSStrategy(boolean deadlockCheck) {
-        super("BFS",deadlockCheck);
+    public BFSStrategy(boolean deadlockCheck,int actionCost) {
+        super("BFS",deadlockCheck,actionCost);
     }
 
 
@@ -46,7 +45,8 @@ public class BFSStrategy extends SearchStrategy {
                         System.out.println("BFS Solution: " + solution);
                         System.out.println("Solution length: "+solution.length());
                         System.out.println("Expanded nodes: " + expandedNodes);
-                        return new SearchResult(name,null,successor, expandedNodes,frontier.size(), getSolutionPath(successor));
+                        System.out.println("Frontier nodes: " + frontier.size());
+                        return new SearchResult(name,null,successor,actionCost, expandedNodes,frontier.size(), getSolutionPath(successor));
                     }
 
                     frontier.add(successor);
@@ -55,7 +55,7 @@ public class BFSStrategy extends SearchStrategy {
             }
         }
         System.out.println("NO SOLUTION FOUND");
-        return new SearchResult(name,null,null, expandedNodes,frontier.size(), null);
+        return new SearchResult(name,null,null, actionCost,expandedNodes,frontier.size(), null);
 
 
     }

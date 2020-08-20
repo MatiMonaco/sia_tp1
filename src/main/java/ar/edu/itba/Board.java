@@ -90,25 +90,25 @@ public class Board extends JPanel {
                 case "BFS":
                     deadlockCheck = (String) jsonObject.get("deadlockCheck");
 
-                    BFSStrategy bfs = new BFSStrategy((deadlockCheck == null || deadlockCheck == "false") ? false:true);
+                    BFSStrategy bfs = new BFSStrategy(deadlockCheck != null && !deadlockCheck.equals("false"));
                     solution =  bfs.findSolution(this);
                     break;
 
                 case "DFS":
                     deadlockCheck = (String) jsonObject.get("deadlockCheck");
-                    DFSStrategy dfs = new DFSStrategy((deadlockCheck == null || deadlockCheck == "false") ? false:true);
+                    DFSStrategy dfs = new DFSStrategy(deadlockCheck != null && !deadlockCheck.equals("false"));
                     solution =  dfs.findSolution(this);
                     break;
 
                 case "IDDFS":
                     deadlockCheck = (String) jsonObject.get("deadlockCheck");
-                    IDDFSStrategy iddfs = new IDDFSStrategy((deadlockCheck == null || deadlockCheck == "false") ? false:true);
                     String maxIter = (String) jsonObject.get("maxIter");
+
                     if (maxIter == null){
                         System.out.println("Se debe especificar el limite de profundidad para IDDFS");
                         break;
                     }
-                    IDDFSStrategy iddfs = new IDDFSStrategy(Integer.parseInt(maxIter));
+                    IDDFSStrategy iddfs = new IDDFSStrategy(deadlockCheck != null && !deadlockCheck.equals("false"), Integer.parseInt(maxIter));
                     solution =  iddfs.findSolution(this);
                     break;
 

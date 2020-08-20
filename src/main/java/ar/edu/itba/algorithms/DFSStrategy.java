@@ -8,12 +8,9 @@ import java.util.*;
 
 public class DFSStrategy extends SearchStrategy {
 
-    private Set<StateNode> visited;
-    private Stack<StateNode> vertices;
-    private long expandedNodes = 0;
 
-    public DFSStrategy(boolean deadlockCheck) {
-        super("DFS",deadlockCheck);
+    public DFSStrategy(boolean deadlockCheck,int actionCost) {
+        super("DFS",deadlockCheck,actionCost);
     }
 
     @Override
@@ -46,7 +43,8 @@ public class DFSStrategy extends SearchStrategy {
                         System.out.println("DFS Solution: " + solution);
                         System.out.println("Solution length: "+solution.length());
                         System.out.println("Expanded nodes: " + expandedNodes);
-                        return new SearchResult(name,null,successor, expandedNodes,frontier.size(), getSolutionPath(successor));
+                        System.out.println("Frontier nodes: " + frontier.size());
+                        return new SearchResult(name,null,successor,actionCost, expandedNodes,frontier.size(), getSolutionPath(successor));
                     }
 
                     frontier.push(successor);
@@ -55,7 +53,7 @@ public class DFSStrategy extends SearchStrategy {
             }
         }
         System.out.println("NO SOLUTION FOUND");
-        return  new SearchResult(name,null,null, expandedNodes,frontier.size(), null);
+        return  new SearchResult(name,null,null,actionCost, expandedNodes,frontier.size(), null);
 
 
     }

@@ -80,7 +80,7 @@ public class Board extends JPanel {
 
             algorithm = (String) jsonObject.get("algorithm");
             if(algorithm == null){
-                System.out.println("Algorithm can't be null");
+                System.out.println("Se debe especificar el algoritmo a utilizar ['BFS','DFS','IDDFS','A*','GGS','IDA*']");
 
             }
 
@@ -90,13 +90,13 @@ public class Board extends JPanel {
                 case "BFS":
                     deadlockCheck = (String) jsonObject.get("deadlockCheck");
 
-                    BFSStrategy bfs = new BFSStrategy(deadlockCheck != null && !deadlockCheck.equals("false"));
+                    BFSStrategy bfs = new BFSStrategy(deadlockCheck != null && !deadlockCheck.equals("false"),1);
                     solution =  bfs.findSolution(this);
                     break;
 
                 case "DFS":
                     deadlockCheck = (String) jsonObject.get("deadlockCheck");
-                    DFSStrategy dfs = new DFSStrategy(deadlockCheck != null && !deadlockCheck.equals("false"));
+                    DFSStrategy dfs = new DFSStrategy(deadlockCheck != null && !deadlockCheck.equals("false"),1);
                     solution =  dfs.findSolution(this);
                     break;
 
@@ -108,21 +108,21 @@ public class Board extends JPanel {
                         System.out.println("Se debe especificar el limite de profundidad para IDDFS");
                         break;
                     }
-                    IDDFSStrategy iddfs = new IDDFSStrategy(deadlockCheck != null && !deadlockCheck.equals("false"), Integer.parseInt(maxIter));
+                    IDDFSStrategy iddfs = new IDDFSStrategy(deadlockCheck != null && !deadlockCheck.equals("false"), Integer.parseInt(maxIter),1);
                     solution =  iddfs.findSolution(this);
                     break;
 
                 case "IDA*":
                     heuristic = (String) jsonObject.get("heuristic");
                     if(heuristic == null){
-                        System.out.println("Heuristic can't be null");
+                        System.out.println("Se debe especificar la heuristica a utilizar ['goalCount','SMD','MML']");
 
                     }else {
                         BiFunction<SearchStrategy.StateNode, Board, Integer> func;
                         if((func = Heuristics.heuristicsMap.get(heuristic)) == null){
                             System.out.println("Heuristic '+"+heuristic+"' doesn't exists");
                         }else{
-                            IDAStarStrategy idaStar = new IDAStarStrategy(heuristic,func);
+                            IDAStarStrategy idaStar = new IDAStarStrategy(heuristic,func,1);
                             solution = idaStar.findSolution(this);
 
                         }
@@ -141,7 +141,7 @@ public class Board extends JPanel {
                         if((func =Heuristics.heuristicsMap.get(heuristic)) == null){
                             System.out.println("Heuristic '+"+heuristic+"' doesn't exists");
                         }else{
-                            GGSStrategy ggs = new GGSStrategy(heuristic,func);
+                            GGSStrategy ggs = new GGSStrategy(heuristic,func,1);
                             solution = ggs.findSolution(this);
 
                         }
@@ -159,7 +159,7 @@ public class Board extends JPanel {
                         if((func =Heuristics.heuristicsMap.get(heuristic)) == null){
                             System.out.println("Heuristic '+"+heuristic+"' doesn't exists");
                         }else{
-                            AStarStrategy aStar = new AStarStrategy(heuristic,func);
+                            AStarStrategy aStar = new AStarStrategy(heuristic,func,1);
                             solution = aStar.findSolution(this);
 
                         }
@@ -402,6 +402,7 @@ public class Board extends JPanel {
             g.drawString("Nodos expandidos: "+solution.getExpandedNodes(),w + 5,i++*space);
             g.drawString("Nodos frontera al finalizar: "+solution.getFrontierNodes(),w + 5,i++*space);
             g.drawString("Profundidad alcanzada: "+solution.getGoalNode().getPathCost(),w + 5,i++*space);
+            g.drawString("Costo total: "+solution.getTotalCost(),w + 5,i++*space);
             g.setColor(found ? Color.BLUE:Color.RED);
             g.drawString(found ? "Solucion encontrada (Pulse 'S' para ver)":"Solucion no encontrada",w + 5,i++*space);
 

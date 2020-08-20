@@ -9,10 +9,10 @@ import java.util.function.BiFunction;
 
 public class AStarStrategy extends InformedSearchStrategy {
 
-    private long expandedNodes = 0;
 
-    public AStarStrategy(String heuristicName,BiFunction<StateNode, Board, Integer> heuristic) {
-        super("A*",heuristicName,heuristic,true);
+
+    public AStarStrategy(String heuristicName,BiFunction<StateNode, Board, Integer> heuristic,int actionCost) {
+        super("A*",heuristicName,heuristic,true,actionCost);
     }
 
     @Override
@@ -38,7 +38,8 @@ public class AStarStrategy extends InformedSearchStrategy {
                 System.out.println("A* Solution: " + solution);
                 System.out.println("Solution length: "+solution.length());
                 System.out.println("Expanded nodes: " + expandedNodes);
-                return new SearchResult(name,heuristicName,vertex, expandedNodes,frontier.size(), getSolutionPath(vertex));
+                System.out.println("Frontier nodes: " + frontier.size());
+                return new SearchResult(name,heuristicName,vertex, actionCost,expandedNodes,frontier.size(), getSolutionPath(vertex));
             }
             visited.add(vertex);
             expandedNodes++;
@@ -69,7 +70,7 @@ public class AStarStrategy extends InformedSearchStrategy {
             }
         }
         System.out.println("NO SOLUTION FOUND");
-        return  new SearchResult(name,heuristicName,null, expandedNodes,frontier.size(), null);
+        return  new SearchResult(name,heuristicName,null,actionCost, expandedNodes,frontier.size(), null);
 
 
     }

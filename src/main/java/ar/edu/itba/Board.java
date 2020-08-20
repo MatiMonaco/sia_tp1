@@ -71,7 +71,7 @@ public class Board extends JPanel {
     private void compute() throws URISyntaxException {
         String algorithm;
         JSONParser parser = new JSONParser();
-       String path = "./parameters.json";
+       String path = "./config.json";
 
         try (Reader reader = new FileReader(path)) {
 
